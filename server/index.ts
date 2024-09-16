@@ -1,10 +1,10 @@
 // ! doing in plain js bcz ts-node just won't work today for some reason
 
-import express from "express";
-// import express, { Application, Request, Response, NextFunction } from "express";
+
+import express, { Application, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { AIChat } from "./LangChain/Chat.js";
+import { AIChat } from "./LangChain/Chat";
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 app.post("/ai-chat", AIChat);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err:Error, req:Request, res:Response, next:NextFunction) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });

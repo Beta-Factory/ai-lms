@@ -1,6 +1,6 @@
 // ! doing in plain js bcz ts-node just won't work today for some reason
 
-// import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 // import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { ChatMistralAI, MistralAI } from "@langchain/mistralai";
@@ -12,7 +12,9 @@ import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
 // // Load environment variables from .env file
 dotenv.config();
 
-export const AIChat = async (req, res) => {
+
+
+export const AIChat = async (req:Request, res:Response) => {
   try {
     // const model = new ChatMistralAI({
     //   model: "codestral-latest",
