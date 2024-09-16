@@ -1,10 +1,8 @@
-// ! doing in plain js bcz ts-node just won't work today for some reason
-
-// import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 // import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { ChatMistralAI, MistralAI } from "@langchain/mistralai";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+// import { ChatMistralAI, MistralAI } from "@langchain/mistralai";
+// import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
@@ -12,7 +10,7 @@ import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
 // // Load environment variables from .env file
 dotenv.config();
 
-export const AIChat = async (req, res) => {
+export const AIChat = async (req:Request, res:Response) => {
   try {
     // const model = new ChatMistralAI({
     //   model: "codestral-latest",
@@ -26,7 +24,7 @@ export const AIChat = async (req, res) => {
       maxTokens: 512,
 
       topP: 0.7,
-      topK: 50,
+      //   topK: 50,
       //   repetitionPenalty: 1,
 
       //   stop: ["<|eot_id|>", "<|eom_id|>"],
@@ -72,7 +70,7 @@ export const AIChat = async (req, res) => {
 
     res.json(result);
     console.log(result);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).send(error.message);
   }
 };
