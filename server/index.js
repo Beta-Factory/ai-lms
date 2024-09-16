@@ -1,55 +1,35 @@
 // ! doing in plain js bcz ts-node just won't work today for some reason
 
+import express from "express";
 // import express, { Application, Request, Response, NextFunction } from "express";
-// import bodyParser from "body-parser";
+import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { ChatMistralAI } from "@langchain/mistralai";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import { AIChat } from "./LangChain/Chat.js";
 
-// // Load environment variables from .env file
 dotenv.config();
 
-// const app: Application = express();
-// const PORT = process.env.PORT || 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// // Middleware
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// // Basic route
-// app.get("/", (req: Request, res: Response) => {
-//   res.send("Hello, this is the server!");
-// });
-
-// // Error handling middleware
-// app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-//   console.error(err.stack);
-//   res.status(500).send("Something broke!");
-// });
-
-// // Start server
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-
-const model = new ChatMistralAI({
-  model: "mistral-large-latest",
-  temperature: 0,
+// Basic route
+app.get("/", (req, res) => {
+  res.send("Hello, this is the server!");
 });
 
-const messages = [
-  new SystemMessage("Translate the following from English into japanese"),
-  new HumanMessage("hello my name is parwez!"),
-];
+// AI Chat route
+app.post("/ai-chat", AIChat);
 
-// const result = await model.invoke(messages);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
-const parser = new StringOutputParser();
-// await parser.invoke(result);
-
-const chain = model.pipe(parser);
-
-// ? This chain takes on the input type of the language model (string or list of message) and returns the output type of the output parser (string).
-
-await chain.invoke(messages);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
