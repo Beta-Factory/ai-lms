@@ -10,7 +10,7 @@ import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
 // // Load environment variables from .env file
 dotenv.config();
 
-export const AIChat = async (req:Request, res:Response) => {
+export const AIChat = async (req: Request, res: Response) => {
   try {
     // const model = new ChatMistralAI({
     //   model: "codestral-latest",
@@ -24,7 +24,7 @@ export const AIChat = async (req:Request, res:Response) => {
       maxTokens: 512,
 
       topP: 0.7,
-      //   topK: 50,
+      // topK: 50,
       //   repetitionPenalty: 1,
 
       //   stop: ["<|eot_id|>", "<|eom_id|>"],
