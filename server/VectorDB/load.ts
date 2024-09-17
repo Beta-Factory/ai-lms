@@ -8,6 +8,7 @@ import {
 } from "@langchain/community/vectorstores/astradb";
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const FILE_PATH = "./sample";
@@ -32,10 +33,12 @@ async function load_docs() {
 
   const texts = await splitter.splitDocuments(docs);
   console.log("Loaded ", texts.length, " documents.");
+
   return texts;
 }
 
-// load_docs().catch(console.error);
+// Load documents and handle any errors
+load_docs().catch((error) => console.error("Failed to load documents:", error));
 
 let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
 
@@ -44,7 +47,14 @@ export async function getVectorStore() {
     vectorStorePromise = (async () => {
       try {
         const texts = await load_docs();
-        console.log("Loaded documents:", texts); // ! Debugging
+
+        console.log(
+          "======loaded texts documents.======",
+          texts,
+          "================"
+        ); // ! Debugging
+
+        console.log(typeof texts); // ! Debugging
 
         // Specify the database and collection to use.
         // If the collection does not exist, it is created automatically.
@@ -55,7 +65,7 @@ export async function getVectorStore() {
           collection: process.env.ASTRA_DB_COLLECTION ?? "vector_test",
           collectionOptions: {
             vector: {
-              dimension: 1536,
+              dimension: 768, // not 1536
               metric: "cosine",
             },
           },
@@ -72,8 +82,8 @@ export async function getVectorStore() {
         console.log("Initialized vector store:", vectorStore); // ! Debugging
 
         // Generate embeddings from the documents and store them.
-        await vectorStore.addDocuments(texts);
-        console.log(vectorStore); // ! Debugging
+        const stored_Docs = await vectorStore.addDocuments(texts);
+        console.log(stored_Docs); // ! Debugging
         console.log("Documents added to vector store"); // ! Debugging
         return vectorStore;
       } catch (error) {

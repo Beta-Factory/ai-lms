@@ -4,7 +4,11 @@ import dotenv from "dotenv";
 // import { ChatMistralAI, MistralAI } from "@langchain/mistralai";
 // import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
+} from "@langchain/core/prompts";
 import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
 import { getVectorStore } from "../VectorDB/load";
 import {
@@ -21,13 +25,18 @@ export const AIChat = async (req: Request, res: Response) => {
     const vectorStore = await getVectorStore();
     const vectorStoreRetriever = vectorStore.asRetriever();
 
+    console.log("======vectorStoreRetriever======", vectorStoreRetriever); // ! Debugging
+
     // ------ AI Chat ------
-    const { role, text } = req.body;
+    type Body = {
+      text: string;
+    };
+    const { text }: Body = req.body;
 
     const metaLlamaModel = new ChatTogetherAI({
       model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
       temperature: 0.5,
-      maxTokens: 100,
+      maxTokens: 1000,
 
       topP: 0.7,
       // topK: 50,
@@ -40,16 +49,23 @@ export const AIChat = async (req: Request, res: Response) => {
     });
 
     const SYSTEM_TEMPLATE = `
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.You are a very good and professional {role} who answers the students with accurate information and detailed explanation:
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.You are a very good and professional teacher who answers the students with accurate information and detailed explanation:
 
     Use the following pieces of context to answer the question at the end.
     ----------------
     {context}`;
 
-    const prompt = ChatPromptTemplate.fromMessages([
-      ["system", SYSTEM_TEMPLATE],
-      ["user", "{text}"],
-    ]);
+    const messages = [
+      SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
+      HumanMessagePromptTemplate.fromTemplate("{question}"),
+    ];
+
+    const prompt = ChatPromptTemplate.fromMessages(messages);
+
+    // const prompt = ChatPromptTemplate.fromMessages([
+    //   ["system", SYSTEM_TEMPLATE],
+    //   ["user", "{text}"],
+    // ]);
 
     const parser = new StringOutputParser();
 
@@ -65,14 +81,7 @@ export const AIChat = async (req: Request, res: Response) => {
 
     // ? This chain takes on the input type of the language model (string or list of message) and returns the output type of the output parser (string).
 
-    type resultType = {
-      role: string;
-      text: string;
-    };
-    let result = await chain.invoke({
-      role: role,
-      text: text,
-    } as resultType);
+    let result = await chain.invoke(text);
 
     res.json(result);
     console.log(result);
