@@ -9,6 +9,7 @@ import {
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 import dotenv from "dotenv";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 
 // const nike10kPdfPath = "../";
 
@@ -29,6 +30,7 @@ async function load_docs() {
   const loader = new DirectoryLoader(FILE_PATH, {
     ".txt": (path) => new TextLoader(path),
     ".pdf": (path) => new PDFLoader(path),
+    ".csv": (path) => new CSVLoader(path),
   });
   const docs = await loader.load();
 
