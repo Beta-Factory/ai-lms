@@ -52,7 +52,6 @@ export const AIChat = async (req: Request, res: Response) => {
     ]);
 
     const parser = new StringOutputParser();
-
     const chain = RunnableSequence.from([
       {
         context: vectorStoreRetriever.pipe(formatDocumentsAsString),
@@ -62,9 +61,7 @@ export const AIChat = async (req: Request, res: Response) => {
       metaLlamaModel,
       parser,
     ]);
-
     // ? This chain takes on the input type of the language model (string or list of message) and returns the output type of the output parser (string).
-
     type resultType = {
       role: string;
       text: string;
