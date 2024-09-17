@@ -8,6 +8,11 @@ import {
 } from "@langchain/community/vectorstores/astradb";
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 import dotenv from "dotenv";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+
+// const nike10kPdfPath = "../";
+
+// const loader = new PDFLoader(nike10kPdfPath);
 
 dotenv.config();
 
@@ -23,6 +28,7 @@ const togetherAiEmbeddings = new TogetherAIEmbeddings({
 async function load_docs() {
   const loader = new DirectoryLoader(FILE_PATH, {
     ".txt": (path) => new TextLoader(path),
+    ".pdf": (path) => new PDFLoader(path),
   });
   const docs = await loader.load();
 
