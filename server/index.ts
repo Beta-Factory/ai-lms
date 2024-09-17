@@ -1,9 +1,8 @@
 // import express from "express";
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
-
 dotenv.config();
 
 const app = express();
