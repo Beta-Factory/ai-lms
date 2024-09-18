@@ -7,7 +7,7 @@ export let vectorStoreValues: AstraDBVectorStore | null = null;
 export async function StoreToDB(req: Request, res: Response) {
   try {
     await getVectorStore();
-    vectorStoreValues = await vectorStorePromise; // Store the vector store in a variable
+    vectorStoreValues = await vectorStorePromise; // Store the vector-store values in a variable
 
     res.status(200).send("Data loaded to database!");
   } catch (error) {

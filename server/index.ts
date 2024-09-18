@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
   res.send("Hello, this is the server!");
 });
 
-// AI Chat route
+// AI Chat route (in this order)
 app.get("/load-data", StoreToDB);
 app.post("/ai-chat", AIChat);
 

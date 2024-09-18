@@ -24,7 +24,7 @@ export const AIChat = async (req: Request, res: Response) => {
   try {
     // ? query the vector store
     // const vectorStore = await getVectorStore();
-    const vectorStore = await vectorStoreValues!; // mind the bang operator
+    const vectorStore = vectorStoreValues!; // mind the bang operator
     const vectorStoreRetriever = vectorStore.asRetriever();
 
     console.log("======vectorStoreRetriever======", vectorStoreRetriever); // ! Debugging
