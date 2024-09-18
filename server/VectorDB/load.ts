@@ -17,13 +17,13 @@ import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 
 dotenv.config();
 
-const FILE_PATH = "./sample";
+const FILE_PATH = "./sample"; // Path to your document
 const TOGETHER_AI_API_KEY = process.env.TOGETHER_AI_API_KEY;
 
 const togetherAiEmbeddings = new TogetherAIEmbeddings({
   apiKey: TOGETHER_AI_API_KEY as string,
-  model: "togethercomputer/m2-bert-80M-8k-retrieval", // Default
-  batchSize: 512,
+  model: "togethercomputer/m2-bert-80M-32k-retrieval", // larger token size
+  batchSize: 512, // the number of documents to process in a batch (more = less requests/minute)
 });
 
 async function load_docs() {
@@ -48,7 +48,7 @@ async function load_docs() {
 // Load documents and handle any errors
 load_docs().catch((error) => console.error("Failed to load documents:", error));
 
-let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
+export let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
 
 export async function getVectorStore() {
   if (!vectorStorePromise) {

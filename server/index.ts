@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
+import { StoreToDB } from "./VectorDB/StoreToDB";
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // AI Chat route
+app.get("/load-data", StoreToDB);
 app.post("/ai-chat", AIChat);
 
 // Error handling middleware
