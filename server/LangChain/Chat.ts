@@ -10,19 +10,21 @@ import {
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
 import { ChatTogetherAI } from "@langchain/community/chat_models/togetherai";
-import { getVectorStore } from "../VectorDB/load";
+// import { getVectorStore } from "../VectorDB/load";
 import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
+import { vectorStoreValues } from "../VectorDB/StoreToDB";
 
 dotenv.config();
 
 export const AIChat = async (req: Request, res: Response) => {
   try {
     // ? query the vector store
-    const vectorStore = await getVectorStore();
+    // const vectorStore = await getVectorStore();
+    const vectorStore = await vectorStoreValues!; // mind the bang operator
     const vectorStoreRetriever = vectorStore.asRetriever();
 
     console.log("======vectorStoreRetriever======", vectorStoreRetriever); // ! Debugging
