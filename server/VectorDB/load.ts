@@ -10,6 +10,7 @@ import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai
 import dotenv from "dotenv";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
+import * as fs from "fs";
 
 // const nike10kPdfPath = "../";
 
@@ -27,27 +28,47 @@ const TOGETHER_AI_API_KEY = process.env.TOGETHER_AI_API_KEY;
 // });
 
 async function load_docs() {
-  const loader = new DirectoryLoader(FILE_PATH, {
-    ".txt": (path) => new TextLoader(path),
-    ".pdf": (path) => new PDFLoader(path),
-    ".csv": (path) => new CSVLoader(path),
-  });
+  const files = fs.readdirSync(FILE_PATH);
+  let loader;
+
+  if (files.some((file) => file.endsWith(".txt"))) {
+    loader = new DirectoryLoader(FILE_PATH, {
+      ".txt": (path) => new TextLoader(path),
+    });
+  } else if (files.some((file) => file.endsWith(".pdf"))) {
+    loader = new DirectoryLoader(FILE_PATH, {
+      ".pdf": (path) => new PDFLoader(path),
+    });
+  } else if (files.some((file) => file.endsWith(".csv"))) {
+    loader = new DirectoryLoader(FILE_PATH, {
+      ".csv": (path) => new CSVLoader(path),
+    });
+  } else {
+    throw new Error("File type not supported !.");
+  }
+
+  // console.log("filename : ", fileNameWithoutExtension); // ! Debugging
+  // const loader = new DirectoryLoader(FILE_PATH, {
+  //   ".txt": (path) => new TextLoader(path),
+  //   ".pdf": (path) => new PDFLoader(path),
+  //   ".csv": (path) => new CSVLoader(path),
+  // });
   const docs = await loader.load();
 
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 8000,
-    chunkOverlap: 1200,
+    chunkSize: 10000,
+    chunkOverlap: 1600,
   });
 
   const texts = await splitter.splitDocuments(docs);
-  console.log(texts); // ! Debugging
+  // console.log(texts); // ! Debugging
   console.log("Loaded ", texts.length, " documents."); // ! Debugging
 
   return texts;
 }
 
-// Load documents and handle any errors
-load_docs().catch((error) => console.error("Failed to load documents:", error));
+// // Load documents and handle any errors
+// load_docs().catch((error) => console.error("Failed to load documents:", error));
 
 export let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
 
@@ -84,7 +105,8 @@ export async function getVectorStore() {
           token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
           endpoint: process.env.ASTRA_DB_API_ENDPOINT as string,
           namespace: process.env.ASTRA_DB_NAMESPACE as string,
-          collection: process.env.ASTRA_DB_COLLECTION ?? "vector_test",
+          collection:
+            (process.env.ASTRA_DB_COLLECTION as string) || "vector_store",
           collectionOptions: {
             vector: {
               dimension: 768, // not 1536
@@ -94,14 +116,27 @@ export async function getVectorStore() {
         };
         // console.log(astraConfig); // ! Debugging
 
+        const togetherAiEmbeddings = new TogetherAIEmbeddings({
+          apiKey: TOGETHER_AI_API_KEY as string,
+          model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
+          batchSize: finalBatchSize,
+        });
+
+        // check if the collection already exists
+        const existingDocuments = await AstraDBVectorStore.fromExistingIndex(
+          togetherAiEmbeddings,
+          astraConfig
+        );
+
+        if (existingDocuments) {
+          console.log("Loaded existing documents:", existingDocuments); // ! Debugging
+          return existingDocuments;
+        }
+
         // Initialize the vector store.
         const vectorStore = await AstraDBVectorStore.fromDocuments(
           texts,
-          new TogetherAIEmbeddings({
-            apiKey: TOGETHER_AI_API_KEY as string,
-            model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
-            batchSize: finalBatchSize,
-          }),
+          togetherAiEmbeddings,
           astraConfig
         );
 

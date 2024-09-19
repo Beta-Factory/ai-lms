@@ -1,14 +1,13 @@
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
-import { getVectorStore, vectorStorePromise } from "./load";
+import { getVectorStore } from "./load";
 import { Request, Response } from "express";
 
-export let vectorStoreValues: AstraDBVectorStore | null = null;
+export let vectorStore: AstraDBVectorStore | null = null;
 
 export async function StoreToDB(req: Request, res: Response) {
   try {
-    await getVectorStore();
-    vectorStoreValues = await vectorStorePromise; // Store the vector-store values in a variable
-
+    vectorStore = await getVectorStore(); // Store the vector-store values in a variable
+    // console.log(vectorStore); // ! Debugging
     res.status(200).send("Data loaded to database!");
   } catch (error) {
     console.error("Error storing to database:", error);
