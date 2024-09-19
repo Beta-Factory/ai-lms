@@ -20,11 +20,11 @@ dotenv.config();
 const FILE_PATH = "./sample"; // Path to your document
 const TOGETHER_AI_API_KEY = process.env.TOGETHER_AI_API_KEY;
 
-const togetherAiEmbeddings = new TogetherAIEmbeddings({
-  apiKey: TOGETHER_AI_API_KEY as string,
-  model: "togethercomputer/m2-bert-80M-32k-retrieval", // larger token size
-  batchSize: 512, // the number of documents to process in a batch (more = less requests/minute)
-});
+// const togetherAiEmbeddings = new TogetherAIEmbeddings({
+//   apiKey: TOGETHER_AI_API_KEY as string,
+//   model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
+//   batchSize: 32, // the number of documents to process in a batch (more = less requests/minute)
+// });
 
 async function load_docs() {
   const loader = new DirectoryLoader(FILE_PATH, {
@@ -35,12 +35,13 @@ async function load_docs() {
   const docs = await loader.load();
 
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 15,
+    chunkSize: 8000,
+    chunkOverlap: 1200,
   });
 
   const texts = await splitter.splitDocuments(docs);
-  console.log("Loaded ", texts.length, " documents.");
+  console.log(texts); // ! Debugging
+  console.log("Loaded ", texts.length, " documents."); // ! Debugging
 
   return texts;
 }
@@ -55,14 +56,27 @@ export async function getVectorStore() {
     vectorStorePromise = (async () => {
       try {
         const texts = await load_docs();
+        const textLength = texts.length;
+        const batchSize = (textLength: number) => {
+          if (textLength >= 50) {
+            let quotient = Math.floor(textLength / 50);
+            return quotient;
+          } else {
+            return textLength; // If docs is below 50, return it as is
+          }
+        };
+        const finalBatchSize =
+          batchSize(textLength) === textLength ? 1 : batchSize(textLength);
 
-        console.log(
-          "======loaded texts documents.======",
-          texts,
-          "================"
-        ); // ! Debugging
+        // console.log(
+        //   "======loaded texts documents.======",
+        //   texts,
+        //   "================"
+        // ); // ! Debugging
 
-        console.log(typeof texts); // ! Debugging
+        // console.log(typeof texts); // ! Debugging
+
+        console.log(finalBatchSize); // ! Debugging
 
         // Specify the database and collection to use.
         // If the collection does not exist, it is created automatically.
@@ -78,20 +92,24 @@ export async function getVectorStore() {
             },
           },
         };
-        console.log(astraConfig); // ! Debugging
+        // console.log(astraConfig); // ! Debugging
 
         // Initialize the vector store.
         const vectorStore = await AstraDBVectorStore.fromDocuments(
           texts,
-          togetherAiEmbeddings,
+          new TogetherAIEmbeddings({
+            apiKey: TOGETHER_AI_API_KEY as string,
+            model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
+            batchSize: finalBatchSize,
+          }),
           astraConfig
         );
 
         console.log("Initialized vector store:", vectorStore); // ! Debugging
 
         // Generate embeddings from the documents and store them.
-        const stored_Docs = await vectorStore.addDocuments(texts);
-        console.log(stored_Docs); // ! Debugging
+        await vectorStore.addDocuments(texts);
+
         console.log("Documents added to vector store"); // ! Debugging
         return vectorStore;
       } catch (error) {
