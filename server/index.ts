@@ -7,6 +7,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth.route";
+import aiRoutes from "./routes/ai.route";
 import passport from "passport";
 
 dotenv.config();
@@ -42,6 +43,7 @@ app.use(passport.session());
 
 //routes setup
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
