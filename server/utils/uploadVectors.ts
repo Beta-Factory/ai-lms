@@ -1,12 +1,14 @@
-import { astraConfig, openAIApiKey } from "./keys";
+import { astraConfig } from "./keys";
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 
 export const uploadDocsToDatabase = async (splittedTextOutput: []) => {
   await AstraDBVectorStore.fromTexts(
     splittedTextOutput,
     [{ foo: "foo" }, { foo: "bar" }, { foo: "baz" }],
-    new OpenAIEmbeddings({ openAIApiKey }),
+    new TogetherAIEmbeddings({
+      model: "togethercomputer/m2-bert-80M-8k-retrieval",
+    }),
     astraConfig
   );
 };

@@ -11,7 +11,7 @@ export const pdfLoaderFunc = async (path: string) => {
 
 export const extractPfData = async () => {
   const docs = (await pdfLoaderFunc(
-    "./training-data/the_trade_marks_act,_1999.pdf"
+    "./training-data/The-Jungle-Books.pdf"
   )) as unknown as {
     pageContent: string;
   }[];
