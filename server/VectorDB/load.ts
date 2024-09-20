@@ -16,18 +16,8 @@ import { getAiEmbeddings } from "./EmbeddingAI";
 // import { DBchecker } from "../utils/DBchecker";
 import { astraConfig } from "./DBconfig";
 
-// const nike10kPdfPath = "../";
-
-// const loader = new PDFLoader(nike10kPdfPath);
 export let textLength: number = 0;
 const FILE_PATH = "./sample"; // Path to your document
-const TOGETHER_AI_API_KEY = process.env.TOGETHER_AI_API_KEY;
-
-// const togetherAiEmbeddings = new TogetherAIEmbeddings({
-//   apiKey: TOGETHER_AI_API_KEY as string,
-//   model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
-//   batchSize: 32, // the number of documents to process in a batch (more = less requests/minute)
-// });
 
 async function load_docs() {
   const files = fs.readdirSync(FILE_PATH);
@@ -54,11 +44,6 @@ async function load_docs() {
       throw new Error("File type not supported !.");
     }
 
-    // const loader = new DirectoryLoader(FILE_PATH, {
-    //   ".txt": (path) => new TextLoader(path),
-    //   ".pdf": (path) => new PDFLoader(path),
-    //   ".csv": (path) => new CSVLoader(path),
-    // });
     const docs = (await loader.load()) as unknown as { pageContent: string }[];
 
     const docsToStringArray = docs.map(
@@ -70,20 +55,16 @@ async function load_docs() {
       chunkOverlap: 1600,
     });
 
-    const texts = await splitter.splitDocuments(docs);
+    const texts = await splitter.createDocuments(docsToStringArray);
     // console.log(texts); // ! Debugging
     console.log("Loaded ", texts.length, " documents."); // ! Debugging
-
     textLength = texts.length;
-
     return texts;
   } catch (error) {
     console.error("Error loading documents:", error);
     throw error;
   }
 }
-
-// // Load documents and handle any errors
 
 export let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
 export async function getVectorStore() {
@@ -92,19 +73,9 @@ export async function getVectorStore() {
       try {
         const documents = await load_docs();
 
-        // batchsize calculation for rate limiting
-
-        // check if there is items in db
-
-        // const vectorStore = await AstraDBVectorStore.fromDocuments(
-        //   documents,
-        //   getAiEmbeddings(),
-        //   astraConfig
-        // );
-
         // ? ==============Initialize the vector store=====================.
         const vectorStore = await AstraDBVectorStore.fromExistingIndex(
-          getAiEmbeddings(),
+          getAiEmbeddings(textLength),
           astraConfig
         );
 
