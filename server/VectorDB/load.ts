@@ -59,10 +59,14 @@ async function load_docs() {
     //   ".pdf": (path) => new PDFLoader(path),
     //   ".csv": (path) => new CSVLoader(path),
     // });
-    const docs = await loader.load();
+    const docs = (await loader.load()) as unknown as { pageContent: string }[];
 
+    const docsToStringArray = docs.map(
+      (doc: { pageContent: string }) => doc.pageContent
+    );
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: 10000,
+      separators: ["\n\n", "\n", " ", ""],
       chunkOverlap: 1600,
     });
 
