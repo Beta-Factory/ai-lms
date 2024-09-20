@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
+import { deleteCollection } from "./VectorDB/MemoryDeletion";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.get("/", (req, res) => {
   res.send("Hello, this is the server!");
 });
 
+app.get("/memory-wipe", deleteCollection);
+
 // AI Chat route
 app.post("/ai-chat", AIChat);
 
@@ -32,6 +35,7 @@ const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// todo : add document deletion from sample folder logic here
 process.on("SIGTERM", () => {
   console.warn("Server is closing...");
   server.close(() => {

@@ -8,6 +8,7 @@ export const LANGCHAIN_ENDPOINT = process.env.LANGCHAIN_ENDPOINT as string;
 export const LANGCHAIN_API_KEY = process.env.LANGCHAIN_API_KEY as string;
 export const LANGCHAIN_PROJECT = process.env.LANGCHAIN_PROJECT as string;
 
+export const ASTRA_DB_ID = process.env.ASTRA_DB_ID as string;
 export const ASTRA_DB_API_ENDPOINT = process.env
   .ASTRA_DB_API_ENDPOINT as string;
 export const ASTRA_DB_APPLICATION_TOKEN = process.env

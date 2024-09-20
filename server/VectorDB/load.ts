@@ -34,6 +34,10 @@ async function load_docs() {
   let loader;
 
   try {
+    if (files.length === 0) {
+      return null;
+    }
+
     if (files.some((file) => file.endsWith(".txt"))) {
       loader = new DirectoryLoader(FILE_PATH, {
         ".txt": (path) => new TextLoader(path),
@@ -95,11 +99,12 @@ export async function getVectorStore() {
         // );
 
         // ? ==============Initialize the vector store=====================.
-        const vectorStore = await AstraDBVectorStore.fromDocuments(
-          documents,
+        const vectorStore = await AstraDBVectorStore.fromExistingIndex(
           getAiEmbeddings(),
           astraConfig
         );
+
+        await vectorStore.addDocuments(documents ? documents : []);
         console.log("====== added to db ======");
 
         return vectorStore;
