@@ -1,12 +1,7 @@
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-// import { OpenAIEmbeddings } from "@langchain/openai";
-import {
-  AstraDBVectorStore,
-  AstraLibArgs,
-} from "@langchain/community/vectorstores/astradb";
-// import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
+import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import dotenv from "dotenv";
 dotenv.config();
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
@@ -15,34 +10,42 @@ import * as fs from "fs";
 import { getAiEmbeddings } from "./EmbeddingAI";
 // import { DBchecker } from "../utils/DBchecker";
 import { astraConfig } from "./DBconfig";
+import { defaultChunkOverlap, defaultChunkSize } from "./keys";
 
+// ? ==============Load the documents=====================.
 export let textLength: number = 0;
-const FILE_PATH = "./sample"; // Path to your document
+const FILE_PATH = "./sample"; // ! take note of the relative path
+
+type LoaderFunction = (path: string) => any;
+interface LoadersMap {
+  [key: string]: LoaderFunction;
+}
 
 async function load_docs() {
   const files = fs.readdirSync(FILE_PATH);
   let loader;
+  let loadersMap: LoadersMap = {};
 
   try {
     if (files.length === 0) {
       return null;
     }
 
-    if (files.some((file) => file.endsWith(".txt"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".txt": (path) => new TextLoader(path),
-      });
-    } else if (files.some((file) => file.endsWith(".pdf"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".pdf": (path) => new PDFLoader(path),
-      });
-    } else if (files.some((file) => file.endsWith(".csv"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".csv": (path) => new CSVLoader(path),
-      });
-    } else {
-      throw new Error("File type not supported !.");
+    //loader map for all file types
+    files.forEach((file) => {
+      if (file.endsWith(".txt")) {
+        loadersMap[".txt"] = (path) => new TextLoader(path);
+      } else if (file.endsWith(".pdf")) {
+        loadersMap[".pdf"] = (path) => new PDFLoader(path);
+      } else if (file.endsWith(".csv")) {
+        loadersMap[".csv"] = (path) => new CSVLoader(path);
+      }
+    });
+
+    if (Object.keys(loadersMap).length === 0) {
+      throw new Error("No supported file types found!");
     }
+    loader = new DirectoryLoader(FILE_PATH, loadersMap);
 
     const docs = (await loader.load()) as unknown as { pageContent: string }[];
 
@@ -50,9 +53,9 @@ async function load_docs() {
       (doc: { pageContent: string }) => doc.pageContent
     );
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 10000,
+      chunkSize: defaultChunkSize,
       separators: ["\n\n", "\n", " ", ""],
-      chunkOverlap: 1600,
+      chunkOverlap: defaultChunkOverlap,
     });
 
     const texts = await splitter.createDocuments(docsToStringArray);
@@ -72,6 +75,9 @@ export async function getVectorStore() {
     vectorStorePromise = (async () => {
       try {
         const documents = await load_docs();
+        if (!documents || documents.length === 0) {
+          console.warn("No documents to process....");
+        }
 
         // ? ==============Initialize the vector store=====================.
         const vectorStore = await AstraDBVectorStore.fromExistingIndex(

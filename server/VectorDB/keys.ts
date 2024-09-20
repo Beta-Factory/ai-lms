@@ -16,3 +16,14 @@ export const ASTRA_DB_APPLICATION_TOKEN = process.env
 export const ASTRA_DB_NAMESPACE = process.env.ASTRA_DB_NAMESPACE as string;
 export const ASTRA_DB_COLLECTION =
   process.env.ASTRA_DB_COLLECTION || ("vector_store" as string);
+
+// ================= values =================
+
+export const defaultBatchSize = 512;
+export const defaultChunkSize = 10000;
+export const defaultChunkOverlap = 1600;
+export const defaultDimension = 768;
+export const defaultMetric = "cosine";
+export const defaultMaxDocs = 25600;
+export const defaultRequestLimit = 50;
+export const defaultPremiumRequestLimit = 80085; // ? Premium request limit to be seen later

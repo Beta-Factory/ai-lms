@@ -1,5 +1,6 @@
 // import express from "express";
 import express, { Request, Response, NextFunction } from "express";
+import { FileCleaner } from "./utils/FileCleaner";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
@@ -19,7 +20,7 @@ app.get("/", (req, res) => {
   res.send("Hello, this is the server!");
 });
 
-app.get("/memory-wipe", deleteCollection);
+app.delete("/memory-wipe", deleteCollection);
 
 // AI Chat route
 app.post("/ai-chat", AIChat);
@@ -31,20 +32,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
 // todo : add document deletion from sample folder logic here
-process.on("SIGTERM", () => {
-  console.warn("Server is closing...");
-  server.close(() => {
-    console.warn("Server closed");
-  });
-});
-process.on("SIGINT", () => {
-  console.warn("Server is closing...");
-  server.close(() => {
-    console.warn("Server closed");
-  });
-});
+
+// Initialize the FileCleaner
+FileCleaner.init();
