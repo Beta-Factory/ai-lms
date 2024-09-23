@@ -19,12 +19,15 @@ import { formatDocumentsAsString } from "langchain/util/document";
 
 import { getVectorStore } from "../VectorDB/load";
 
+import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
+import { FileCleaner } from "../utils/FileCleaner";
+
 dotenv.config();
 
 export const AIChat = async (req: Request, res: Response) => {
   try {
     // ? query the vector store
-    const vectorStore = await getVectorStore();
+    const vectorStore = (await getVectorStore()) as AstraDBVectorStore;
 
     const vectorStoreRetriever = vectorStore.asRetriever();
 

@@ -36,7 +36,5 @@ export const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// todo : add document deletion from sample folder logic here
-
 // Initialize the FileCleaner
-FileCleaner.init();
+// FileCleaner.init();
