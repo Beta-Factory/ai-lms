@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
-import { StoreToDB } from "./VectorDB/StoreToDB";
+
 dotenv.config();
 
 const app = express();
@@ -18,8 +18,7 @@ app.get("/", (req, res) => {
   res.send("Hello, this is the server!");
 });
 
-// AI Chat route (in this order)
-app.get("/load-data", StoreToDB);
+// AI Chat route
 app.post("/ai-chat", AIChat);
 
 // Error handling middleware
@@ -29,8 +28,21 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+process.on("SIGTERM", () => {
+  console.warn("Server is closing...");
+  server.close(() => {
+    console.warn("Server closed");
+  });
+});
+process.on("SIGINT", () => {
+  console.warn("Server is closing...");
+  server.close(() => {
+    console.warn("Server closed");
+  });
 });
 
 

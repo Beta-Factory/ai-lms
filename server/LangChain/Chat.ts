@@ -16,18 +16,19 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
-import { vectorStoreValues } from "../VectorDB/StoreToDB";
+
+import { getVectorStore } from "../VectorDB/load";
 
 dotenv.config();
 
 export const AIChat = async (req: Request, res: Response) => {
   try {
     // ? query the vector store
-    // const vectorStore = await getVectorStore();
-    const vectorStore = vectorStoreValues!; // mind the bang operator
+    const vectorStore = await getVectorStore();
+
     const vectorStoreRetriever = vectorStore.asRetriever();
 
-    console.log("======vectorStoreRetriever======", vectorStoreRetriever); // ! Debugging
+    // console.log("======vectorStoreRetriever======", vectorStoreRetriever); // ! Debugging
 
     // ------ AI Chat ------
     type Body = {
