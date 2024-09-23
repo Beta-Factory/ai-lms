@@ -1,12 +1,7 @@
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-// import { OpenAIEmbeddings } from "@langchain/openai";
-import {
-  AstraDBVectorStore,
-  AstraLibArgs,
-} from "@langchain/community/vectorstores/astradb";
-// import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
+import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import dotenv from "dotenv";
 dotenv.config();
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
@@ -15,59 +10,58 @@ import * as fs from "fs";
 import { getAiEmbeddings } from "./EmbeddingAI";
 // import { DBchecker } from "../utils/DBchecker";
 import { astraConfig } from "./DBconfig";
+import { defaultChunkOverlap, defaultChunkSize } from "./keys";
 
-// const nike10kPdfPath = "../";
-
-// const loader = new PDFLoader(nike10kPdfPath);
+// ? ==============Load the documents=====================.
 export let textLength: number = 0;
-const FILE_PATH = "./sample"; // Path to your document
-const TOGETHER_AI_API_KEY = process.env.TOGETHER_AI_API_KEY;
+const FILE_PATH = "./sample"; // ! take note of the relative path
 
-// const togetherAiEmbeddings = new TogetherAIEmbeddings({
-//   apiKey: TOGETHER_AI_API_KEY as string,
-//   model: "togethercomputer/m2-bert-80M-8k-retrieval", // larger token size
-//   batchSize: 32, // the number of documents to process in a batch (more = less requests/minute)
-// });
+type LoaderFunction = (path: string) => any;
+interface LoadersMap {
+  [key: string]: LoaderFunction;
+}
 
 async function load_docs() {
   const files = fs.readdirSync(FILE_PATH);
   let loader;
+  let loadersMap: LoadersMap = {};
 
   try {
-    if (files.some((file) => file.endsWith(".txt"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".txt": (path) => new TextLoader(path),
-      });
-    } else if (files.some((file) => file.endsWith(".pdf"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".pdf": (path) => new PDFLoader(path),
-      });
-    } else if (files.some((file) => file.endsWith(".csv"))) {
-      loader = new DirectoryLoader(FILE_PATH, {
-        ".csv": (path) => new CSVLoader(path),
-      });
-    } else {
-      throw new Error("File type not supported !.");
+    if (files.length === 0) {
+      return null;
     }
 
-    // const loader = new DirectoryLoader(FILE_PATH, {
-    //   ".txt": (path) => new TextLoader(path),
-    //   ".pdf": (path) => new PDFLoader(path),
-    //   ".csv": (path) => new CSVLoader(path),
-    // });
-    const docs = await loader.load();
-
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 10000,
-      chunkOverlap: 1600,
+    //loader map for all file types
+    files.forEach((file) => {
+      if (file.endsWith(".txt")) {
+        loadersMap[".txt"] = (path) => new TextLoader(path);
+      } else if (file.endsWith(".pdf")) {
+        loadersMap[".pdf"] = (path) => new PDFLoader(path);
+      } else if (file.endsWith(".csv")) {
+        loadersMap[".csv"] = (path) => new CSVLoader(path);
+      }
     });
 
-    const texts = await splitter.splitDocuments(docs);
+    if (Object.keys(loadersMap).length === 0) {
+      throw new Error("No supported file types found!");
+    }
+    loader = new DirectoryLoader(FILE_PATH, loadersMap);
+
+    const docs = (await loader.load()) as unknown as { pageContent: string }[];
+
+    const docsToStringArray = docs.map(
+      (doc: { pageContent: string }) => doc.pageContent
+    );
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: defaultChunkSize,
+      separators: ["\n\n", "\n", " ", ""],
+      chunkOverlap: defaultChunkOverlap,
+    });
+
+    const texts = await splitter.createDocuments(docsToStringArray);
     // console.log(texts); // ! Debugging
     console.log("Loaded ", texts.length, " documents."); // ! Debugging
-
     textLength = texts.length;
-
     return texts;
   } catch (error) {
     console.error("Error loading documents:", error);
@@ -75,31 +69,23 @@ async function load_docs() {
   }
 }
 
-// // Load documents and handle any errors
-
 export let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
 export async function getVectorStore() {
   if (!vectorStorePromise) {
     vectorStorePromise = (async () => {
       try {
         const documents = await load_docs();
-
-        // batchsize calculation for rate limiting
-
-        // check if there is items in db
-
-        // const vectorStore = await AstraDBVectorStore.fromDocuments(
-        //   documents,
-        //   getAiEmbeddings(),
-        //   astraConfig
-        // );
+        if (!documents || documents.length === 0) {
+          console.warn("No documents to process....");
+        }
 
         // ? ==============Initialize the vector store=====================.
-        const vectorStore = await AstraDBVectorStore.fromDocuments(
-          documents,
-          getAiEmbeddings(),
+        const vectorStore = await AstraDBVectorStore.fromExistingIndex(
+          getAiEmbeddings(textLength),
           astraConfig
         );
+
+        await vectorStore.addDocuments(documents ? documents : []);
         console.log("====== added to db ======");
 
         return vectorStore;
