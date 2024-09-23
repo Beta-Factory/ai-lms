@@ -4,7 +4,7 @@ import { FileCleaner } from "./utils/FileCleaner";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { AIChat } from "./LangChain/Chat";
-import { deleteCollection } from "./VectorDB/MemoryDeletion";
+import { deleteCollection } from "./utils/MemoryDeletion";
 
 dotenv.config();
 

@@ -1,8 +1,4 @@
-import {
-  defaultBatchSize,
-  defaultMaxDocs,
-  defaultRequestLimit,
-} from "../VectorDB/keys";
+import { defaultBatchSize, defaultMaxDocs, defaultRequestLimit } from "./keys";
 
 const batchSize = (Length: number) => {
   if (Length > defaultMaxDocs) {

@@ -17,10 +17,9 @@ import {
 } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
 
-import { getVectorStore } from "../VectorDB/load";
-
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import { FileCleaner } from "../utils/FileCleaner";
+import { getVectorStore } from "../utils/load";
 
 dotenv.config();
 

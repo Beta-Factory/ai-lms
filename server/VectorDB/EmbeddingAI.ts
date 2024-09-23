@@ -1,6 +1,7 @@
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
-import { TOGETHER_AI_API_KEY } from "./keys";
+
 import { getCalculatedBatchSize } from "../utils/BatchSizeCalc";
+import { TOGETHER_AI_API_KEY } from "../utils/keys";
 
 // taking the length of the text from load.ts
 
