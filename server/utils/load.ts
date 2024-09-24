@@ -5,12 +5,14 @@ import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import dotenv from "dotenv";
 dotenv.config();
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+// import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import * as fs from "fs";
 import { getAiEmbeddings } from "../VectorDB/EmbeddingAI";
 // import { DBchecker } from "../utils/DBchecker";
 import { astraConfig } from "../VectorDB/DBconfig";
 import { defaultChunkOverlap, defaultChunkSize } from "./keys";
+import { json } from "express";
 
 // ? ==============Load the documents=====================.
 export let textLength: number = 0;
@@ -22,7 +24,8 @@ interface LoadersMap {
 }
 
 async function load_docs() {
-  const files = fs.readdirSync(FILE_PATH);
+  const files = fs.readdirSync(FILE_PATH) as string[];
+  console.log(files); // ! Debugging
   let loader;
   let loadersMap: LoadersMap = {};
 
@@ -41,6 +44,7 @@ async function load_docs() {
         loadersMap[".csv"] = (path) => new CSVLoader(path);
       }
     });
+    console.log("Loading : ", loadersMap); // ! Debugging
 
     if (Object.keys(loadersMap).length === 0) {
       throw new Error("No supported file types found!");

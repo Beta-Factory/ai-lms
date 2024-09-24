@@ -1,10 +1,10 @@
 // Specify the database and collection to use.
 
 import {
-  AstraDBVectorStore,
+  // AstraDBVectorStore,
   AstraLibArgs,
 } from "@langchain/community/vectorstores/astradb";
-import { getAiEmbeddings } from "./EmbeddingAI";
+// import { getAiEmbeddings } from "./EmbeddingAI";
 import { defaultDimension, defaultMetric } from "../utils/keys";
 
 // If the collection does not exist, it is created automatically.

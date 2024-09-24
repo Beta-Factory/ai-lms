@@ -33,7 +33,7 @@ app.use(
       maxAge: 60000 * 60,
     },
     store: MongoStore.create({
-      client: mongoose.connection.getClient(),
+      client: mongoose.connection.getClient() as any, // ! annotated as any cz it was giving weird type error
     }),
   })
 );
