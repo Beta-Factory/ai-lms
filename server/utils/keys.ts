@@ -17,8 +17,30 @@ export const ASTRA_DB_NAMESPACE = process.env.ASTRA_DB_NAMESPACE as string;
 export const ASTRA_DB_COLLECTION =
   process.env.ASTRA_DB_COLLECTION || ("vector_store" as string);
 
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
+
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
+
+export const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL as string;
+
+export const PORT = process.env.PORT || 5000;
+
+export const SESSION_SECRET = process.env.SESSION_SECRET as string;
+
+export const COOKIE_SECRET = process.env.COOKIE_SECRET as string;
+
+export const MONGODB_URI = process.env.MONGODB_URI as string;
+
+export const SUPABASE_PROJECT_URL = process.env.SUPABASE_PROJECT_URL as string;
+
+export const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY as string;
+
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY as string;
+
 // ================= values =================
 
+export const defaultAIembeddingModel =
+  "togethercomputer/m2-bert-80M-32k-retrieval";
 export const defaultBatchSize = 512;
 export const defaultChunkSize = 10000;
 export const defaultChunkOverlap = 1600;

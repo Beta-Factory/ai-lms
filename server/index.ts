@@ -1,40 +1,50 @@
-// import express from "express";
-import express, { Request, Response, NextFunction } from "express";
-import { FileCleaner } from "./utils/FileCleaner";
-import bodyParser from "body-parser";
+import express from "express";
 import dotenv from "dotenv";
-import { AIChat } from "./LangChain/Chat";
-import { deleteCollection } from "./utils/MemoryDeletion";
+import morgan from "morgan";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
+import authRoutes from "./routes/auth.routes";
+import aiRoutes from "./routes/ai.routes";
+import passport from "passport";
+import { PORT, SESSION_SECRET } from "./utils/keys";
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//MongoDb setup
+mongoose
+  .connect(process.env.MONGO_URI as string)
+  .then(() => console.log("Connected to Database"))
+  .catch((err) => console.log(`Error: ${err}`));
 
-// Basic route
-app.get("/", (req, res) => {
-  res.send("Hello, this is the server!");
-});
+//middlewares setup
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    saveUninitialized: true,
+    resave: false,
+    cookie: {
+      maxAge: 60000 * 60,
+    },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+    }),
+  })
+);
+app.use(cors());
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.delete("/memory-wipe", deleteCollection);
+//routes setup
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
-// AI Chat route
-app.post("/ai-chat", AIChat);
-
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
-
-// Start server
 export const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
-
-// Initialize the FileCleaner
-// FileCleaner.init();

@@ -7,14 +7,14 @@ dotenv.config();
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import * as fs from "fs";
-import { getAiEmbeddings } from "./EmbeddingAI";
+import { getAiEmbeddings } from "../VectorDB/EmbeddingAI";
 // import { DBchecker } from "../utils/DBchecker";
-import { astraConfig } from "./DBconfig";
+import { astraConfig } from "../VectorDB/DBconfig";
 import { defaultChunkOverlap, defaultChunkSize } from "./keys";
 
 // ? ==============Load the documents=====================.
 export let textLength: number = 0;
-const FILE_PATH = "./sample"; // ! take note of the relative path
+const FILE_PATH = "./training-data"; // ! take note of the relative path
 
 type LoaderFunction = (path: string) => any;
 interface LoadersMap {

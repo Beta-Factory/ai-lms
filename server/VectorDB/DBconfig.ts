@@ -5,6 +5,7 @@ import {
   AstraLibArgs,
 } from "@langchain/community/vectorstores/astradb";
 import { getAiEmbeddings } from "./EmbeddingAI";
+import { defaultDimension, defaultMetric } from "../utils/keys";
 
 // If the collection does not exist, it is created automatically.
 export const astraConfig: AstraLibArgs = {
@@ -14,8 +15,8 @@ export const astraConfig: AstraLibArgs = {
   collection: (process.env.ASTRA_DB_COLLECTION as string) || "vector_store",
   collectionOptions: {
     vector: {
-      dimension: 768, // not 1536
-      metric: "cosine",
+      dimension: defaultDimension, // not 1536
+      metric: defaultMetric,
     },
   },
 };
