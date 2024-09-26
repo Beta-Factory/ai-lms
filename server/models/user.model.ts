@@ -18,6 +18,11 @@ const UserSchema = new mongoose.Schema(
       type: mongoString,
       required: false,
     },
+    userName: {
+      type: mongoString,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,

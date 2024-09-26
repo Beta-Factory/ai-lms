@@ -6,6 +6,8 @@ import {
   ASTRA_DB_NAMESPACE,
 } from "./keys";
 import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { fileName } from "./load";
 
 // Function to delete the collection
 export const deleteCollection = async (req: Request, res: Response) => {
@@ -16,14 +18,27 @@ export const deleteCollection = async (req: Request, res: Response) => {
       namespace: ASTRA_DB_NAMESPACE as string,
     });
 
-    const del = await db.dropCollection(ASTRA_DB_COLLECTION as string);
+    // Get all collections
+    const collections = await db.listCollections();
 
-    console.log("Collection deleted successfully:", del);
-    res.json({ message: "Collection deleted successfully" });
+    // Drop each collection
+    for (const collection of collections) {
+      await db.collection(collection.name).drop();
+      console.log(`Dropped collection: ${collection.name}`);
+    }
+
+    console.warn("Collection deleted successfully");
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "Collection deleted successfully" });
   } catch (error) {
     console.error(
       "Error deleting collection:",
       error ? error : "An unknown error occurred"
     );
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Error deleting collection",
+      error,
+    });
   }
 };

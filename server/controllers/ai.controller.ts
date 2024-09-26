@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { getVectorStore } from "../utils/load";
+
 import express, { Application, Request, Response, NextFunction } from "express";
 // import dotenv from "dotenv";
 // dotenv.config();
@@ -16,6 +16,7 @@ import {
 } from "@langchain/core/runnables";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
+import { getVectorStore } from "../VectorDB/VectorStore";
 // import { FileCleaner } from "../utils/FileCleaner";
 
 export const trainDocs = async (req: Request, res: Response) => {

@@ -5,4 +5,5 @@ export type userType = {
   email?: mongoStringType;
   displayName?: mongoStringType;
   password?: mongoStringType;
+  userName?: mongoStringType;
 };

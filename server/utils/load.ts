@@ -1,29 +1,27 @@
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import dotenv from "dotenv";
 dotenv.config();
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 // import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import * as fs from "fs";
-import { getAiEmbeddings } from "../VectorDB/EmbeddingAI";
-// import { DBchecker } from "../utils/DBchecker";
-import { astraConfig } from "../VectorDB/DBconfig";
 import { defaultChunkOverlap, defaultChunkSize } from "./keys";
-import { json } from "express";
+import { getInitials, shortenString } from "./fileNameMaker";
 
-// ? ==============Load the documents=====================.
+// ? ============== variables =====================.
 export let textLength: number = 0;
 const FILE_PATH = "./training-data"; // ! take note of the relative path
+export let fileName: string = "default_vector_store";
 
+// ? ==============types=====================.
 type LoaderFunction = (path: string) => any;
 interface LoadersMap {
   [key: string]: LoaderFunction;
 }
 
-async function load_docs() {
+export async function load_docs() {
   const files = fs.readdirSync(FILE_PATH) as string[];
   console.log(files); // ! Debugging
   let loader;
@@ -36,15 +34,36 @@ async function load_docs() {
 
     //loader map for all file types
     files.forEach((file) => {
+      const filePath = `${FILE_PATH}/${file}`;
+      const stats = fs.statSync(filePath);
+      const fileEditTime = stats.mtime
+        .toISOString()
+        .replace(/[^a-zA-Z0-9_]/g, "_");
+
+      let fileInitialsPlusTime =
+        getInitials(file.replace(/\.[^/.]+$/, "")) + fileEditTime;
+
+      fileInitialsPlusTime = shortenString(fileInitialsPlusTime, 47);
+
       if (file.endsWith(".txt")) {
+        fileName = `${fileInitialsPlusTime}_TXT`;
         loadersMap[".txt"] = (path) => new TextLoader(path);
       } else if (file.endsWith(".pdf")) {
+        fileName = `${fileInitialsPlusTime}_PDF`;
         loadersMap[".pdf"] = (path) => new PDFLoader(path);
       } else if (file.endsWith(".csv")) {
+        fileName = `${fileInitialsPlusTime}_CSV`;
         loadersMap[".csv"] = (path) => new CSVLoader(path);
       }
     });
     console.log("Loading : ", loadersMap); // ! Debugging
+
+    // Sanitize the fileName to match the required pattern
+    const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9_]/g, "_");
+    if (!/^[a-zA-Z]/.test(sanitizedFileName)) {
+      throw new Error("Sanitized file name must start with a letter.");
+    }
+    fileName = sanitizedFileName;
 
     if (Object.keys(loadersMap).length === 0) {
       throw new Error("No supported file types found!");
@@ -65,39 +84,16 @@ async function load_docs() {
     const texts = await splitter.createDocuments(docsToStringArray);
     // console.log(texts); // ! Debugging
     console.log("Loaded ", texts.length, " documents."); // ! Debugging
+
+    console.log("fileName : ", fileName); // ! Debugging
     textLength = texts.length;
     return texts;
-  } catch (error) {
-    console.error("Error loading documents:", error);
+  } catch (error: Error | any) {
+    console.error("Error loading documents:", error.message);
     throw error;
   }
 }
 
-export let vectorStorePromise: Promise<AstraDBVectorStore> | null = null;
-export async function getVectorStore() {
-  if (!vectorStorePromise) {
-    vectorStorePromise = (async () => {
-      try {
-        const documents = await load_docs();
-        if (!documents || documents.length === 0) {
-          console.warn("No documents to process....");
-        }
-
-        // ? ==============Initialize the vector store=====================.
-        const vectorStore = await AstraDBVectorStore.fromExistingIndex(
-          getAiEmbeddings(textLength),
-          astraConfig
-        );
-
-        await vectorStore.addDocuments(documents ? documents : []);
-        console.log("====== added to db ======");
-
-        return vectorStore;
-      } catch (error) {
-        console.error("Error initializing vector store:", error);
-        throw error;
-      }
-    })();
-  }
-  return vectorStorePromise;
-}
+load_docs().catch((error) => {
+  console.error("Error loading documents:", error.message);
+});
