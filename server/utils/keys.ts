@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { ChatOpenAI } from "@langchain/openai";
 import { AstraLibArgs } from "@langchain/community/vectorstores/astradb";
 import dotenv from "dotenv";
+import { TogetherAI } from "@langchain/community/llms/togetherai";
 
 dotenv.config();
 
@@ -22,3 +23,7 @@ export const astraConfig: AstraLibArgs = {
   },
 };
 export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
+export const togetherLlm = new TogetherAI({
+  model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+  maxTokens: 256,
+});

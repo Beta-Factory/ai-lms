@@ -3,7 +3,7 @@ import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 
 export const uploadDocsToDatabase = async (splittedTextOutput: []) => {
-  await AstraDBVectorStore.fromTexts(
+  const vectorStore = await AstraDBVectorStore.fromTexts(
     splittedTextOutput,
     [{ foo: "foo" }, { foo: "bar" }, { foo: "baz" }],
     new TogetherAIEmbeddings({
@@ -11,4 +11,6 @@ export const uploadDocsToDatabase = async (splittedTextOutput: []) => {
     }),
     astraConfig
   );
+  const retriever = vectorStore.asRetriever();
+  return retriever;
 };

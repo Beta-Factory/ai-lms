@@ -27,6 +27,7 @@ export const extractPfData = async () => {
   const outputArray = splittedTextOutput.map(
     (doc: { pageContent: string }) => doc.pageContent
   );
-  await uploadDocsToDatabase(outputArray as unknown as []);
+  const retriever = await uploadDocsToDatabase(outputArray as unknown as []);
   console.log("data successfully uploaded");
+  return retriever;
 };
