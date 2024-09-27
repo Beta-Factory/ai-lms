@@ -13,7 +13,9 @@ import { getInitials, shortenString } from "./fileNameMaker";
 // ? ============== variables =====================.
 export let textLength: number = 0;
 const FILE_PATH = "./training-data"; // ! take note of the relative path
-export let fileName: string = "default_vector_store";
+export let VectoreStoreFileName: string = "default_vector_store";
+
+let userName = "default"; // ! replace with hashed username from mongodb
 
 // ? ==============types=====================.
 type LoaderFunction = (path: string) => any;
@@ -46,24 +48,27 @@ export async function load_docs() {
       fileInitialsPlusTime = shortenString(fileInitialsPlusTime, 47);
 
       if (file.endsWith(".txt")) {
-        fileName = `${fileInitialsPlusTime}_TXT`;
+        VectoreStoreFileName = `${fileInitialsPlusTime}_TXT`;
         loadersMap[".txt"] = (path) => new TextLoader(path);
       } else if (file.endsWith(".pdf")) {
-        fileName = `${fileInitialsPlusTime}_PDF`;
+        VectoreStoreFileName = `${fileInitialsPlusTime}_PDF`;
         loadersMap[".pdf"] = (path) => new PDFLoader(path);
       } else if (file.endsWith(".csv")) {
-        fileName = `${fileInitialsPlusTime}_CSV`;
+        VectoreStoreFileName = `${fileInitialsPlusTime}_CSV`;
         loadersMap[".csv"] = (path) => new CSVLoader(path);
       }
     });
     console.log("Loading : ", loadersMap); // ! Debugging
 
     // Sanitize the fileName to match the required pattern
-    const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9_]/g, "_");
+    const sanitizedFileName = VectoreStoreFileName.replace(
+      /[^a-zA-Z0-9_]/g,
+      "x"
+    );
     if (!/^[a-zA-Z]/.test(sanitizedFileName)) {
       throw new Error("Sanitized file name must start with a letter.");
     }
-    fileName = sanitizedFileName;
+    VectoreStoreFileName = sanitizedFileName;
 
     if (Object.keys(loadersMap).length === 0) {
       throw new Error("No supported file types found!");
@@ -85,7 +90,7 @@ export async function load_docs() {
     // console.log(texts); // ! Debugging
     console.log("Loaded ", texts.length, " documents."); // ! Debugging
 
-    console.log("fileName : ", fileName); // ! Debugging
+    console.log("fileName : ", VectoreStoreFileName); // ! Debugging
     textLength = texts.length;
     return texts;
   } catch (error: Error | any) {

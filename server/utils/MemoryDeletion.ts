@@ -7,7 +7,7 @@ import {
 } from "./keys";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { fileName } from "./load";
+import { VectoreStoreFileName } from "./load";
 
 // Function to delete the collection
 export const deleteCollection = async (req: Request, res: Response) => {

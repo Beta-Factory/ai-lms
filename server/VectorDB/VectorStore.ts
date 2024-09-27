@@ -1,5 +1,5 @@
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
-import { fileName, load_docs, textLength } from "../utils/load";
+import { VectoreStoreFileName, load_docs, textLength } from "../utils/load";
 import {
   ASTRA_DB_API_ENDPOINT,
   ASTRA_DB_APPLICATION_TOKEN,
@@ -28,14 +28,16 @@ export async function getVectorStore() {
         const collections = await db.listCollections();
         console.warn(
           "Collections : ",
-          collections.find((c) => c.name === fileName) ? fileName : "not found"
+          collections.find((c) => c.name === VectoreStoreFileName)
+            ? VectoreStoreFileName
+            : "not found"
         );
 
         // ? ==============Initialize the vector store=====================
         // todo : add namespace logic
         const vectorStore = await AstraDBVectorStore.fromExistingIndex(
           getAiEmbeddings(textLength),
-          setAstraConfig(fileName) // ! fileName is the collection name and namespace will be username(to be implemented)
+          setAstraConfig(VectoreStoreFileName) // ! collection name should be unique (include username)
         );
 
         if (

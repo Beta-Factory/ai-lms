@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+
 import { userType } from "../types/userTypes";
 import { User } from "../models/user.model";
 
@@ -31,3 +32,14 @@ export const deserializeUser = async (
     done(err, null);
   }
 };
+
+// ! to be run only first time when user is created
+export async function hashName(userName: string) {
+  const saltRounds = 6;
+  try {
+    const hash = await bcrypt.hash(userName, saltRounds);
+    return hash.substring(0, 5);
+  } catch (error) {
+    console.error("Error hashing user-Name:", error);
+  }
+}
