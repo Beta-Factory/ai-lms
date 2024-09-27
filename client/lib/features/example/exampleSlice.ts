@@ -16,23 +16,17 @@ export const exampleSlice = createSlice({
   name: "example",
   initialState,
 
-  reducers: {},
-
-  extraReducers: (builder) => {
-    // builder.addCase(exampleThunk.pending, (state) => {
-    //     state.status = 'loading';
-    //     state.value = 1;
-    // })
-    // builder.addCase(exampleThunk.fullfilled, (state) => {
-    //     state.status = 'idle';
-    //     state.value = 0;
-    // })
-    // builder.addCase(exampleThunk.rejected, (state) => {
-    //     state.status = 'failed';
-    //     state.value = 0;
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action: PayloadAction<number>) => {
+      state.value += action.payload;
+    },
   },
-
-  // }
 });
 
 export const selectExample = (state: RootState) => state.example.value;
