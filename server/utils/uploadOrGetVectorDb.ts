@@ -14,3 +14,14 @@ export const uploadDocsToDatabase = async (splittedTextOutput: []) => {
   const retriever = vectorStore.asRetriever();
   return retriever;
 };
+
+export const obtainRetrieverOfExistingVectorDb = async () => {
+  const vectorStore = await AstraDBVectorStore.fromExistingIndex(
+    new TogetherAIEmbeddings({
+      model: "togethercomputer/m2-bert-80M-8k-retrieval",
+    }),
+    astraConfig
+  );
+  const retriever = vectorStore.asRetriever();
+  return retriever;
+};

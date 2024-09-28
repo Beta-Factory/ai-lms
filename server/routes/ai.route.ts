@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { ChatwithPdf } from "../controllers/ai.controller";
+import { chatWIthAIAgent, ChatwithPdf } from "../controllers/ai.controller";
+import upload from "../middlewares/multerConfig";
 
 const router = Router();
 
-router.post("/train", ChatwithPdf);
+router.post("/train", upload.single("file"), ChatwithPdf);
+router.post("/chat", upload.none(), chatWIthAIAgent);
 
 export default router;

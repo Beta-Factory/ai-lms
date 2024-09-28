@@ -1,6 +1,6 @@
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { uploadDocsToDatabase } from "./uploadVectors";
+import { uploadDocsToDatabase } from "./uploadOrGetVectorDb";
 
 export const pdfLoaderFunc = async (path: string) => {
   const nike10kPdfPath = `${path}`;
