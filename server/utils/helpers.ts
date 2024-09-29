@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { userType } from "../types/userTypes";
 import { User } from "../models/user.model";
+import { Request } from "express";
 
 const saltRounds = 10;
 
@@ -31,3 +32,11 @@ export const deserializeUser = async (
     done(err, null);
   }
 };
+
+export interface CustomRequest extends Request {
+  user?: userType;
+  file?: Express.Multer.File;
+  files?:
+    | Express.Multer.File[]
+    | { [fieldname: string]: Express.Multer.File[] };
+}
