@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 // Function to get initials from filename
 export const getInitials = (name: string) => {
   return name
@@ -13,3 +15,14 @@ export const shortenString = (str: string, maxLength: number) => {
   }
   return str;
 };
+
+// ! to be run only first time when user is created
+export async function hashName(userName: string) {
+  const saltRounds = 6;
+  try {
+    const hash = await bcrypt.hash(userName, saltRounds);
+    return hash.substring(0, 5);
+  } catch (error) {
+    console.error("Error hashing user-Name:", error);
+  }
+}

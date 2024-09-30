@@ -68,7 +68,7 @@ export async function load_docs() {
     if (!/^[a-zA-Z]/.test(sanitizedFileName)) {
       throw new Error("Sanitized file name must start with a letter.");
     }
-    VectoreStoreFileName = sanitizedFileName;
+    VectoreStoreFileName = sanitizedFileName; // + username-Hash; // ! replace with hashed username from mongodb
 
     if (Object.keys(loadersMap).length === 0) {
       throw new Error("No supported file types found!");
@@ -80,6 +80,7 @@ export async function load_docs() {
     const docsToStringArray = docs.map(
       (doc: { pageContent: string }) => doc.pageContent
     );
+
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: defaultChunkSize,
       separators: ["\n\n", "\n", " ", ""],
