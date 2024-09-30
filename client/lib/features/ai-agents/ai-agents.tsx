@@ -1,6 +1,7 @@
 // ? ============ component ============
 import React from "react";
 import { useGetAgentsQuery } from "./ai-agents-api";
+import { AgentType } from "@/types/AI-Agents";
 
 const AgentsList = () => {
   const { data: agents, isError, isLoading } = useGetAgentsQuery({});
@@ -12,10 +13,10 @@ const AgentsList = () => {
     <div>
       <h1>Agents</h1>
       <ul>
-        {agents?.map((agent: any) => (
+        {agents?.map((agent: AgentType) => (
           <li key={agent.id}>
-            <h2>{agent.name}</h2>
-            <p>{agent.body}</p>
+            <h2>{agent.agentName}</h2>
+            <p>{agent.description}</p>
           </li>
         ))}
       </ul>
