@@ -26,11 +26,13 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.658.1",
     "@datastax/astra-db-ts": "^1.4.1",
     "@langchain/community": "^0.3.1",
     "@langchain/core": "^0.3.2",
     "@langchain/openai": "^0.3.0",
     "@supabase/supabase-js": "^2.45.4",
+    "aws-sdk": "^2.1691.0",
     "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",

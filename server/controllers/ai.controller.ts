@@ -1,14 +1,13 @@
-import fs from "fs";
-import { promisify } from "util";
+import fs from "fs/promises";
 import { Request, Response } from "express";
-import { CustomRequest } from "../utils/helpers";
+import { cleanupFiles, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
 import { chatWithAI } from "../utils/chatWithAi";
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
-
-const unlinkAsync = promisify(fs.unlink);
+import { s3Client } from "../utils/awsS3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export const creatAgent = async (req: CustomRequest, res: Response) => {
   try {
@@ -18,7 +17,9 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       user,
     } = req;
 
-    let agentPic, trainFiles;
+    let agentPic, trainFiles: any;
+    let agentPicUrl = "";
+    let trainingFilesUrls: string[] = [];
 
     if (files && !(files instanceof Array)) {
       agentPic = files["agentPic"]?.[0];
@@ -37,56 +38,70 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       creatorId: user?._id,
     });
     if (doesAgentExist) {
-      await Promise.all(
-        filepathsArray.map(async (filePath) => {
-          try {
-            await unlinkAsync(filePath);
-            console.log(`File ${filePath} deleted successfully.`);
-          } catch (err) {
-            console.error(`Error deleting file ${filePath}:`, err);
-          }
-        })
-      );
-
-      if (agentPic) {
-        await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);
-      }
+      await cleanupFiles(filepathsArray, agentPic);
+      console.log("outside cleaning");
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "failed",
         error: "Agent with this name already exists. Pick something else!",
       });
     }
 
-    await extractMultiFileData(filepathsArray, uniqueAgentName);
+    const bucketName = process.env.AWS_BUCKETNAME || "";
 
-    await Promise.all(
-      filepathsArray.map(async (filePath) => {
-        try {
-          await unlinkAsync(filePath);
-          console.log(`File ${filePath} deleted successfully.`);
-        } catch (err) {
-          console.error(`Error deleting file ${filePath}:`, err);
-        }
-      })
-    );
+    const uploadPromises = [];
+
+    if (filepathsArray.length > 0) {
+      uploadPromises.push(
+        ...filepathsArray.map(async (filePath, index) => {
+          const fileContent = await fs.readFile(filePath);
+          const fileName = `training-files/${trainFiles[index].filename}`;
+          const params = {
+            Bucket: bucketName,
+            Key: fileName,
+            Body: fileContent,
+          };
+          await s3Client.send(new PutObjectCommand(params));
+          const fileUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+          trainingFilesUrls.push(fileUrl);
+        })
+      );
+    }
 
     if (agentPic) {
-      await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);
+      const agentPicContent = await fs.readFile(
+        `${agentPic.destination}${agentPic.filename}`
+      );
+      const agentPicName = `app-data/${agentPic.filename}`;
+      const params = {
+        Bucket: bucketName,
+        Key: agentPicName,
+        Body: agentPicContent,
+      };
+      uploadPromises.push(s3Client.send(new PutObjectCommand(params)));
+      agentPicUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${agentPicName}`;
     }
+
+    await Promise.all(uploadPromises);
+
+    await extractMultiFileData(filepathsArray, uniqueAgentName);
 
     await Agent.create({
       creatorId: user?._id,
       context,
       description,
       agentName: uniqueAgentName,
+      agentPic: agentPicUrl,
+      trainingFiles: trainingFilesUrls,
     });
+
+    await cleanupFiles(filepathsArray, agentPic);
 
     return res.status(StatusCodes.CREATED).json({
       message: "success",
     });
   } catch (error) {
-    console.log("error", error);
-    return res.status(StatusCodes.OK).json({
+    console.error("Error during agent creation:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: "failed",
       error,
     });

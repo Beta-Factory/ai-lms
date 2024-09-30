@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
+import fs from "fs";
 import { userType } from "../types/userTypes";
 import { User } from "../models/user.model";
 import { Request } from "express";
+import { promisify } from "util";
+
+export const unlinkAsync = promisify(fs.unlink);
 
 const saltRounds = 10;
 
@@ -30,6 +34,23 @@ export const deserializeUser = async (
     done(null, findUser);
   } catch (err) {
     done(err, null);
+  }
+};
+
+export const cleanupFiles = async (filepathsArray: string[], agentPic: any) => {
+  try {
+    await Promise.all(
+      filepathsArray.map(async (filePath) => {
+        await unlinkAsync(filePath);
+        console.log(`File ${filePath} deleted successfully.`);
+      })
+    );
+
+    if (agentPic) {
+      await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);
+    }
+  } catch (err) {
+    console.error("Error deleting local files:", err);
   }
 };
 
