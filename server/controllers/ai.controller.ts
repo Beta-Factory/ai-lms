@@ -130,14 +130,11 @@ export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
 export const EditAIAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
-      body: { agentName, description, context },
+      body: { description, context },
       files,
       user,
       params: { agentId },
     } = req;
-
-    const emailUsername = (user?.email as unknown as string).split("@")[0];
-    const uniqueAgentName = `${agentName}_${emailUsername}`;
 
     let agentPic, agentPicUrl;
 
@@ -186,7 +183,6 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
 
     await Promise.all(uploadPromises);
 
-    foundAgent.agentName = uniqueAgentName;
     foundAgent.context = context;
     foundAgent.description = description;
     foundAgent.agentPic = agentPicUrl;
@@ -212,10 +208,9 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
 export const chatWIthAIAgent = async (req: Request, res: Response) => {
   try {
     const {
-      body: { text, agentName },
+      body: { text },
       params: { agentId },
     } = req;
-    const collectionName = agentName.split("_")[0];
     const foundAgent = await Agent.findById(agentId);
     if (!foundAgent) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -223,6 +218,7 @@ export const chatWIthAIAgent = async (req: Request, res: Response) => {
         error: "No agent with the provided name has been found",
       });
     }
+    const collectionName = foundAgent.agentName;
     const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
     const aiResponse = await chatWithAI(text, retriever, foundAgent.context);
     return res.status(StatusCodes.OK).json({

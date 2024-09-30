@@ -1,4 +1,4 @@
-import { astraConfig, getAstraConfig } from "./keys";
+import { getAstraConfig } from "./keys";
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
 
