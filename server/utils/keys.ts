@@ -11,6 +11,20 @@ export const sbUrl = process.env.SUPABASE_PROJECT_URL as string;
 export const openAIApiKey = process.env.OPENAI_API_KEY as string;
 export const sbClient = createClient(sbUrl, sbApiKey);
 export const llm = new ChatOpenAI({ openAIApiKey });
+export const getAstraConfig = (collectionName: string) => {
+  const astraConfig: AstraLibArgs = {
+    token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
+    endpoint: process.env.ASTRA_DB_ENDPOINT as string,
+    collection: collectionName,
+    collectionOptions: {
+      vector: {
+        dimension: process.env.MODEL_DIMENSIONS as unknown as number,
+        metric: "cosine",
+      },
+    },
+  };
+  return astraConfig;
+};
 export const astraConfig: AstraLibArgs = {
   token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
   endpoint: process.env.ASTRA_DB_ENDPOINT as string,

@@ -9,7 +9,7 @@ export const pdfLoaderFunc = async (path: string) => {
   return docs;
 };
 
-export const extractPfData = async () => {
+export const extractPfData = async (collectionName: string) => {
   const docs = (await pdfLoaderFunc(
     "./training-data/The-Jungle-Books.pdf"
   )) as unknown as {
@@ -27,7 +27,10 @@ export const extractPfData = async () => {
   const outputArray = splittedTextOutput.map(
     (doc: { pageContent: string }) => doc.pageContent
   );
-  const retriever = await uploadDocsToDatabase(outputArray as unknown as []);
+  const retriever = await uploadDocsToDatabase(
+    outputArray as unknown as [],
+    collectionName
+  );
   console.log("data successfully uploaded");
   return retriever;
 };

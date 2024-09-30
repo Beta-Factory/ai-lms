@@ -14,7 +14,8 @@ const combineDocs = (docs: any) => {
 
 export const chatWithAI = async (
   text: string,
-  retriever: VectorStoreRetriever<AstraDBVectorStore>
+  retriever: VectorStoreRetriever<AstraDBVectorStore>,
+  context: string
 ) => {
   const translationQuestionTemplate = `Translate the following question into English if it is in Japanese, otherwise correct its punctuation. 
   question : {question}
@@ -26,8 +27,7 @@ export const chatWithAI = async (
   compactedQuestion :
     `;
 
-  const answerTemplate = `You are an AI agent trained on the context provided. Answer based on the provided context.
-  If the context does not provide the answer, say "I don't have information about that."
+  const answerTemplate = `${context}
   context : {context}
   question : {transQuestion}
   answer :
