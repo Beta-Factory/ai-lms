@@ -108,6 +108,25 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
   }
 };
 
+export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
+  try {
+    const { user } = req;
+    const allUserAgents = await Agent.find({
+      creatorId: user?._id,
+    });
+    return res.status(StatusCodes.OK).json({
+      message: "success",
+      response: allUserAgents,
+    });
+  } catch (error) {
+    console.log("Error fetching All User agents", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "failed",
+      error,
+    });
+  }
+};
+
 export const chatWIthAIAgent = async (req: Request, res: Response) => {
   try {
     const { text, agentName } = req.body;

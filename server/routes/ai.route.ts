@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { chatWIthAIAgent, creatAgent } from "../controllers/ai.controller";
+import {
+  chatWIthAIAgent,
+  creatAgent,
+  getListOfAllAgents,
+} from "../controllers/ai.controller";
 import upload from "../middlewares/multerConfig";
 import { authCheckMiddleware } from "../middlewares/authCheck";
 
@@ -14,6 +18,7 @@ router.post(
   ]),
   creatAgent
 );
+router.get("/get-all-user-agents", authCheckMiddleware, getListOfAllAgents);
 router.post("/chat", upload.none(), chatWIthAIAgent);
 
 export default router;
