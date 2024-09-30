@@ -37,14 +37,19 @@ export const deserializeUser = async (
   }
 };
 
-export const cleanupFiles = async (filepathsArray: string[], agentPic: any) => {
+export const cleanupFiles = async (
+  filepathsArray?: string[],
+  agentPic?: any
+) => {
   try {
-    await Promise.all(
-      filepathsArray.map(async (filePath) => {
-        await unlinkAsync(filePath);
-        console.log(`File ${filePath} deleted successfully.`);
-      })
-    );
+    if (filepathsArray) {
+      await Promise.all(
+        filepathsArray.map(async (filePath) => {
+          await unlinkAsync(filePath);
+          console.log(`File ${filePath} deleted successfully.`);
+        })
+      );
+    }
 
     if (agentPic) {
       await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);

@@ -7,7 +7,9 @@ import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb"
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
 import { s3Client } from "../utils/awsS3";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+
+const bucketName = process.env.AWS_BUCKETNAME || "";
 
 export const creatAgent = async (req: CustomRequest, res: Response) => {
   try {
@@ -45,8 +47,6 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
         error: "Agent with this name already exists. Pick something else!",
       });
     }
-
-    const bucketName = process.env.AWS_BUCKETNAME || "";
 
     const uploadPromises = [];
 
@@ -127,20 +127,103 @@ export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
   }
 };
 
+export const EditAIAgent = async (req: CustomRequest, res: Response) => {
+  try {
+    const {
+      body: { agentName, description, context },
+      files,
+      user,
+      params: { agentId },
+    } = req;
+
+    const emailUsername = (user?.email as unknown as string).split("@")[0];
+    const uniqueAgentName = `${agentName}_${emailUsername}`;
+
+    let agentPic, agentPicUrl;
+
+    if (files && !(files instanceof Array)) {
+      agentPic = files["agentPic"]?.[0];
+    }
+
+    const foundAgent = await Agent.findByIdAndUpdate(agentId);
+    if (!foundAgent) {
+      await cleanupFiles(
+        agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+      );
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "failed",
+        error: "No agent with the provided name has been found",
+      });
+    }
+
+    const uploadPromises = [];
+
+    if (agentPic) {
+      const agentPicContent = await fs.readFile(
+        `${agentPic.destination}${agentPic.filename}`
+      );
+      const agentPicName = `app-data/${agentPic.filename}`;
+      const params = {
+        Bucket: bucketName,
+        Key: agentPicName,
+        Body: agentPicContent,
+      };
+      uploadPromises.push(s3Client.send(new PutObjectCommand(params)));
+      agentPicUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${agentPicName}`;
+
+      if (foundAgent && foundAgent.agentPic) {
+        const oldAgentPicKey = foundAgent.agentPic.split(".com/")[1];
+        const deleteParams = {
+          Bucket: bucketName,
+          Key: oldAgentPicKey,
+        };
+        await s3Client.send(new DeleteObjectCommand(deleteParams));
+        console.log(`Deleted previous agentPic from S3: ${oldAgentPicKey}`);
+      }
+    } else {
+      agentPicUrl = foundAgent?.agentPic || "";
+    }
+
+    await Promise.all(uploadPromises);
+
+    foundAgent.agentName = uniqueAgentName;
+    foundAgent.context = context;
+    foundAgent.description = description;
+    foundAgent.agentPic = agentPicUrl;
+    await foundAgent.save();
+
+    await cleanupFiles(
+      agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+    );
+
+    return res.status(StatusCodes.OK).json({
+      message: "success",
+      response: foundAgent,
+    });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(StatusCodes.OK).json({
+      message: "failed",
+      error,
+    });
+  }
+};
+
 export const chatWIthAIAgent = async (req: Request, res: Response) => {
   try {
-    const { text, agentName } = req.body;
-    const foundAgent = await Agent.findOne({
-      agentName,
-    });
+    const {
+      body: { text, agentName },
+      params: { agentId },
+    } = req;
+    const collectionName = agentName.split("_")[0];
+    const foundAgent = await Agent.findById(agentId);
     if (!foundAgent) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "failed",
         error: "No agent with the provided name has been found",
       });
     }
-    console.log("body", req.body);
-    const retriever = await obtainRetrieverOfExistingVectorDb(agentName);
+    const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
     const aiResponse = await chatWithAI(text, retriever, foundAgent.context);
     return res.status(StatusCodes.OK).json({
       message: "success",
