@@ -15,29 +15,36 @@ const combineDocs = (docs: any) => {
 export const chatWithAI = async (
   text: string,
   retriever: VectorStoreRetriever<AstraDBVectorStore>,
-  context: string
+  context: string,
+  prevChats: {
+    human?: string;
+    ai?: string;
+  }[]
 ) => {
-  const translationQuestionTemplate = `Translate the following question into English if it is in Japanese, otherwise correct its punctuation. 
+  const translationQuestionTemplate = `Given a conversation history (if any) and a question, translate the following question into English if it is in Japanese, otherwise correct its punctuation. 
   question : {question}
   translatedQuestion : 
-    `;
+  `;
 
   const compactQuestionTemplate = `Convert the following question into a compact format. 
   question : {translatedQuestion} 
   compactedQuestion :
-    `;
+  `;
 
   const answerTemplate = `${context}
+  You are a friendly AI agent who answers in a very polite and enthusiastic manner. Try to find the answer provided from the conversation history and if you still don't know the answer from the context provided just say "I don't have that information."
+  Answer accordingly to the context and question and conversation history (if any) as mentioned below. 
   context : {context}
+  conversation history : {convo_history}
   question : {transQuestion}
   answer :
   `;
 
-  const translatedAnswerTemplate = `Translate the answer in Japanese regardless of the language 
-language : {language}
-answer : {answer}
-translatedAnswer : 
-`;
+  const translatedAnswerTemplate = `Translate the answer into Japanese regardless of the language.
+  language : {language}
+  answer : {answer}
+  translatedAnswer : 
+  `;
 
   const translationChain = PromptTemplate.fromTemplate(
     translationQuestionTemplate
@@ -65,6 +72,17 @@ translatedAnswer :
     combineDocs,
   ]);
 
+  const formatConvoHistory = (chats: any) => {
+    return chats
+      .map(
+        (chat: any) =>
+          `Human: ${chat.human || "No message"}\nAI: ${
+            chat.ai || "No response"
+          }`
+      )
+      .join("\n\n");
+  };
+
   const chain = RunnableSequence.from([
     {
       translatedQuestion: translationChain,
@@ -77,6 +95,7 @@ translatedAnswer :
     {
       context: retrieverChain,
       transQuestion: ({ compactInput }) => compactInput?.translatedQuestion,
+      convo_history: ({ compactInput }) => formatConvoHistory(prevChats),
     },
     {
       language: ({ compactInput }) =>
@@ -88,6 +107,7 @@ translatedAnswer :
 
   const response = await chain.invoke({
     question: text,
+    convo_history: formatConvoHistory(prevChats),
   });
 
   return response;
