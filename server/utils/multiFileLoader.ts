@@ -38,9 +38,12 @@ export const extractMultiFileData = async (
     chunkOverlap: 50,
   });
   const splittedTextOutput = await splitter.createDocuments(docsToStringArray);
-  const outputArray = splittedTextOutput?.map(
-    (doc: { pageContent: string }) => doc.pageContent
+  //   const outputArray = splittedTextOutput?.map(
+  //     (doc: { pageContent: string }) => doc.pageContent
+  //   );
+  await uploadDocsToDatabase(
+    splittedTextOutput as unknown as [],
+    collectionName
   );
-  await uploadDocsToDatabase(outputArray as unknown as [], collectionName);
   console.log("data successfully uploaded");
 };
