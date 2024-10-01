@@ -8,6 +8,7 @@ import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
 import { s3Client } from "../utils/awsS3";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { Chat } from "../models/chat.model";
 
 const bucketName = process.env.AWS_BUCKETNAME || "";
 
@@ -41,7 +42,6 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
     });
     if (doesAgentExist) {
       await cleanupFiles(filepathsArray, agentPic);
-      console.log("outside cleaning");
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "failed",
         error: "Agent with this name already exists. Pick something else!",
@@ -114,9 +114,21 @@ export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
     const allUserAgents = await Agent.find({
       creatorId: user?._id,
     });
+    const cleanedUserAgents =
+      allUserAgents.length > 0
+        ? allUserAgents.map((agent) => {
+            return {
+              context: agent.context,
+              description: agent.description,
+              agentPic: agent.agentPic,
+              trainingFiles: agent.trainingFiles,
+              agentName: agent.agentName.split("_")[0],
+            };
+          })
+        : [];
     return res.status(StatusCodes.OK).json({
       message: "success",
-      response: allUserAgents,
+      response: cleanedUserAgents,
     });
   } catch (error) {
     console.log("Error fetching All User agents", error);
@@ -205,12 +217,22 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
   }
 };
 
-export const chatWIthAIAgent = async (req: Request, res: Response) => {
+export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
-      body: { text },
+      body: { userInput },
+      user,
       params: { agentId },
     } = req;
+    console.log("userInput", userInput);
+
+    if (!userInput) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "failed",
+        error: "no input from user",
+      });
+    }
+
     const foundAgent = await Agent.findById(agentId);
     if (!foundAgent) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -218,9 +240,36 @@ export const chatWIthAIAgent = async (req: Request, res: Response) => {
         error: "No agent with the provided name has been found",
       });
     }
+
+    const chatsByUserWithFoundAgent = await Chat.find({
+      userId: user?._id,
+      agentId: foundAgent._id,
+    });
+    const foundChats = chatsByUserWithFoundAgent
+      ? chatsByUserWithFoundAgent?.map((chat) => {
+          return {
+            human: chat.user || "",
+            ai: chat.system || "",
+          };
+        })
+      : [{ human: "", ai: "" }];
+
     const collectionName = foundAgent.agentName;
     const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
-    const aiResponse = await chatWithAI(text, retriever, foundAgent.context);
+    const aiResponse = await chatWithAI(
+      userInput,
+      retriever,
+      foundAgent.context,
+      foundChats
+    );
+
+    await Chat.create({
+      userId: user?._id,
+      agentId: foundAgent._id,
+      user: userInput,
+      system: aiResponse,
+    });
+
     return res.status(StatusCodes.OK).json({
       message: "success",
       response: aiResponse,
