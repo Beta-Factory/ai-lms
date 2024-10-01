@@ -5,7 +5,7 @@ import TopPage from "@/app/top-page/page";
 const RightSection = () => {
     return(
         <>
-        <div className="flex w-[75%] flex-row border border-green-500">
+        <div className="flex w-[75%] flex-row ">
          <TopPage/>
          {/* <CreateAgentPage/> */}
      </div>

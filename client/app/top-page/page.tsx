@@ -4,7 +4,7 @@ const TopPage = () => {
   return (
     <div className="w-[100%]">
       <div className="w-[100%]  flex justify-end mt-5">
-        <button className="bg-black px-3 rounded-2xl flex items-center gap-1 ">
+        <button className="w-[120px] bg-black px-3 rounded-2xl flex items-center gap-2 py-2 justify-center">
           <span>+</span> Create
         </button>
       </div>
@@ -12,14 +12,14 @@ const TopPage = () => {
       <div className="w-[100%] text-[30px] font-bold text-[#000000]  flex items-center justify-center">
         エージェントがいる
       </div>
-      <div className="w-[100%] sm:h-[200px] border lgtext-[] text-[#000000]  flex justify-center items-center text-center lg:px-[130px] mt-4">
+      <div className="w-[100%] sm:h-[200px]  lg:text-[20px] text-[#000000]  flex justify-center items-center text-center lg:px-[130px] ">
         Lorem ipsum dolor sit amet consectetur. Proin feugiat odio sollicitudin
         tellus nunc interdum ultricies etiam elit. Arcu egestas et sollicitudin
         lacinia odio ut. In ornare facilisis pellentesque egestas mi sit ut
         ultricies diam. Viverra id vitae ut purus sit.
       </div>
       {/* search */}
-      <div className="w-[100%]  mt-5 flex justify-center items-center">
+      <div className="w-[100%]   flex justify-center items-center">
         <div className=" border-none bg-[#F5F5F5] text-[#000000] flex justify-center items-center px-5 rounded-2xl gap-2">
           <svg
             className=""
@@ -45,12 +45,12 @@ const TopPage = () => {
         </div>
       </div>
 
-<div className="w-full flex justify-center items-center flex-wrap">
-      <div className=" flex lg:flex-row xs:flex-col justify-around  gap-5 w-full  mt-5 ">
-  <div className="lg:w-[400px] xs:w-full  flex justify-center items-center gap-3 border rounded-xl">
+<div className="w-full  ">
+      <div className=" grid grid-cols-2 justify-around  gap-5 w-full  mt-6 ">
+  <div className="lg:w-[500px] xs:w-full  flex justify-center items-center gap-3 border rounded-xl py-8 px-2">
     <div>
       <Image 
-        className="h-[60px] w-[60px] border text-[#000000] rounded-full" 
+        className="h-[70px] w-[70px] border text-[#000000] rounded-full" 
         src="" 
         alt="description of the image"
       />
@@ -63,10 +63,10 @@ const TopPage = () => {
     </div>
   </div>
 
-  <div className="w-[400px] flex justify-center items-center gap-3 border rounded-xl">
+  <div className="lg:w-[500px] flex justify-center items-center gap-3 border rounded-xl  py-6 px-2">
     <div>
       <Image 
-        className="h-[60px] w-[60px] border text-[#000000] rounded-full" 
+        className="h-[70px] w-[70px] border text-[#000000] rounded-full" 
         src="" 
         alt="description of the image"
       />
@@ -79,10 +79,10 @@ const TopPage = () => {
     </div>
   </div>
 
-  <div className="w-[400px] flex justify-center items-center gap-3 border rounded-xl">
+  <div className="lg:w-[500px] flex justify-center items-center gap-3 border rounded-xl  py-6 px-2">
     <div>
       <Image 
-        className="h-[60px] w-[60px] border text-[#000000] rounded-full" 
+        className="h-[70px] w-[70px] border text-[#000000] rounded-full" 
         src="" 
         alt="description of the image"
       />
