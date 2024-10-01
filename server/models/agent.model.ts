@@ -23,6 +23,12 @@ const AgentSchema = new mongoose.Schema(
       type: mongoString,
       required: false,
     },
+    trainingFiles: [
+      {
+        type: mongoString,
+        required: false,
+      },
+    ],
   },
   {
     timestamps: true,

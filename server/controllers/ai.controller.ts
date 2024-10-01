@@ -1,14 +1,15 @@
-import fs from "fs";
-import { promisify } from "util";
+import fs from "fs/promises";
 import { Request, Response } from "express";
-import { CustomRequest } from "../utils/helpers";
+import { cleanupFiles, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
 import { chatWithAI } from "../utils/chatWithAi";
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
+import { s3Client } from "../utils/awsS3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 
-const unlinkAsync = promisify(fs.unlink);
+const bucketName = process.env.AWS_BUCKETNAME || "";
 
 export const creatAgent = async (req: CustomRequest, res: Response) => {
   try {
@@ -18,7 +19,9 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       user,
     } = req;
 
-    let agentPic, trainFiles;
+    let agentPic, trainFiles: any;
+    let agentPicUrl = "";
+    let trainingFilesUrls: string[] = [];
 
     if (files && !(files instanceof Array)) {
       agentPic = files["agentPic"]?.[0];
@@ -37,52 +40,161 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       creatorId: user?._id,
     });
     if (doesAgentExist) {
-      await Promise.all(
-        filepathsArray.map(async (filePath) => {
-          try {
-            await unlinkAsync(filePath);
-            console.log(`File ${filePath} deleted successfully.`);
-          } catch (err) {
-            console.error(`Error deleting file ${filePath}:`, err);
-          }
-        })
-      );
-
-      if (agentPic) {
-        await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);
-      }
+      await cleanupFiles(filepathsArray, agentPic);
+      console.log("outside cleaning");
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "failed",
         error: "Agent with this name already exists. Pick something else!",
       });
     }
 
-    await extractMultiFileData(filepathsArray, uniqueAgentName);
+    const uploadPromises = [];
 
-    await Promise.all(
-      filepathsArray.map(async (filePath) => {
-        try {
-          await unlinkAsync(filePath);
-          console.log(`File ${filePath} deleted successfully.`);
-        } catch (err) {
-          console.error(`Error deleting file ${filePath}:`, err);
-        }
-      })
-    );
+    if (filepathsArray.length > 0) {
+      uploadPromises.push(
+        ...filepathsArray.map(async (filePath, index) => {
+          const fileContent = await fs.readFile(filePath);
+          const fileName = `training-files/${trainFiles[index].filename}`;
+          const params = {
+            Bucket: bucketName,
+            Key: fileName,
+            Body: fileContent,
+          };
+          await s3Client.send(new PutObjectCommand(params));
+          const fileUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+          trainingFilesUrls.push(fileUrl);
+        })
+      );
+    }
 
     if (agentPic) {
-      await unlinkAsync(`${agentPic.destination}${agentPic.filename}`);
+      const agentPicContent = await fs.readFile(
+        `${agentPic.destination}${agentPic.filename}`
+      );
+      const agentPicName = `app-data/${agentPic.filename}`;
+      const params = {
+        Bucket: bucketName,
+        Key: agentPicName,
+        Body: agentPicContent,
+      };
+      uploadPromises.push(s3Client.send(new PutObjectCommand(params)));
+      agentPicUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${agentPicName}`;
     }
+
+    await Promise.all(uploadPromises);
+
+    await extractMultiFileData(filepathsArray, uniqueAgentName);
 
     await Agent.create({
       creatorId: user?._id,
       context,
       description,
       agentName: uniqueAgentName,
+      agentPic: agentPicUrl,
+      trainingFiles: trainingFilesUrls,
     });
+
+    await cleanupFiles(filepathsArray, agentPic);
 
     return res.status(StatusCodes.CREATED).json({
       message: "success",
+    });
+  } catch (error) {
+    console.error("Error during agent creation:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "failed",
+      error,
+    });
+  }
+};
+
+export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
+  try {
+    const { user } = req;
+    const allUserAgents = await Agent.find({
+      creatorId: user?._id,
+    });
+    return res.status(StatusCodes.OK).json({
+      message: "success",
+      response: allUserAgents,
+    });
+  } catch (error) {
+    console.log("Error fetching All User agents", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "failed",
+      error,
+    });
+  }
+};
+
+export const EditAIAgent = async (req: CustomRequest, res: Response) => {
+  try {
+    const {
+      body: { description, context },
+      files,
+      user,
+      params: { agentId },
+    } = req;
+
+    let agentPic, agentPicUrl;
+
+    if (files && !(files instanceof Array)) {
+      agentPic = files["agentPic"]?.[0];
+    }
+
+    const foundAgent = await Agent.findByIdAndUpdate(agentId);
+    if (!foundAgent) {
+      await cleanupFiles(
+        agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+      );
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "failed",
+        error: "No agent with the provided name has been found",
+      });
+    }
+
+    const uploadPromises = [];
+
+    if (agentPic) {
+      const agentPicContent = await fs.readFile(
+        `${agentPic.destination}${agentPic.filename}`
+      );
+      const agentPicName = `app-data/${agentPic.filename}`;
+      const params = {
+        Bucket: bucketName,
+        Key: agentPicName,
+        Body: agentPicContent,
+      };
+      uploadPromises.push(s3Client.send(new PutObjectCommand(params)));
+      agentPicUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${agentPicName}`;
+
+      if (foundAgent && foundAgent.agentPic) {
+        const oldAgentPicKey = foundAgent.agentPic.split(".com/")[1];
+        const deleteParams = {
+          Bucket: bucketName,
+          Key: oldAgentPicKey,
+        };
+        await s3Client.send(new DeleteObjectCommand(deleteParams));
+        console.log(`Deleted previous agentPic from S3: ${oldAgentPicKey}`);
+      }
+    } else {
+      agentPicUrl = foundAgent?.agentPic || "";
+    }
+
+    await Promise.all(uploadPromises);
+
+    foundAgent.context = context;
+    foundAgent.description = description;
+    foundAgent.agentPic = agentPicUrl;
+    await foundAgent.save();
+
+    await cleanupFiles(
+      agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+    );
+
+    return res.status(StatusCodes.OK).json({
+      message: "success",
+      response: foundAgent,
     });
   } catch (error) {
     console.log("error", error);
@@ -95,18 +207,19 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
 
 export const chatWIthAIAgent = async (req: Request, res: Response) => {
   try {
-    const { text, agentName } = req.body;
-    const foundAgent = await Agent.findOne({
-      agentName,
-    });
+    const {
+      body: { text },
+      params: { agentId },
+    } = req;
+    const foundAgent = await Agent.findById(agentId);
     if (!foundAgent) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "failed",
         error: "No agent with the provided name has been found",
       });
     }
-    console.log("body", req.body);
-    const retriever = await obtainRetrieverOfExistingVectorDb(agentName);
+    const collectionName = foundAgent.agentName;
+    const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
     const aiResponse = await chatWithAI(text, retriever, foundAgent.context);
     return res.status(StatusCodes.OK).json({
       message: "success",

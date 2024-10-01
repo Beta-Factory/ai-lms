@@ -41,7 +41,6 @@ export const extractMultiFileData = async (
   const outputArray = splittedTextOutput?.map(
     (doc: { pageContent: string }) => doc.pageContent
   );
-  console.log(outputArray);
   await uploadDocsToDatabase(outputArray as unknown as [], collectionName);
   console.log("data successfully uploaded");
 };

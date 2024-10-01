@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { chatWIthAIAgent, creatAgent } from "../controllers/ai.controller";
+import {
+  chatWIthAIAgent,
+  creatAgent,
+  EditAIAgent,
+  getListOfAllAgents,
+} from "../controllers/ai.controller";
 import upload from "../middlewares/multerConfig";
 import { authCheckMiddleware } from "../middlewares/authCheck";
 
@@ -14,6 +19,12 @@ router.post(
   ]),
   creatAgent
 );
-router.post("/chat", upload.none(), chatWIthAIAgent);
+router.get("/get-all-user-agents", authCheckMiddleware, getListOfAllAgents);
+router.post("/chat/:agentId", authCheckMiddleware, chatWIthAIAgent);
+router.put(
+  "/edit-agent/:agentId",
+  upload.fields([{ name: "agentPic", maxCount: 1 }]),
+  EditAIAgent
+);
 
 export default router;
