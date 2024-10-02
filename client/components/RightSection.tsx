@@ -6,8 +6,8 @@ const RightSection = () => {
     return(
         <>
         <div className="flex w-[75%] flex-row ">
-         <TopPage/>
-         {/* <CreateAgentPage/> */}
+         {/* <TopPage/> */}
+         <CreateAgentPage/>
      </div>
         </>
     )

@@ -4,7 +4,9 @@ const TopPage = () => {
   return (
     <div className="w-[100%]">
       <div className="w-[100%]  flex justify-end mt-5">
-        <button className="w-[120px] bg-black px-3 rounded-2xl flex items-center gap-2 py-2 justify-center">
+        <button
+        // onClick={ }
+        className="w-[120px] bg-black px-3 rounded-2xl flex items-center gap-2 py-2 justify-center">
           <span>+</span> Create
         </button>
       </div>
@@ -46,7 +48,7 @@ const TopPage = () => {
       </div>
 
 <div className="w-full  ">
-      <div className=" grid grid-cols-2 justify-around  gap-5 w-full  mt-6 ">
+      <div className=" grid lg:grid-cols-2 justify-around  gap-5 w-full  mt-6 ">
   <div className="lg:w-[500px] xs:w-full  flex justify-center items-center gap-3 border rounded-xl py-8 px-2">
     <div>
       <Image 
