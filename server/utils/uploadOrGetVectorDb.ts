@@ -1,20 +1,39 @@
-import { getAstraConfig } from "./keys";
+import {
+  createMatchFunction,
+  createTable,
+  dropMatchFunction,
+  dropTable,
+  getAstraConfig,
+  getSupabaseVectorStore,
+  openAIApiKey,
+  sbClient,
+} from "./keys";
 import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { OpenAIEmbeddings } from "@langchain/openai";
 
 export const uploadDocsToDatabase = async (
   splittedTextOutput: [],
   collectionName: string
 ) => {
-  const astraConfig = getAstraConfig(collectionName);
-  const vectorStore = await AstraDBVectorStore.fromTexts(
+  await dropTable(collectionName);
+  await dropMatchFunction(collectionName);
+  await createTable(collectionName);
+  await createMatchFunction(collectionName);
+
+  const vectorStore = await SupabaseVectorStore.fromDocuments(
     splittedTextOutput,
-    [{ foo: "foo" }, { foo: "bar" }, { foo: "baz" }],
-    new TogetherAIEmbeddings({
-      model: "togethercomputer/m2-bert-80M-8k-retrieval",
-    }),
-    astraConfig
+    new OpenAIEmbeddings({ openAIApiKey }),
+    {
+      client: sbClient,
+      tableName: collectionName.toLocaleLowerCase(),
+      queryName: "match_dynamic",
+    }
   );
+
+  console.log("checkpoint 2");
+
   const retriever = vectorStore.asRetriever();
   return retriever;
 };
@@ -22,12 +41,8 @@ export const uploadDocsToDatabase = async (
 export const obtainRetrieverOfExistingVectorDb = async (
   collectionName: string
 ) => {
-  const astraConfig = getAstraConfig(collectionName);
-  const vectorStore = await AstraDBVectorStore.fromExistingIndex(
-    new TogetherAIEmbeddings({
-      model: "togethercomputer/m2-bert-80M-8k-retrieval",
-    }),
-    astraConfig
+  const vectorStore = getSupabaseVectorStore(
+    collectionName.toLocaleLowerCase()
   );
   const retriever = vectorStore.asRetriever();
   return retriever;

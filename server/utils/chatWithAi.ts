@@ -1,4 +1,3 @@
-import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { llm } from "./keys";
 import { VectorStoreRetriever } from "@langchain/core/vectorstores";
@@ -7,6 +6,7 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 
 const combineDocs = (docs: any) => {
   return docs.map((doc: any) => doc.pageContent).join("\n\n");
@@ -14,7 +14,7 @@ const combineDocs = (docs: any) => {
 
 export const chatWithAI = async (
   text: string,
-  retriever: VectorStoreRetriever<AstraDBVectorStore>,
+  retriever: VectorStoreRetriever<SupabaseVectorStore>,
   context: string,
   prevChats: {
     human?: string;
@@ -95,7 +95,9 @@ export const chatWithAI = async (
     {
       context: retrieverChain,
       transQuestion: ({ compactInput }) => compactInput?.translatedQuestion,
-      convo_history: ({ compactInput }) => formatConvoHistory(prevChats),
+      convo_history: () => {
+        return formatConvoHistory(prevChats);
+      },
     },
     {
       language: ({ compactInput }) =>
