@@ -8,6 +8,7 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       [agentsApi.reducerPath]: agentsApi.reducer,
+      agent: agentReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([agentsApi.middleware]),

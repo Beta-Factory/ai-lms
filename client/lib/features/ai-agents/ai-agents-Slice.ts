@@ -29,5 +29,7 @@ export const agentsSlice = createSlice({
   },
 });
 
+export const { increment, decrement, incrementByAmount } = agentsSlice.actions;
+
 export const selectAgents = (state: RootState) => state;
 export const agentReducer = agentsSlice.reducer;
