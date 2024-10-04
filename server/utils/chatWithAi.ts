@@ -33,7 +33,7 @@ export const chatWithAI = async (
   `;
 
   const answerTemplate = `${context}
-  You are a friendly AI agent who answers in a very polite and enthusiastic manner. Try to find the answer provided from the conversation history and if you still don't know the answer from the context provided just say "I don't have that information."
+  You are a friendly AI agent who answers in a very polite and enthusiastic manner. The user may ask you questions or talk to you without asking questions as well. In case no question is provided, give normal responses, and in case a question is provided, try to find the answer provided from the conversation history and if you still don't know the answer from the context provided just say "I don't have that information."
   Answer accordingly to the context, user instructions, question and conversation history (if any) and also introduce yourself as the name given to you if you haven't already in the conversation history as mentioned below. 
   your name : {agentName}
   context : {context}
@@ -43,13 +43,18 @@ export const chatWithAI = async (
   answer :
   `;
 
-  const translatedAnswerTemplate = `
-  Translate the answer into Japanese, but do not translate your own name ({agentName}), whether it appears in English or Japanese.
+  const languageDetectorTemplate = ` Detect the language of the question given below (English or Japanese).
+  question : {question}
+  language : 
+  `;
 
-  - If the answer contains your name, leave it as is and translate the rest of the answer into Japanese.
-  
+  const translatedAnswerTemplate = `
+  If the language mentioned below is Japanese, translate the answer into Japanese, but do not translate your own name ({agentName}), whether it appears in English or Japanese. 
+  If the language mentioned below is English, just output the answer as it is without any translation at all
+
   Your name: {agentName}
-  Answer: {answer}
+  Language: {language}
+  answer : {answer}
   Translated Answer: 
 `;
 
@@ -64,6 +69,12 @@ export const chatWithAI = async (
     .pipe(new StringOutputParser());
 
   const answerChain = PromptTemplate.fromTemplate(answerTemplate)
+    .pipe(llm)
+    .pipe(new StringOutputParser());
+
+  const languageDetectorChain = PromptTemplate.fromTemplate(
+    languageDetectorTemplate
+  )
     .pipe(llm)
     .pipe(new StringOutputParser());
 
@@ -111,9 +122,20 @@ export const chatWithAI = async (
       transQuestion: ({ compactInput }) => compactInput?.translatedQuestion,
     },
     {
-      agentName: ({ compactInput }) =>
-        compactInput?.originalQuestionLang?.agentName,
       answer: answerChain,
+      retrieverOutput: new RunnablePassthrough(),
+    },
+    {
+      question: () => text,
+      answerOutput: new RunnablePassthrough(),
+    },
+    {
+      agentName: ({ answerOutput }) => {
+        console.log("detection", answerOutput);
+        return answerOutput?.retrieverOutput?.agentName;
+      },
+      language: languageDetectorChain,
+      answer: ({ answerOutput }) => answerOutput?.answer,
     },
     translatedAnswerChain,
   ]);
