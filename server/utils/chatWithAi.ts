@@ -14,6 +14,7 @@ const combineDocs = (docs: any) => {
 
 export const chatWithAI = async (
   text: string,
+  agentName: string,
   retriever: VectorStoreRetriever<SupabaseVectorStore>,
   context: string,
   prevChats: {
@@ -33,18 +34,24 @@ export const chatWithAI = async (
 
   const answerTemplate = `${context}
   You are a friendly AI agent who answers in a very polite and enthusiastic manner. Try to find the answer provided from the conversation history and if you still don't know the answer from the context provided just say "I don't have that information."
-  Answer accordingly to the context and question and conversation history (if any) as mentioned below. 
+  Answer accordingly to the context, user instructions, question and conversation history (if any) and also introduce yourself as the name given to you if you haven't already in the conversation history as mentioned below. 
+  your name : {agentName}
   context : {context}
+  user instructions : {userInstructions}
   conversation history : {convo_history}
   question : {transQuestion}
   answer :
   `;
 
-  const translatedAnswerTemplate = `Translate the answer into Japanese regardless of the language.
-  language : {language}
-  answer : {answer}
-  translatedAnswer : 
-  `;
+  const translatedAnswerTemplate = `
+  Translate the answer into Japanese, but do not translate your own name ({agentName}), whether it appears in English or Japanese.
+
+  - If the answer contains your name, leave it as is and translate the rest of the answer into Japanese.
+  
+  Your name: {agentName}
+  Answer: {answer}
+  Translated Answer: 
+`;
 
   const translationChain = PromptTemplate.fromTemplate(
     translationQuestionTemplate
@@ -93,15 +100,19 @@ export const chatWithAI = async (
       compactInput: new RunnablePassthrough(),
     },
     {
+      agentName: ({ compactInput }) =>
+        compactInput?.originalQuestionLang?.agentName,
       context: retrieverChain,
-      transQuestion: ({ compactInput }) => compactInput?.translatedQuestion,
+      userInstructions: ({ compactInput }) =>
+        compactInput?.originalQuestionLang?.userInstructions,
       convo_history: () => {
         return formatConvoHistory(prevChats);
       },
+      transQuestion: ({ compactInput }) => compactInput?.translatedQuestion,
     },
     {
-      language: ({ compactInput }) =>
-        compactInput?.originalQuestionLang?.question,
+      agentName: ({ compactInput }) =>
+        compactInput?.originalQuestionLang?.agentName,
       answer: answerChain,
     },
     translatedAnswerChain,
@@ -109,7 +120,9 @@ export const chatWithAI = async (
 
   const response = await chain.invoke({
     question: text,
+    userInstructions: context,
     convo_history: formatConvoHistory(prevChats),
+    agentName,
   });
 
   return response;

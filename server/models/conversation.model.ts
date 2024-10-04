@@ -1,19 +1,28 @@
 import mongoose from "mongoose";
 import { mongoId, mongoString } from "../types/mongooseTypes";
 
-const ChatSchema = new mongoose.Schema(
+const ConversationSchema = new mongoose.Schema(
   {
     agentId: {
-      type: mongoId,
+      type: mongoString,
       ref: "Agent",
       required: true,
+    },
+    chatId: {
+      type: mongoId,
+      ref: "Chat",
+      required: false,
     },
     userId: {
       type: mongoId,
       ref: "User",
       required: true,
     },
-    chatName: {
+    user: {
+      type: mongoString,
+      required: false,
+    },
+    system: {
       type: mongoString,
       required: false,
     },
@@ -23,4 +32,4 @@ const ChatSchema = new mongoose.Schema(
   }
 );
 
-export const Chat = mongoose.model("Chat", ChatSchema);
+export const Conversation = mongoose.model("Conversation", ConversationSchema);

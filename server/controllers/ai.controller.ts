@@ -9,6 +9,9 @@ import { Agent } from "../models/agent.model";
 import { s3Client } from "../utils/awsS3";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Chat } from "../models/chat.model";
+import { generateChatName } from "../utils/generateChatName";
+import { Conversation } from "../models/conversation.model";
+import { mongoIdType } from "../types/mongooseTypes";
 
 const bucketName = process.env.AWS_BUCKETNAME || "";
 
@@ -222,7 +225,7 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
     const {
       body: { userInput },
       user,
-      params: { agentId },
+      params: { agentId, chatId },
     } = req;
     console.log("userInput", userInput);
 
@@ -241,34 +244,69 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
       });
     }
 
-    const chatsByUserWithFoundAgent = await Chat.find({
-      userId: user?._id,
-      agentId: foundAgent._id,
-    });
-    const foundChats = chatsByUserWithFoundAgent
-      ? chatsByUserWithFoundAgent?.map((chat) => {
-          return {
-            human: chat.user || "",
-            ai: chat.system || "",
-          };
-        })
-      : [{ human: "", ai: "" }];
+    let chatsByUserWithFoundAgent: {
+      _id?: mongoIdType;
+      user: string;
+      system: string;
+    }[] = [];
+
+    if (chatId) {
+      chatsByUserWithFoundAgent = await Conversation.find({
+        chatId,
+      })
+        .select("user")
+        .select("system");
+    } else {
+      chatsByUserWithFoundAgent = [];
+    }
+
+    const foundChats =
+      chatsByUserWithFoundAgent && chatsByUserWithFoundAgent.length > 0
+        ? chatsByUserWithFoundAgent?.map(
+            (convo: { user: string; system: string }) => {
+              return {
+                human: convo.user || "",
+                ai: convo.system || "",
+              };
+            }
+          )
+        : [{ human: "", ai: "" }];
 
     const collectionName = foundAgent.agentName;
     const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
     const aiResponse = await chatWithAI(
       userInput,
+      foundAgent.agentName.split("_")[0],
       retriever,
       foundAgent.context,
       foundChats
     );
 
-    await Chat.create({
-      userId: user?._id,
-      agentId: foundAgent._id,
-      user: userInput,
-      system: aiResponse,
-    });
+    if (!chatId) {
+      const chatName = await generateChatName(userInput, aiResponse);
+
+      const chat = await Chat.create({
+        userId: user?._id,
+        agentId: foundAgent._id,
+        chatName,
+      });
+
+      await Conversation.create({
+        userId: user?._id,
+        agentId: foundAgent._id,
+        chatId: chat?._id,
+        user: userInput,
+        system: aiResponse,
+      });
+    } else {
+      await Conversation.create({
+        userId: user?._id,
+        agentId: foundAgent._id,
+        chatId,
+        user: userInput,
+        system: aiResponse,
+      });
+    }
 
     return res.status(StatusCodes.OK).json({
       message: "success",
