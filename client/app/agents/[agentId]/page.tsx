@@ -1,7 +1,14 @@
-import React from "react";
+import ChatUI from "@/components/ChatUI";
+import { SideBarMain } from "@/components/SideBar";
 
-const AgentChat = () => {
-  return <div className="text-4xl text-black">hi this is agent-chat </div>;
+const ChatUIPage = () => {
+  return (
+    <>
+      <div className="flex flex-row gap-10">
+        <SideBarMain />
+        <ChatUI />
+      </div>
+    </>
+  );
 };
-
-export default AgentChat;
+export default ChatUIPage;

@@ -1,15 +1,22 @@
+"use client"
+
 // import { Sidebar } from "lucide-react";
 import { Button } from "./button";
 import Hamburger from "./Hamburger";
+import { useRouter } from  "next/navigation";; 
 
 const AgentsTopPage = () => {
+  const router = useRouter();
+
   return (
     <div className="w-[100%]">
       <div className="hidden max-md:flex w-[100%] justify-start mt-5">
         <Hamburger />
       </div>
       <div className="w-[100%]  flex justify-end mt-5">
-        <Button className="bg-black px-3 rounded-2xl flex items-center gap-1 ">
+        <Button
+        onClick={() => router.push ("/create-agent")}
+        className="bg-black px-3 rounded-2xl flex items-center gap-1 ">
           <span>+ Create</span>
         </Button>
       </div>

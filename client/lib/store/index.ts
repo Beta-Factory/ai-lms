@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import { agentReducer } from "../features/ai-agents/ai-agents-Slice";
 import { agentsApi } from "../features/ai-agents/ai-agents-api";
+import { chatReducer } from "../features/ai-agents/ai-chat";
 
 export const makeStore = () => {
   // store variable is a global variable
@@ -9,6 +10,7 @@ export const makeStore = () => {
     reducer: {
       [agentsApi.reducerPath]: agentsApi.reducer,
       agent: agentReducer,
+      chat: chatReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([agentsApi.middleware]),
