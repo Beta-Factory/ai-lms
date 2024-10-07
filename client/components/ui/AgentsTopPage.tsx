@@ -1,10 +1,6 @@
 // import { Sidebar } from "lucide-react";
-import { StaticImageData } from "next/image";
-import AgentCard from "./AgentCard";
 import { Button } from "./button";
 import Hamburger from "./Hamburger";
-
-import Imageone from "@/app/assets/image.png";
 
 const AgentsTopPage = () => {
   return (
@@ -50,28 +46,6 @@ const AgentsTopPage = () => {
             type="text"
             placeholder="Search all agents"
             className=" border-none bg-[#F5F5F5] text-[#000000] outline-none  text-[15px]   py-2 "
-          />
-        </div>
-      </div>
-
-      {/* agent cards  will use map here over list of agents*/}
-      <div className="w-full flex justify-center items-center flex-wrap">
-        <div className=" flex lg:flex-row xs:flex-col justify-evenly  gap-5 w-full mt-10">
-          <AgentCard
-            name={`parwez`}
-            description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                `}
-            imageUrl={Imageone as StaticImageData}
-          />
-          <AgentCard
-            name={`parwez`}
-            description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                `}
-            imageUrl={Imageone as StaticImageData}
           />
         </div>
       </div>
