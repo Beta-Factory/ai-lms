@@ -276,6 +276,7 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
     const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
     const aiResponse = await chatWithAI(
       userInput,
+      foundAgent.agentName.split("_")[0],
       retriever,
       foundAgent.context,
       foundChats

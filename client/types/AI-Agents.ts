@@ -5,4 +5,5 @@ export interface AgentType {
   description: string;
   agentName: string;
   agentPic: string;
+  trainingFiles: string[];
 }

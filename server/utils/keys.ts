@@ -73,6 +73,7 @@ export const astraConfig: AstraLibArgs = {
   },
 };
 export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
+
 export const togetherLlm = new TogetherAI({
   model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
   maxTokens: 256,
