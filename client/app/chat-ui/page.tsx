@@ -1,11 +1,11 @@
 import ChatUI from "@/components/ChatUI";
-import SideBarSection from "@/components/SidebarSection";
+import { SideBarMain } from "@/components/SideBar";
 
 const ChatUIPage = () => {
   return (
     <>
       <div className="flex flex-row gap-10">
-        <SideBarSection />
+      <SideBarMain />
         <ChatUI />
       </div>
     </>
