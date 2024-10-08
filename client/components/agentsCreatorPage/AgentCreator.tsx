@@ -1,6 +1,6 @@
 import React from "react";
-import PdfFile from "./ui/PdfFileDesign";
-import AudioFIle from "./ui/AudioFileDesign";
+import PdfFile from "../ui/PdfFileDesign";
+import AudioFIle from "../ui/AudioFileDesign";
 
 const AgentCreator = () => {
   return (

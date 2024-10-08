@@ -1,6 +1,5 @@
-import AgentCreator from "@/components/AgentCreator";
-import { SideBarMain } from "@/components/SideBar";
-import SideBarSection from "@/components/SidebarSection";
+import AgentCreator from "@/components/agentsCreatorPage/AgentCreator";
+import { SideBarMain } from "@/components/sideBar/SideBarMain";
 
 const CreateAgentPage = () => {
   return (

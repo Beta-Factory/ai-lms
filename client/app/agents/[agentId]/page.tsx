@@ -1,5 +1,5 @@
-import ChatUI from "@/components/ChatUI";
-import { SideBarMain } from "@/components/SideBar";
+import ChatUI from "@/components/chatScreen/ChatUI";
+import { SideBarMain } from "@/components/sideBar/SideBarMain";
 
 const ChatUIPage = () => {
   return (

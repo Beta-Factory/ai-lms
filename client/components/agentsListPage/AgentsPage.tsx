@@ -2,16 +2,12 @@
 
 import CreateAgentPage from "@/app/create-agent/page";
 import AgentsList from "@/lib/features/ai-agents/ai-agents";
-import AgentsTopPage from "./ui/AgentsTopPage";
-import AgentCard from "./ui/AgentCard";
+import AgentsTopPage from "../ui/AgentsTopPage";
+import AgentCard from "../ui/AgentCard";
 import { StaticImageData } from "next/image";
 import Imageone from "@/app/assets/nature.jpg";
 
-import { useGetUsersQuery } from "@/lib/features/ai-agents/ai-agents-api";
-
 const AgentsPage = () => {
-  const { data, error, isLoading } = useGetUsersQuery();
-
   return (
     <>
       <div className="flex w-[75%] flex-col border border-green-500">

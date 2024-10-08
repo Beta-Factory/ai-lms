@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import Chat from "./ui/Chat";
-import AskQuestions from "./ui/AskQuestions";
+import Chat from "../ui/Chat";
+import AskQuestions from "../ui/AskQuestions";
 
 const ChatUI = () => {
   return (

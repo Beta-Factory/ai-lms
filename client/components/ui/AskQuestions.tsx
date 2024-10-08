@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   handleUpload,
   selectAiChat,
-} from "../../lib/features/ai-agents/ai-chat";
+} from "../../lib/features/ai-chats/ai-chat-Slice";
 
 const AskQuestions = () => {
   const dispatch = useDispatch();
