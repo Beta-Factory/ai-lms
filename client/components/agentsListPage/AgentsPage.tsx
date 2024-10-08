@@ -10,8 +10,10 @@ import Imageone from "@/app/assets/nature.jpg";
 const AgentsPage = () => {
   return (
     <>
-      <div className="flex w-[75%] flex-col border border-green-500">
+      <div className="flex w-full flex-col border border-green-500 p-10">
+        {/* top page heading, search etc. */}
         <AgentsTopPage />
+
         {/* agent cards  will use map here over list of agents*/}
         <div className="w-full flex justify-center items-center flex-wrap">
           <div className=" flex lg:flex-row xs:flex-col justify-evenly  gap-5 w-full mt-10">

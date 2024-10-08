@@ -8,7 +8,9 @@ const TopPageLayout = () => {
   return (
     <div className="flex flex-row gap-10">
       {/* <SideBarSection /> */}
-      <SideBarMain />
+      <div className="max-md:hidden">
+        <SideBarMain />
+      </div>
       <AgentsPage />
     </div>
   );

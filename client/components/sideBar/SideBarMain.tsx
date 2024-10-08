@@ -79,6 +79,8 @@ export function SideBarMain() {
     </div>
   );
 }
+
+// un used components-----------------
 export const Logo = () => {
   return (
     <Link
