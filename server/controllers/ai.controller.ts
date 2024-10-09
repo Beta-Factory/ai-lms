@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import { Request, Response } from "express";
 import { cleanupFiles, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
-import { chatWithAI } from "../utils/chatWithAi";
+import { chatWithAIWithVectorRetrieval } from "../utils/chatWithAi";
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
@@ -23,7 +23,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       user,
     } = req;
 
-    let agentPic, trainFiles: any;
+    let agentPic,
+      trainFiles: any = [];
     let agentPicUrl = "";
     let trainingFilesUrls: string[] = [];
 
@@ -86,7 +87,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
 
     await Promise.all(uploadPromises);
 
-    await extractMultiFileData(filepathsArray, uniqueAgentName);
+    if (filepathsArray && filepathsArray.length !== 0)
+      await extractMultiFileData(filepathsArray, uniqueAgentName);
 
     await Agent.create({
       creatorId: user?._id,
@@ -274,7 +276,7 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
 
     const collectionName = foundAgent.agentName;
     const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
-    const aiResponse = await chatWithAI(
+    const aiResponse = await chatWithAIWithVectorRetrieval(
       userInput,
       foundAgent.agentName.split("_")[0],
       retriever,
