@@ -46,7 +46,7 @@ const nativeSupabaseClient = new Client({
   connectionString:
     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
 });
-export const llm = new ChatOpenAI({ openAIApiKey });
+export const llm = new ChatOpenAI({ openAIApiKey, modelName: "gpt-4o-mini" });
 export const getAstraConfig = (collectionName: string) => {
   const astraConfig: AstraLibArgs = {
     token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
