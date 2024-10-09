@@ -24,6 +24,7 @@ router.post("/chat/:agentId/:chatId?", authCheckMiddleware, chatWIthAIAgent);
 router.put(
   "/edit-agent/:agentId",
   upload.fields([{ name: "agentPic", maxCount: 1 }]),
+  authCheckMiddleware,
   EditAIAgent
 );
 
