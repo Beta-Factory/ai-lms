@@ -3,11 +3,15 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const agentsApi = createApi({
   reducerPath: "agentsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api" }), // this is the base backend url
+  baseQuery: fetchBaseQuery({ baseUrl: "https://api.github.com/" }), // this is the base backend url
   endpoints: (builder) => ({
     getAgents: builder.query<AgentType[], void>({
       // query is a get request
       query: () => "/get-all-user-agents",
+    }),
+    getUsers: builder.query<UserType[], void>({
+      // query is a get request
+      query: () => "users",
     }),
     postAgents: builder.mutation({
       // mutation is one of post,put,del requests
@@ -20,4 +24,5 @@ export const agentsApi = createApi({
   }),
 });
 
-export const { useGetAgentsQuery, usePostAgentsMutation } = agentsApi;
+export const { useGetAgentsQuery, useGetUsersQuery, usePostAgentsMutation } =
+  agentsApi;

@@ -15,6 +15,8 @@ const AgentCard = ({ name, description, imageUrl }: AgentCardProps) => {
           className="h-[124px] w-[124px] border text-[#000000] rounded-full p-1 object-cover"
           src={imageUrl} // Agent Image URL
           alt="description of the image"
+          width={124}
+          height={124}
         />
 
         <div className="flex flex-col text-lg">
