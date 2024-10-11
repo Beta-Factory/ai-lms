@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 import {
@@ -8,9 +10,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { HamIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import UserInfoCard from "./UserInfoCard";
 import ExploreAgentsCard from "./ExploreAgentsCard";
+import { Menulinks } from "../sideBar/SideBarMain";
+import MenuItemCard from "./MenuItemCard";
+import { label } from "framer-motion/client";
 
 const Hamburger = () => {
   return (
@@ -18,18 +23,22 @@ const Hamburger = () => {
       <Sheet>
         <SheetTrigger className="px-3 rounded-2xl flex items-center gap-1 ">
           <span>
-            <HamIcon className="text-[#808080]" />
+            <MenuIcon className="text-[#808080]" />
           </span>
         </SheetTrigger>
         <SheetContent className="bg-[#F5F5F5] text-slate-700">
           <SheetHeader>
-            <SheetTitle>Are you absolutely sure?</SheetTitle>
+            <SheetTitle>Menu</SheetTitle>
             <SheetDescription>
-              {/* user info */}
-              <UserInfoCard />
-
-              {/* explore agents */}
-              <ExploreAgentsCard />
+              <div className="mt-8 flex flex-col gap-2">
+                {Menulinks.map((link, idx) => (
+                  <MenuItemCard
+                    name={link.label}
+                    key={idx}
+                    menuIcon={link.icon}
+                  />
+                ))}
+              </div>
             </SheetDescription>
           </SheetHeader>
         </SheetContent>

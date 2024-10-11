@@ -5,10 +5,11 @@ import {
   handleUpload,
   selectAiChat,
 } from "../../lib/features/ai-chats/ai-chat-Slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 const AskQuestions = () => {
-  const dispatch = useDispatch();
-  const uloadedFiles = useSelector(selectAiChat);
+  const dispatch = useAppDispatch();
+  const uloadedFiles = useAppSelector(selectAiChat);
   console.log(uloadedFiles, "uploaded files");
   const [inputValue, setInputValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null); // Correct typing for textareaRef
@@ -218,11 +219,11 @@ const AskQuestions = () => {
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="currentColor"
             fill="black"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             {" "}
             <path stroke="none" d="M0 0h24v24H0z" />{" "}

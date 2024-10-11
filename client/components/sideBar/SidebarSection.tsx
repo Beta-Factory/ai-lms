@@ -1,7 +1,7 @@
 import { Edit, Sidebar } from "lucide-react";
-import UserInfoCard from "./ui/UserInfoCard";
-import ExploreAgentsCard from "./ui/ExploreAgentsCard";
-import ChatHistory from "./ui/ChatHistory";
+import UserInfoCard from "../ui/UserInfoCard";
+import ExploreAgentsCard from "../ui/ExploreAgentsCard";
+import ChatHistory from "../ui/ChatHistory";
 const SideBarSection = () => {
   return (
     <div className="bg-[#F5F5F5] w-[20%] h-screen">

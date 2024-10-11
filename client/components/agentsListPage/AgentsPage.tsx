@@ -10,7 +10,7 @@ import Imageone from "@/app/assets/nature.jpg";
 const AgentsPage = () => {
   return (
     <>
-      <div className="flex w-full flex-col border border-green-500 p-10">
+      <div className="flex w-vw flex-col p-10">
         {/* top page heading, search etc. */}
         <AgentsTopPage />
 
