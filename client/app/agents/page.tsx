@@ -8,14 +8,16 @@ import Hamburger from "@/components/ui/Hamburger";
 const TopPageLayout = () => {
   return (
     <div className="flex flex-row gap-10 w-full">
-      {/* <SideBarSection /> */}
-      <div className="max-md:hidden">
-        <SideBarMain />
+      {/* sidebar logic begin */}
+      <div>
+        <div className="max-md:hidden">
+          <SideBarMain />
+        </div>
+        <div className="hidden max-md:flex w-[100%] justify-start mt-5 fixed">
+          <Hamburger />
+        </div>
       </div>
-
-      <div className="hidden max-md:flex w-[100%] justify-start mt-5 fixed">
-        <Hamburger />
-      </div>
+      {/* sidebar logic end */}
 
       <AgentsPage />
     </div>

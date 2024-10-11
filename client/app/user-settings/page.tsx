@@ -1,44 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import Profile from "@/components/userImageUploader/Profile";
+import { SideBarMain } from "@/components/sideBar/SideBarMain";
+import Hamburger from "@/components/ui/Hamburger";
+import UserProfileSettings from "@/components/userAccountSettings/UserProfileSettings";
 import React from "react";
 
 const page = () => {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Card className="flex flex-col w-[50%] max-md:w-full gap-0 ">
-        <h1 className="flex text-2xl font-bold text-center mt-5 ml-5 items-start">
-          User Settings
-        </h1>
-        <div className="flex lg:flex-row flex-col justify-between items-center gap-10 p-10 w-full">
-          <div className="w-auto h-auto flex-shrink-0">
-            <Profile />
-          </div>
-          <div className="flex flex-col gap-10">
-            <div className="flex flex-row gap-5">
-              <Input
-                type="text"
-                placeholder="Change Name"
-                className="border-2 flex-grow"
-              />
-              <Button className="bg-sky-500 text-white lg:hover:bg-green-500">
-                Save
-              </Button>
-            </div>
-            <div className="flex flex-row gap-5">
-              <Input
-                type="email"
-                placeholder="Change Email"
-                className="border-2 flex-grow"
-              />
-              <Button className="bg-sky-500 text-white lg:hover:bg-green-500">
-                Save
-              </Button>
-            </div>
-          </div>
+    <div className="flex flex-row max-md:flex-col gap-10 w-full">
+      {/* sidebar logic begin */}
+      <div>
+        <div className="max-md:hidden">
+          <SideBarMain />
         </div>
-      </Card>
+        <div className="hidden max-md:flex w-[100%] justify-start mt-5 fixed">
+          <Hamburger />
+        </div>
+      </div>
+      {/* sidebar logic end */}
+
+      <UserProfileSettings />
     </div>
   );
 };
