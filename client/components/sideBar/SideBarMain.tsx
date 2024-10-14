@@ -10,20 +10,19 @@ import {
   LayoutGrid,
   LucideSidebarClose,
   LucideSidebarOpen,
-  SquareUser,
 } from "lucide-react";
-import { Avatar } from "../ui/avatar";
+
 import UserAvatar from "../userAccountSettings/UserAvatar";
 
 export const Menulinks = [
   {
     label: "User Profile",
-    href: "#",
+    href: "/user-settings",
     icon: <UserAvatar />,
   },
   {
     label: "Explore Agents",
-    href: "#",
+    href: "/agents",
     icon: (
       <LayoutGrid className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),

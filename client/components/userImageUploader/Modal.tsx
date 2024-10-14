@@ -2,7 +2,7 @@ import CloseIcon from "./CloseIcon";
 import ImageCropper from "./ImageCropper";
 
 interface ModalProps {
-  updateAvatar: (file: File) => void;
+  updateAvatar: (dataUrl: string) => void;
   closeModal: () => void;
 }
 

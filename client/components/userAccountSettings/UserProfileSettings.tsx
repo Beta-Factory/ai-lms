@@ -28,8 +28,8 @@ const UserProfileSettings = () => {
             </div>
             <div className="flex flex-row gap-5">
               <Input
-                type="email"
-                placeholder="Change Email"
+                type="text"
+                placeholder="Change Username"
                 className="border-2 flex-grow"
               />
               <Button className="bg-sky-500 text-white lg:hover:bg-green-500">
