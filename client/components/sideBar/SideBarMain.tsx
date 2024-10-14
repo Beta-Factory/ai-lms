@@ -72,6 +72,7 @@ export function SideBarMain() {
             <div className="mt-8 flex flex-col gap-2">
               {Menulinks.map((link, idx) => (
                 <div
+                  key={idx}
                   onClick={() => {
                     setCurrentLink(link.href);
                   }}
@@ -80,7 +81,6 @@ export function SideBarMain() {
                     className={`hover:font-bold ${
                       currentLink === link.href ? "text-blue-500" : ""
                     } `}
-                    key={idx}
                     link={link}
                   />
                 </div>

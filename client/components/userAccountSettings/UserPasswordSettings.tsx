@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "../ui/card";
-import Profile from "../userImageUploader/Profile";
+// import Profile from "../userImageUploader/Profile";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
