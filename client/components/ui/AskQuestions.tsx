@@ -62,8 +62,8 @@ const AskQuestions = () => {
 
   return (
     <>
-      <div className="fixed bottom-7 lg:w-[850px] sm:w-[500px] flex p-1 ">
-        <div className="fixed bottom-7 lg:w-[800px] sm:w-[450px] bg-[#F5F5F5]  rounded-lg flex p-1 flex-col">
+      <div className="fixed bottom-7 lg:w-[70%] sm:w-[80%]  xs:w-[100%] flex p-1  ">
+        <div className="fixed bottom-7 lg:w-[65%] sm:w-[60%] xs:w-[70%] bg-[#F5F5F5]  rounded-lg flex p-1 flex-col">
           <div className="w-full flex ">
             {uloadedFiles.chat.files.map((file: File) => (
               <>
@@ -213,7 +213,7 @@ const AskQuestions = () => {
             </div>
           </div>
         </div>
-        <div className="lg:w-full xs:w-[270px] flex justify-end">
+        <div className="lg:w-full md:w-[650px] sm:w-[600px] xs:w-[450px] flex justify-end">
           <svg
             className="h-8 w-8  text-white rounded-full"
             width="24"

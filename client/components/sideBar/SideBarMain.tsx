@@ -51,7 +51,7 @@ export function SideBarMain() {
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden bg-neutral-200",
-        "h-full"
+        "h-full  fixed z-50"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
