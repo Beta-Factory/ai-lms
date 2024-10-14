@@ -46,11 +46,12 @@ export const Menulinks = [
 export function SideBarMain() {
   const [open, setOpen] = useState(false);
   const [animate, setAnimate] = useState(true);
+  const [currentLink, setCurrentLink] = useState("");
   return (
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden bg-neutral-200",
-        "h-full  fixed z-50"
+        "h-full"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
@@ -70,11 +71,19 @@ export function SideBarMain() {
             </div>
             <div className="mt-8 flex flex-col gap-2">
               {Menulinks.map((link, idx) => (
-                <SidebarLink
-                  className="hover:font-bold"
-                  key={idx}
-                  link={link}
-                />
+                <div
+                  onClick={() => {
+                    setCurrentLink(link.href);
+                  }}
+                >
+                  <SidebarLink
+                    className={`hover:font-bold ${
+                      currentLink === link.href ? "text-blue-500" : ""
+                    } `}
+                    key={idx}
+                    link={link}
+                  />
+                </div>
               ))}
             </div>
           </div>

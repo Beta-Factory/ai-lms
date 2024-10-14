@@ -2,6 +2,7 @@
 
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
 import Hamburger from "@/components/ui/Hamburger";
+import UserPasswordSettings from "@/components/userAccountSettings/UserPasswordSettings";
 import UserProfileSettings from "@/components/userAccountSettings/UserProfileSettings";
 import { useEffect, useState } from "react";
 
@@ -48,7 +49,10 @@ const Page = () => {
       </div>
       {/* sidebar logic end */}
 
-      <UserProfileSettings />
+      <div className="flex flex-col gap-10 w-full">
+        <UserProfileSettings />
+        <UserPasswordSettings />
+      </div>
     </div>
   );
 };
