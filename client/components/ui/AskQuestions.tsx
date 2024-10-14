@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   handleUpload,
   selectAiChat,
-} from "../../lib/features/ai-agents/ai-chat";
+} from "../../lib/features/ai-chats/ai-chat-Slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 const AskQuestions = () => {
-  const dispatch = useDispatch();
-  const uloadedFiles = useSelector(selectAiChat);
+  const dispatch = useAppDispatch();
+  const uloadedFiles = useAppSelector(selectAiChat);
   console.log(uloadedFiles, "uploaded files");
   const [inputValue, setInputValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null); // Correct typing for textareaRef
@@ -61,8 +62,8 @@ const AskQuestions = () => {
 
   return (
     <>
-      <div className="fixed bottom-7 lg:w-[850px] sm:w-[500px] flex p-1 ">
-        <div className="fixed bottom-7 lg:w-[800px] sm:w-[450px] bg-[#F5F5F5]  rounded-lg flex p-1 flex-col">
+      <div className="fixed bottom-7 lg:w-[70%] sm:w-[80%]  xs:w-[100%] flex p-1  ">
+        <div className="fixed bottom-7 lg:w-[65%] sm:w-[60%] xs:w-[70%] bg-[#F5F5F5]  rounded-lg flex p-1 flex-col">
           <div className="w-full flex ">
             {uloadedFiles.chat.files.map((file: File) => (
               <>
@@ -212,17 +213,17 @@ const AskQuestions = () => {
             </div>
           </div>
         </div>
-        <div className="lg:w-full xs:w-[270px] flex justify-end">
+        <div className="lg:w-full md:w-[650px] sm:w-[600px] xs:w-[450px] flex justify-end">
           <svg
             className="h-8 w-8  text-white rounded-full"
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            stroke-width="2"
+            strokeWidth="2"
             stroke="currentColor"
             fill="black"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             {" "}
             <path stroke="none" d="M0 0h24v24H0z" />{" "}

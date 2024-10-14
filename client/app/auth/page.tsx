@@ -1,7 +1,7 @@
 "use client";
 
-import { LoginScreen } from "@/components/LoginScreen";
-import { SignUpForm } from "@/components/SignUpScreen";
+import { LoginScreen } from "@/components/authScreens/LoginScreen";
+import { SignUpForm } from "@/components/authScreens/SignUpScreen";
 import { useState } from "react";
 
 const Login = () => {
