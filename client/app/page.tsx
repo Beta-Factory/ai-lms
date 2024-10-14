@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   // const count = useAppSelector((state) => state.agent.value);
@@ -46,7 +46,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start text-slate-900">
         Landing Page ..........
         <br />
-        <Link href={"/agents"}>get started</Link>
+        <Link href={"/dashboard"}>get started</Link>
         {/* <div>
           {count}
           <Button onClick={handleclick} />

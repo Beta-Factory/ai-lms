@@ -17,12 +17,12 @@ import UserAvatar from "../userAccountSettings/UserAvatar";
 export const Menulinks = [
   {
     label: "User Profile",
-    href: "/user-settings",
+    href: "/dashboard/user-settings",
     icon: <UserAvatar />,
   },
   {
     label: "Explore Agents",
-    href: "/agents",
+    href: "/dashboard/agents",
     icon: (
       <LayoutGrid className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
@@ -75,11 +75,12 @@ export function SideBarMain() {
                   key={idx}
                   onClick={() => {
                     setCurrentLink(link.href);
+                    console.log("Current Link:", link.href); // ! Debugging statement
                   }}
                 >
                   <SidebarLink
                     className={`hover:font-bold ${
-                      currentLink === link.href ? "text-blue-500" : ""
+                      currentLink === link.href ? `text-blue-500` : ``
                     } `}
                     link={link}
                   />

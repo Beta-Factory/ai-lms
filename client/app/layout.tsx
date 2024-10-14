@@ -1,8 +1,10 @@
+"use client";
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
 import StoreProvider from "./storeProvider";
+import { useEffect, useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,6 +27,35 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // // password protection logic-------------------------------------------------------------
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // useEffect(() => {
+  //   const storedPassword = localStorage.getItem("password");
+  //   const correctPassword = "gta6gamer";
+
+  //   if (storedPassword === correctPassword) {
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     const password = prompt("Please enter the password:");
+  //     if (password === correctPassword) {
+  //       localStorage.setItem("password", password);
+  //       setIsAuthenticated(true);
+  //     } else {
+  //       alert("Incorrect password!");
+  //     }
+  //   }
+  // }, []);
+
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <div className="text-red-500 text-4xl text-center">Access Denied</div>
+  //     </div>
+  //   );
+  // }
+  // // password protection logic end-------------------------------------------------------------
+
   return (
     <html lang="en">
       <body
