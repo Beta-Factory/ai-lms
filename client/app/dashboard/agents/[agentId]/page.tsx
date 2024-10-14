@@ -3,7 +3,6 @@
 import ChatUI from "@/components/chatScreen/ChatUI";
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
 import Hamburger from "@/components/ui/Hamburger";
-import { useEffect, useState } from "react";
 
 const ChatUIPage = () => {
   return (
