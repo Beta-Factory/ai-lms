@@ -2,7 +2,10 @@ import fs from "fs/promises";
 import { Request, Response } from "express";
 import { cleanupFiles, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
-import { chatWithAI } from "../utils/chatWithAi";
+import {
+  chatWithAiWithOutVectorRetrieval,
+  chatWithAIWithVectorRetrieval,
+} from "../utils/chatWithAi";
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
@@ -12,10 +15,11 @@ import { Chat } from "../models/chat.model";
 import { generateChatName } from "../utils/generateChatName";
 import { Conversation } from "../models/conversation.model";
 import { mongoIdType } from "../types/mongooseTypes";
+import { checkTableExists, renameTable } from "../utils/keys";
 
 const bucketName = process.env.AWS_BUCKETNAME || "";
 
-export const creatAgent = async (req: CustomRequest, res: Response) => {
+export const createAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
       body: { context, description, agentName },
@@ -23,7 +27,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       user,
     } = req;
 
-    let agentPic, trainFiles: any;
+    let agentPic,
+      trainFiles: any = [];
     let agentPicUrl = "";
     let trainingFilesUrls: string[] = [];
 
@@ -86,7 +91,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
 
     await Promise.all(uploadPromises);
 
-    await extractMultiFileData(filepathsArray, uniqueAgentName);
+    if (filepathsArray && filepathsArray.length !== 0)
+      await extractMultiFileData(filepathsArray, uniqueAgentName);
 
     await Agent.create({
       creatorId: user?._id,
@@ -145,11 +151,14 @@ export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
 export const EditAIAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
-      body: { description, context },
+      body: { description, context, agentName },
       files,
       user,
       params: { agentId },
     } = req;
+
+    const emailUsername = (user?.email as unknown as string).split("@")[0];
+    const uniqueAgentName = agentName && `${agentName}_${emailUsername}`;
 
     let agentPic, agentPicUrl;
 
@@ -157,7 +166,7 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
       agentPic = files["agentPic"]?.[0];
     }
 
-    const foundAgent = await Agent.findByIdAndUpdate(agentId);
+    const foundAgent = await Agent.findById(agentId);
     if (!foundAgent) {
       await cleanupFiles(
         agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
@@ -165,6 +174,30 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "failed",
         error: "No agent with the provided name has been found",
+      });
+    }
+    if (foundAgent.creatorId.toString() !== user?._id?.toString()) {
+      await cleanupFiles(
+        agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+      );
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "failed",
+        error: "You have not created this agent and hence you cannot edit it!",
+      });
+    }
+
+    const doesAgentExist = await Agent.findOne({
+      agentName: uniqueAgentName,
+      creatorId: user?._id,
+    });
+    if (doesAgentExist) {
+      await cleanupFiles(
+        agentPic ? [`${agentPic.destination}${agentPic.filename}`] : []
+      );
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "failed",
+        error:
+          "Agent with this name already exists in your agents list. Pick something else!",
       });
     }
 
@@ -198,9 +231,19 @@ export const EditAIAgent = async (req: CustomRequest, res: Response) => {
 
     await Promise.all(uploadPromises);
 
-    foundAgent.context = context;
-    foundAgent.description = description;
-    foundAgent.agentPic = agentPicUrl;
+    if (agentName) {
+      await renameTable(foundAgent.agentName, uniqueAgentName);
+      foundAgent.agentName = uniqueAgentName;
+    }
+    if (context) {
+      foundAgent.context = context;
+    }
+    if (description) {
+      foundAgent.description = description;
+    }
+    if (agentPicUrl) {
+      foundAgent.agentPic = agentPicUrl;
+    }
     await foundAgent.save();
 
     await cleanupFiles(
@@ -272,15 +315,27 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
           )
         : [{ human: "", ai: "" }];
 
+    let aiResponse: string = "";
     const collectionName = foundAgent.agentName;
-    const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
-    const aiResponse = await chatWithAI(
-      userInput,
-      foundAgent.agentName.split("_")[0],
-      retriever,
-      foundAgent.context,
-      foundChats
-    );
+    const tableExists = await checkTableExists(collectionName);
+    console.log("tableExists", tableExists);
+    if (!tableExists) {
+      aiResponse = await chatWithAiWithOutVectorRetrieval(
+        userInput,
+        foundAgent.agentName.split("_")[0],
+        foundAgent.context,
+        foundChats
+      );
+    } else {
+      const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
+      aiResponse = await chatWithAIWithVectorRetrieval(
+        userInput,
+        foundAgent.agentName.split("_")[0],
+        retriever,
+        foundAgent.context,
+        foundChats
+      );
+    }
 
     if (!chatId) {
       const chatName = await generateChatName(userInput, aiResponse);
