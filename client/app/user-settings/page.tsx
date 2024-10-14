@@ -3,9 +3,9 @@
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
 import Hamburger from "@/components/ui/Hamburger";
 import UserProfileSettings from "@/components/userAccountSettings/UserProfileSettings";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const page: FC = () => {
+const Page = () => {
   // password protection logic-------------------------------------------------------------
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -53,4 +53,4 @@ const page: FC = () => {
   );
 };
 
-export default page;
+export default Page;

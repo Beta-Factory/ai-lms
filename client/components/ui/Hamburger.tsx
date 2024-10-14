@@ -11,11 +11,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
-import UserInfoCard from "./UserInfoCard";
-import ExploreAgentsCard from "./ExploreAgentsCard";
+
 import { Menulinks } from "../sideBar/SideBarMain";
 import MenuItemCard from "./MenuItemCard";
-import { label } from "framer-motion/client";
 
 const Hamburger = () => {
   return (
