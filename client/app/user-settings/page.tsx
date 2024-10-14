@@ -3,9 +3,9 @@
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
 import Hamburger from "@/components/ui/Hamburger";
 import UserProfileSettings from "@/components/userAccountSettings/UserProfileSettings";
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-const page = () => {
+const page: FC = () => {
   // password protection logic-------------------------------------------------------------
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
