@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   handleUpload,
   selectAiChat,

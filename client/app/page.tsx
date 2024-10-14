@@ -1,11 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import TopPage from "./agents/page";
 import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Button } from "@/components/ui/button";
-import { increment, decrement } from "@/lib/features/ai-agents/ai-agents-Slice";
+
 import { useEffect, useState } from "react";
 
 export default function Home() {

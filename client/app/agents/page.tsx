@@ -1,6 +1,6 @@
 // import { Sidebar } from "lucide-react";
 "use client";
-import { Sidebar } from "@/components/ui/AnimatedSideBar";
+
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
 import AgentsPage from "@/components/agentsListPage/AgentsPage";
 import Hamburger from "@/components/ui/Hamburger";
