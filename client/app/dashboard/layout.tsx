@@ -1,16 +1,18 @@
-// import { Sidebar } from "lucide-react";
+import { ReactNode } from "react";
 
-import { Sidebar } from "@/components/ui/AnimatedSideBar";
 import { SideBarMain } from "@/components/sideBar/SideBarMain";
-import AgentsPage from "@/components/agentsListPage/AgentsPage";
 import Hamburger from "@/components/ui/Hamburger";
 
-const TopPageLayout = () => {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="flex flex-row gap-10 w-full">
+    <div className="flex flex-row max-md:flex-col gap-10 w-full">
       {/* sidebar logic begin */}
       <div>
-        <div className="max-md:hidden">
+        <div className="max-md:hidden fixed">
           <SideBarMain />
         </div>
         <div className="hidden max-md:flex w-[100%] justify-start mt-5 fixed">
@@ -18,10 +20,9 @@ const TopPageLayout = () => {
         </div>
       </div>
       {/* sidebar logic end */}
-
-      <AgentsPage />
+      <main className="w-full p-2 lg:ml-20">{children}</main>
     </div>
   );
 };
 
-export default TopPageLayout;
+export default Layout;

@@ -1,7 +1,5 @@
 "use client";
 
-import CreateAgentPage from "@/app/create-agent/page";
-import AgentsList from "@/lib/features/ai-agents/ai-agents";
 import AgentsTopPage from "../ui/AgentsTopPage";
 import AgentCard from "../ui/AgentCard";
 import { StaticImageData } from "next/image";

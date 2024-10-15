@@ -10,22 +10,20 @@ import {
   LayoutGrid,
   LucideSidebarClose,
   LucideSidebarOpen,
-  SquareUser,
 } from "lucide-react";
-import { Avatar } from "../ui/avatar";
+
 import UserAvatar from "../userAccountSettings/UserAvatar";
-import { label } from "framer-motion/client";
 import { ModeToggle } from "../ui/Toggle";
 
 export const Menulinks = [
   {
     label: "User Profile",
-    href: "#",
+    href: "/dashboard/user-settings",
     icon: <UserAvatar />,
   },
   {
     label: "Explore Agents",
-    href: "#",
+    href: "/dashboard/agents",
     icon: (
       <LayoutGrid className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
@@ -50,11 +48,12 @@ export const Menulinks = [
 export function SideBarMain() {
   const [open, setOpen] = useState(false);
   const [animate, setAnimate] = useState(true);
+  const [currentLink, setCurrentLink] = useState("");
   return (
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden bg-neutral-200",
-        "h-full  fixed z-50"
+        "h-full"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={animate}>
@@ -74,11 +73,20 @@ export function SideBarMain() {
             </div>
             <div className="mt-8 flex flex-col gap-2">
               {Menulinks.map((link, idx) => (
-                <SidebarLink
-                  className="hover:font-bold"
+                <div
                   key={idx}
-                  link={link}
-                />
+                  onClick={() => {
+                    setCurrentLink(link.href);
+                    console.log("Current Link:", link.href); // ! Debugging statement
+                  }}
+                >
+                  <SidebarLink
+                    className={`hover:font-bold ${
+                      currentLink === link.href ? `text-blue-500` : ``
+                    } `}
+                    link={link}
+                  />
+                </div>
               ))}
             </div>
           </div>

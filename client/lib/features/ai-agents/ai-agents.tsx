@@ -1,7 +1,7 @@
 // ? ============ component ============
 import React from "react";
-import { useGetAgentsQuery } from "./ai-agents-api";
-import { AgentType } from "@/types/AI-Agents";
+// import { useGetAgentsQuery } from "./ai-agents-api";
+// import { AgentType } from "@/types/AI-Agents";
 
 const AgentsList = () => {
   // const { data: agents, isError, isLoading } = useGetAgentsQuery({});

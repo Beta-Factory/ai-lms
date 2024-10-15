@@ -11,11 +11,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
-import UserInfoCard from "./UserInfoCard";
-import ExploreAgentsCard from "./ExploreAgentsCard";
+
 import { Menulinks } from "../sideBar/SideBarMain";
 import MenuItemCard from "./MenuItemCard";
-import { label } from "framer-motion/client";
 
 const Hamburger = () => {
   return (
@@ -33,9 +31,10 @@ const Hamburger = () => {
               <div className="mt-8 flex flex-col gap-2">
                 {Menulinks.map((link, idx) => (
                   <MenuItemCard
-                    name={link.label}
                     key={idx}
+                    name={link.label}
                     menuIcon={link.icon}
+                    link={link.href}
                   />
                 ))}
               </div>

@@ -114,7 +114,7 @@ const ImageCropper: React.FC<{
               }
             }}
           >
-            Crop Image
+            Upload Image
           </button>
         </div>
       )}
