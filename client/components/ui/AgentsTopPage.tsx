@@ -1,32 +1,61 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 // import { Sidebar } from "lucide-react";
 import { Button } from "./button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { useRouter } from "next/navigation";
 
 const AgentsTopPage = () => {
   const router = useRouter();
 
+  const [t, i18n] = useTranslation("global");
+
+  const handleChangeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+  };
+
   return (
     <div className="w-full">
-      <div className="w-full flex justify-end mt-5">
+      <div className="w-full flex justify-end mt-5 gap-5">
         <Button
-          onClick={() => router.push("/create-agent")}
+          onClick={() => router.push("/dashboard/create-agent")}
           className="bg-black px-3 rounded-2xl flex items-center gap-1 "
         >
           <span>+ Create</span>
         </Button>
+
+        {/* language change buttons */}
+
+        <Select onValueChange={(value) => handleChangeLanguage(value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Change Language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {/* <SelectLabel>Change Language</SelectLabel> */}
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="jp">japanese / 日本語</SelectItem>
+              <SelectItem value="es">espaniol</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="w-[100%] text-[30px] font-bold text-[#000000]  flex items-center justify-center">
-        エージェントがいる
+        {t("header.message")}
       </div>
       <div className="w-[100%] sm:h-[200px] border lgtext-[] text-[#000000]  flex justify-center items-center text-center lg:px-[130px] mt-4">
-        Lorem ipsum dolor sit amet consectetur. Proin feugiat odio sollicitudin
-        tellus nunc interdum ultricies etiam elit. Arcu egestas et sollicitudin
-        lacinia odio ut. In ornare facilisis pellentesque egestas mi sit ut
-        ultricies diam. Viverra id vitae ut purus sit.
+        {t("home.body")}
       </div>
       {/* search */}
       <div className="w-[100%]  mt-5 flex justify-center items-center">

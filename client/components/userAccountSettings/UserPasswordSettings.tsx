@@ -1,37 +1,54 @@
-import React from "react";
-import { Card } from "../ui/card";
-// import Profile from "../userImageUploader/Profile";
-import { Input } from "../ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Input } from "../ui/input";
 
 const UserPasswordSettings = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [valuePresent, setValuePresent] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="flex justify-center items-center w-full max-md:mt-5">
-      <Card className="flex flex-col w-[60%] max-md:w-full gap-0 ">
-        <h1 className="flex text-2xl font-bold text-center mt-5 ml-5 items-start">
-          password Settings
-        </h1>
-        <div className="flex lg:flex-row flex-col justify-between items-center gap-10 p-10 w-full">
-          {/* <div className="w-auto h-auto flex-shrink-0">
-            <Profile />
-          </div> */}
-          <div className="flex flex-col gap-10">
+      <Card className="w-full flex flex-col">
+        <CardHeader>
+          <CardTitle className="text-2xl">change password</CardTitle>
+          <CardDescription>An otp will be sent to your email.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="flex gap-5">
             <Input
-              type="text"
-              placeholder="Current Password"
-              className="border-2 flex-grow"
+              type={showPassword ? "text" : "password"}
+              placeholder="Store Name"
+              onChange={(e) => {
+                e.target.value.length > 0
+                  ? setValuePresent(true)
+                  : setValuePresent(false);
+              }}
             />
-
-            <Input
-              type="text"
-              placeholder="New Password"
-              className="border-2 flex-grow"
-            />
-            <Button className="bg-sky-500 text-white lg:hover:bg-green-500">
-              Save
+            <Button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className={valuePresent ? `felx px-3 rounded-sm` : `hidden`}
+            >
+              {showPassword ? <EyeOff /> : <Eye />}
             </Button>
-          </div>
-        </div>
+          </form>
+        </CardContent>
+        <CardFooter className="border-t px-6 py-4">
+          <Button>Save</Button>
+        </CardFooter>
       </Card>
     </div>
   );

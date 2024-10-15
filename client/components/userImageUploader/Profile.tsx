@@ -2,15 +2,20 @@
 "use client";
 
 import { useRef, useState } from "react";
-import PencilIcon from "./PencilIcon";
-import Modal from "./Modal";
 import "react-image-crop/dist/ReactCrop.css";
+import Modal from "./Modal";
+import PencilIcon from "./PencilIcon";
 
 const Profile = () => {
   const avatarUrl = useRef(
     "https://avatarfiles.alphacoders.com/161/161002.jpg"
   );
   const [modalOpen, setModalOpen] = useState(false);
+
+  // const [name, setName] = useState("Parwez"); // ! to be queried from the database
+
+  // // ! to be queried from the database : Prime user, Regular user, pro user, etc.
+  // const [userType, setUserType] = useState("prime user");
 
   const updateAvatar = (imgSrc: any) => {
     avatarUrl.current = imgSrc;
@@ -32,8 +37,10 @@ const Profile = () => {
           <PencilIcon />
         </button>
       </div>
-      <h2 className="text-black font-bold mt-6">Mack Aroney</h2>
-      <p className="text-gray-500 text-xs mt-2">Software Engineer</p>
+      <h2 className="text-black font-bold mt-6">Parwez</h2>
+      {/* <h2 className="text-black font-bold mt-6">{name}</h2> */}
+      <p className="text-orange-400 text-sm mt-2 font-semibold">prime user</p>
+      {/* <p className="text-gray-500 text-xs mt-2">{userType}</p> */}
       {modalOpen && (
         <Modal
           updateAvatar={updateAvatar}

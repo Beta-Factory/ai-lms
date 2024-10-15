@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="flex flex-row max-md:flex-col gap-10 w-full">
       {/* sidebar logic begin */}
       <div>
-        <div className="max-md:hidden">
+        <div className="max-md:hidden fixed">
           <SideBarMain />
         </div>
         <div className="hidden max-md:flex w-[100%] justify-start mt-5 fixed">
@@ -20,7 +20,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
       </div>
       {/* sidebar logic end */}
-      <main>{children}</main>
+      <main className="w-full p-2 lg:ml-20">{children}</main>
     </div>
   );
 };
