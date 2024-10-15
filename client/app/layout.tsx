@@ -43,34 +43,34 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // // ? password protection logic-------------------------------------------------------------
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // ? password protection logic-------------------------------------------------------------
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // useEffect(() => {
-  //   const storedPassword = localStorage.getItem("password");
-  //   const correctPassword = "gta6gamer";
+  useEffect(() => {
+    const storedPassword = localStorage.getItem("password");
+    const correctPassword = "gta6gamer";
 
-  //   if (storedPassword === correctPassword) {
-  //     setIsAuthenticated(true);
-  //   } else {
-  //     const password = prompt("Please enter the password:");
-  //     if (password === correctPassword) {
-  //       localStorage.setItem("password", password);
-  //       setIsAuthenticated(true);
-  //     } else {
-  //       alert("Incorrect password!");
-  //     }
-  //   }
-  // }, []);
+    if (storedPassword === correctPassword) {
+      setIsAuthenticated(true);
+    } else {
+      const password = prompt("Please enter the password:");
+      if (password === correctPassword) {
+        localStorage.setItem("password", password);
+        setIsAuthenticated(true);
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+  }, []);
 
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <div className="text-red-500 text-4xl text-center">Access Denied</div>
-  //     </div>
-  //   );
-  // }
-  // // ? password protection logic end-------------------------------------------------------------
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-red-500 text-4xl text-center">Access Denied</div>
+      </div>
+    );
+  }
+  // ? password protection logic end-------------------------------------------------------------
 
   return (
     <html lang="en">

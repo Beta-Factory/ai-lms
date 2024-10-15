@@ -2,16 +2,15 @@
 
 import { useTranslation } from "react-i18next";
 // import { Sidebar } from "lucide-react";
-import { Button } from "./button";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "./button";
 
 import { useRouter } from "next/navigation";
 
