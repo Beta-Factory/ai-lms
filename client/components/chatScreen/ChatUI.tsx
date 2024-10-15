@@ -152,7 +152,7 @@ export default function Page() {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -208,7 +208,7 @@ export default function Page() {
 
   return (
     
-    <div className="h-full w-full lg:px-10  z-0">
+    <div className="h-full w-full lg:px-10 md:px-10  z-0 pb-[200px]">
              <ChatMessageList ref={messagesContainerRef}>
           {/* Chat messages */}
           <AnimatePresence>

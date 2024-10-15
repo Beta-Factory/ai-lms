@@ -5,7 +5,7 @@ import Hamburger from "@/components/ui/Hamburger";
 const CreateAgentPage = () => {
   return (
     <>
-      <div className="flex flex-row gap-10">
+      <div className="flex flex-row gap-10 ">
         {/* sidebar logic begin */}
         <div>
           <div className="max-md:hidden">
@@ -16,8 +16,9 @@ const CreateAgentPage = () => {
           </div>
         </div>
         {/* sidebar logic end */}
-
+         <div className="w-full flex justify-center items-center">
         <AgentCreator />
+        </div>
       </div>
     </>
   );
