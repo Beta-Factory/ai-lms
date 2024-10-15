@@ -63,13 +63,6 @@ export default function RootLayout({
     }
   }, []);
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-red-500 text-4xl text-center">Access Denied</div>
-      </div>
-    );
-  }
   // ? password protection logic end-------------------------------------------------------------
 
   return (
@@ -77,9 +70,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#ffffff]`}
       >
-        <I18nextProvider i18n={i18next}>
-          <StoreProvider>{children}</StoreProvider>
-        </I18nextProvider>
+        {isAuthenticated ? (
+          <I18nextProvider i18n={i18next}>
+            <StoreProvider>{children}</StoreProvider>
+          </I18nextProvider>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <div className="text-red-500 text-4xl text-center">
+              Access Denied
+            </div>
+          </div>
+        )}
       </body>
     </html>
   );
