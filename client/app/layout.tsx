@@ -8,6 +8,8 @@ import global_en from "../components/translations/en/global.json";
 import global_jp from "../components/translations/jp/global.json";
 import "./globals.css";
 import StoreProvider from "./storeProvider";
+import { ThemeProvider } from "@/components/ui/ThemeProvider"
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -68,8 +70,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#ffffff]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
         {isAuthenticated ? (
           <I18nextProvider i18n={i18next}>
             <StoreProvider>{children}</StoreProvider>
@@ -81,6 +89,7 @@ export default function RootLayout({
             </div>
           </div>
         )}
+        </ThemeProvider>
       </body>
     </html>
   );

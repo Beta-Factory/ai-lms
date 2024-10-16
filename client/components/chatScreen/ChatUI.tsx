@@ -72,7 +72,7 @@ export default function Page() {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -127,7 +127,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full lg:px-10  z-0">
+    <div className="h-full w-full lg:px-10 md:px-10 pb-[200px] -z-10">
       <ChatMessageList ref={messagesContainerRef}>
         {/* Chat messages */}
         <AnimatePresence>
@@ -159,6 +159,7 @@ export default function Page() {
                       className={message.role === "ai" ? "dark:invert" : ""}
                     />
                     <AvatarFallback>
+                      {/* to add logic so that it takes username initialsinstead of GG */}
                       {message.role === "ai" ? "🤖" : "GG"}
                     </AvatarFallback>
                   </Avatar>
@@ -203,10 +204,9 @@ export default function Page() {
       <form
         ref={formRef}
         onSubmit={handleSendMessage}
-        className="fixed bottom-7 lg:w-[90%] xs:w-[80%] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring pt-2 pb-2 px-4"
+        className="fixed bottom-7 lg:w-[85%] xs:w-[80%] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring pt-2 pb-2 px-4"
         {...getRootProps()}
       >
-        {" "}
         <div className="w-full flex">
           {uloadedFiles.chat.files.map((file: File) => (
             <>

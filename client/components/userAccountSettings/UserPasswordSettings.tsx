@@ -30,7 +30,7 @@ const UserPasswordSettings = () => {
           <form className="flex gap-5">
             <Input
               type={showPassword ? "text" : "password"}
-              placeholder="Store Name"
+              placeholder="New Password"
               onChange={(e) => {
                 e.target.value.length > 0
                   ? setValuePresent(true)
