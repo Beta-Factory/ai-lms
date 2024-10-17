@@ -10,23 +10,25 @@ import {
 } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
-import { AnimatePresence, motion } from "framer-motion";
-import { useDropzone } from "react-dropzone";
-import {
-  handleUpload,
-  selectAiChat,
-} from "../../lib/features/ai-chats/ai-chat-Slice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   CopyIcon,
   CornerDownLeft,
+  Edit,
   Mic,
   Paperclip,
   RefreshCcw,
   Volume2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import EditChat from "../chatEditor/editChat";
+import { useDropzone } from "react-dropzone";
+import {
+  handleUpload,
+  selectAiChat,
+} from "../../lib/features/ai-chats/ai-chat-Slice";
+
+import ChatEditorModal from "../chatEditor/chatEditorScreen";
 
 const ChatAiIcons = [
   {
@@ -41,12 +43,23 @@ const ChatAiIcons = [
     icon: Volume2,
     label: "Volume",
   },
+  {
+    icon: Edit,
+    label: "Edit",
+  },
 ];
+
+interface Message {
+  role: "ai" | "user";
+  message: string;
+  isLoading: boolean;
+}
 
 export default function Page() {
   const dispatch = useAppDispatch();
   const uloadedFiles = useAppSelector(selectAiChat);
-  const [messages, setMessages] = useState([
+
+  const [messages, setMessages] = useState<Message[]>([
     {
       role: "ai",
       message: "Hello! How can I help you today?",
@@ -58,6 +71,10 @@ export default function Page() {
       isLoading: false,
     },
   ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
+
   const [input, setInput] = useState("");
   // const [isLoading, setisLoading] = useState(false);
 
@@ -75,6 +92,11 @@ export default function Page() {
     }
   }, [messages]);
 
+  const handleEditClick = (message: string) => {
+    setSelectedMessage(message);
+    setShowModal(true);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevents newline in textarea
@@ -87,13 +109,17 @@ export default function Page() {
     if (!input.trim()) return;
 
     // Add user's message to the messages state
-    const newMessage = { role: "user", message: input, isLoading: false };
+    const newMessage: Message = {
+      role: "user",
+      message: input,
+      isLoading: false,
+    };
     setMessages((prev) => [...prev, newMessage]);
     setInput(""); // Clear input
 
     // Simulate AI response (this would be replaced with actual logic to get a response)
     setTimeout(() => {
-      const aiMessage = {
+      const aiMessage: Message = {
         role: "ai",
         message: "This is an AI-generated response!",
         isLoading: false,
@@ -170,22 +196,26 @@ export default function Page() {
                       <div className="flex items-center mt-1.5 gap-1">
                         {!message.isLoading && (
                           <>
-                            {ChatAiIcons.map((icon, index) => {
+                            {ChatAiIcons.map((icon, idx) => {
                               const Icon = icon.icon;
+
                               return (
                                 <ChatBubbleAction
                                   variant="outline"
                                   className="size-6"
-                                  key={index}
+                                  key={idx}
                                   icon={<Icon className="size-3" />}
-                                  onClick={() =>
+                                  onClick={() => {
+                                    if (icon.label === "Edit") {
+                                      handleEditClick(message.message);
+                                    }
                                     console.log(
-                                      "Action " +
-                                        icon.label +
+                                      icon.label +
                                         " clicked for message " +
-                                        index
-                                    )
-                                  }
+                                        index,
+                                      message
+                                    );
+                                  }}
                                 />
                               );
                             })}
@@ -201,7 +231,8 @@ export default function Page() {
         </AnimatePresence>
       </ChatMessageList>
 
-      <div className="flex-1" />
+      {/* <div className="flex-1" /> */}
+
       <form
         ref={formRef}
         onSubmit={handleSendMessage}
@@ -304,6 +335,15 @@ export default function Page() {
               </div>
             </>
           ))}
+          {showModal && (
+            <ChatEditorModal
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+              title="Edit This Message"
+            >
+              {selectedMessage as string}
+            </ChatEditorModal>
+          )}
         </div>
         <ChatInput
           ref={inputRef}
@@ -324,10 +364,6 @@ export default function Page() {
             <Mic className="size-4" />
             <span className="sr-only">Use Microphone</span>
           </Button>
-
-          {/* WYSIWYG editor start*/}
-          <EditChat />
-          {/* WYSIWYG editor end */}
 
           <Button
             // disabled={!input || isLoading}
