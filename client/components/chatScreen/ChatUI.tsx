@@ -26,6 +26,7 @@ import {
   Volume2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import EditChat from "../chatEditor/editChat";
 
 const ChatAiIcons = [
   {
@@ -115,7 +116,7 @@ export default function Page() {
     noClick: true, // Prevents automatic click on dropzone, handled manually via the SVG click
     onDrop: (acceptedFiles: any) => {
       // Combine existing files with newly accepted files
-      const newFiles = [...uloadedFiles.chat.files, ...acceptedFiles];
+      const newFiles = [...uloadedFiles.files, ...acceptedFiles];
 
       // Dispatch the updated array to the global state
       dispatch(handleUpload(newFiles));
@@ -127,7 +128,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full lg:px-10 md:px-10 pb-[200px] -z-10">
+    <div className="h-full w-full lg:px-10 md:px-10 pb-[200px]">
       <ChatMessageList ref={messagesContainerRef}>
         {/* Chat messages */}
         <AnimatePresence>
@@ -208,7 +209,7 @@ export default function Page() {
         {...getRootProps()}
       >
         <div className="w-full flex">
-          {uloadedFiles.chat.files.map((file: File) => (
+          {uloadedFiles.files.map((file: File) => (
             <>
               <div className="border w-[180px] p-2 rounded-full flex items-center bg-[#103F91] gap-2  justify-between mb-7">
                 <div className="flex gap-2 items-center">
@@ -323,6 +324,10 @@ export default function Page() {
             <Mic className="size-4" />
             <span className="sr-only">Use Microphone</span>
           </Button>
+
+          {/* WYSIWYG editor start*/}
+          <EditChat />
+          {/* WYSIWYG editor end */}
 
           <Button
             // disabled={!input || isLoading}
