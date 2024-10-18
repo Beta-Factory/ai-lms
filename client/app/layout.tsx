@@ -1,14 +1,13 @@
 "use client";
 // import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import i18next from "i18next";
 import localFont from "next/font/local";
-import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import global_en from "../components/translations/en/global.json";
 import global_jp from "../components/translations/jp/global.json";
 import "./globals.css";
 import StoreProvider from "./storeProvider";
-import { ThemeProvider } from "@/components/ui/ThemeProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

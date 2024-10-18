@@ -32,6 +32,7 @@ const ChatEditorModal = ({
   };
 
   const handleSave = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     onClose();
     const payload = {
       index,
