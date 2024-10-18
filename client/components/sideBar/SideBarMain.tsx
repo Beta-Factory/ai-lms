@@ -42,7 +42,6 @@ export const Menulinks = [
       <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
-  
 ];
 
 export function SideBarMain() {
@@ -90,7 +89,7 @@ export function SideBarMain() {
               ))}
             </div>
           </div>
-          <ModeToggle/>
+          <ModeToggle />
         </SidebarBody>
       </Sidebar>
     </div>

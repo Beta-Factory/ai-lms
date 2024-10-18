@@ -24,11 +24,13 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
+  addMessage,
   handleUpload,
-  selectAiChat,
+  selectAiChatFiles,
+  selectAiChatMessages,
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
-import ChatEditorModal from "../chatEditor/chatEditorScreen";
+import ChatEditorModal from "../chatEditor/chatEditorModal";
 
 const ChatAiIcons = [
   {
@@ -49,32 +51,19 @@ const ChatAiIcons = [
   },
 ];
 
-interface Message {
-  role: "ai" | "user";
-  message: string;
-  isLoading: boolean;
+interface SelectedMessage {
+  index: number;
+  message: Message;
 }
 
 export default function Page() {
   const dispatch = useAppDispatch();
-  const uloadedFiles = useAppSelector(selectAiChat);
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "ai",
-      message: "Hello! How can I help you today?",
-      isLoading: false,
-    },
-    {
-      role: "user",
-      message: "Can you explain how AI works?",
-      isLoading: false,
-    },
-  ]);
-
+  const uloadedFiles = useAppSelector(selectAiChatFiles);
+  const InitialMessages = useAppSelector(selectAiChatMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
-
+  const [selectedMessage, setSelectedMessage] =
+    useState<SelectedMessage | null>(null);
   const [input, setInput] = useState("");
   // const [isLoading, setisLoading] = useState(false);
 
@@ -90,10 +79,12 @@ export default function Page() {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+    setMessages(InitialMessages);
+  }, [messages, InitialMessages]);
 
-  const handleEditClick = (message: string) => {
-    setSelectedMessage(message);
+  const handleEditClick = (message: Message, index: number) => {
+    const newSelectedMessage = { index, message };
+    setSelectedMessage(newSelectedMessage);
     setShowModal(true);
   };
 
@@ -114,7 +105,8 @@ export default function Page() {
       message: input,
       isLoading: false,
     };
-    setMessages((prev) => [...prev, newMessage]);
+    // setMessages((prev) => [...prev, newMessage]);
+    dispatch(addMessage(newMessage));
     setInput(""); // Clear input
 
     // Simulate AI response (this would be replaced with actual logic to get a response)
@@ -124,7 +116,8 @@ export default function Page() {
         message: "This is an AI-generated response!",
         isLoading: false,
       };
-      setMessages((prev) => [...prev, aiMessage]);
+      // setMessages((prev) => [...prev, aiMessage]);
+      dispatch(addMessage(aiMessage));
     }, 1000);
   };
 
@@ -142,7 +135,7 @@ export default function Page() {
     noClick: true, // Prevents automatic click on dropzone, handled manually via the SVG click
     onDrop: (acceptedFiles: any) => {
       // Combine existing files with newly accepted files
-      const newFiles = [...uloadedFiles.files, ...acceptedFiles];
+      const newFiles = [...uloadedFiles, ...acceptedFiles];
 
       // Dispatch the updated array to the global state
       dispatch(handleUpload(newFiles));
@@ -207,7 +200,7 @@ export default function Page() {
                                   icon={<Icon className="size-3" />}
                                   onClick={() => {
                                     if (icon.label === "Edit") {
-                                      handleEditClick(message.message);
+                                      handleEditClick(message, index);
                                     }
                                     console.log(
                                       icon.label +
@@ -231,8 +224,6 @@ export default function Page() {
         </AnimatePresence>
       </ChatMessageList>
 
-      {/* <div className="flex-1" /> */}
-
       <form
         ref={formRef}
         onSubmit={handleSendMessage}
@@ -240,7 +231,7 @@ export default function Page() {
         {...getRootProps()}
       >
         <div className="w-full flex">
-          {uloadedFiles.files.map((file: File) => (
+          {uloadedFiles.map((file: File) => (
             <>
               <div className="border w-[180px] p-2 rounded-full flex items-center bg-[#103F91] gap-2  justify-between mb-7">
                 <div className="flex gap-2 items-center">
@@ -341,7 +332,7 @@ export default function Page() {
               onClose={() => setShowModal(false)}
               title="Edit This Message"
             >
-              {selectedMessage as string}
+              {selectedMessage!}
             </ChatEditorModal>
           )}
         </div>

@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
+import { useDispatch } from "react-redux";
+import { replaceMessage } from "../../lib/features/ai-chats/ai-chat-Slice";
 import { Input } from "../ui/input";
 
 type ChatEditorModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  children: string;
+  children: { index: number; message: Message };
 };
 
 const ChatEditorModal = ({
@@ -16,11 +18,26 @@ const ChatEditorModal = ({
   title,
   children,
 }: ChatEditorModalProps) => {
-  const [content, setContent] = useState(children?.toString());
+  const {
+    index,
+    message: { message: messageString },
+  } = children;
 
-  const handleInput = (event: any) => {
+  const [content, setContent] = useState(messageString);
+  const dispatch = useDispatch();
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setContent(value);
+  };
+
+  const handleSave = (e: MouseEvent<HTMLButtonElement>) => {
+    onClose();
+    const payload = {
+      index,
+      message: { ...children.message, message: content },
+    };
+    dispatch(replaceMessage(payload));
   };
 
   if (!isOpen) return null;
@@ -42,7 +59,7 @@ const ChatEditorModal = ({
 
           <div className="flex justify-between text-sm font-semibold">
             <button
-              onClick={onClose}
+              onClick={handleSave}
               className="mt-4 btn btn-primary hover:bg-green-500 transition ease-in-out duration-200 rounded-md p-2"
             >
               save

@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import MessageLoading from "./message-loading";
 import { Button, ButtonProps } from "../button";
 import { useState } from "react";
-import ChatEditorModal from "@/components/chatEditor/chatEditorScreen";
+import ChatEditorModal from "@/components/chatEditor/chatEditorModal";
 import { on } from "events";
 
 // ChatBubble
