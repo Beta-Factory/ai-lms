@@ -32,7 +32,7 @@ const ChatEditorModal = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSave(event as any);
+      handleSave(event as unknown as MouseEvent<HTMLButtonElement>);
     }
   };
 
