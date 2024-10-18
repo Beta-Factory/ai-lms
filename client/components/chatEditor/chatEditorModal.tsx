@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { replaceMessage } from "../../lib/features/ai-chats/ai-chat-Slice";
-import { Input } from "../ui/input";
 
 type ChatEditorModalProps = {
   isOpen: boolean;
@@ -26,9 +25,15 @@ const ChatEditorModal = ({
   const [content, setContent] = useState(messageString);
   const dispatch = useDispatch();
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
     setContent(value);
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSave(event as any);
+    }
   };
 
   const handleSave = (e: MouseEvent<HTMLButtonElement>) => {
@@ -52,10 +57,17 @@ const ChatEditorModal = ({
       <div className="relative z-50 w-full max-w-lg bg-white rounded-lg shadow-lg">
         <div className="p-4 flex flex-col h-auto">
           <h2 className="text-xl font-semibold">{title}</h2>
-          <Input
+          {/* <Input
             className="mt-4 h-40 overflow-y-auto"
             value={content}
             onChange={handleInput}
+          /> */}
+          <textarea
+            className="mt-4 h-40 w-full overflow-y-auto p-2 border rounded"
+            value={content}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message here..."
           />
 
           <div className="flex justify-between text-sm font-semibold">

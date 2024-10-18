@@ -30,10 +30,8 @@ import {
   selectAiChatMessages,
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
-import { useRouter } from "next/router";
 import ChatEditorModal from "../chatEditor/chatEditorModal";
-import { MyDocument } from "../pdf/PDFileExtractor";
-import handler from "../pdf/Handler";
+import { useRouter } from "next/navigation";
 
 const ChatAiIcons = [
   {
@@ -89,6 +87,19 @@ export default function Page() {
     const newSelectedMessage = { index, message };
     setSelectedMessage(newSelectedMessage);
     setShowModal(true);
+  };
+
+  const router = useRouter();
+  const handleExportPDF = async () => {
+    try {
+      // Call your PDF generation function here if needed
+      // MyDocument();
+
+      // Navigate to /docviewer
+      router.push("/dashboard/docviewer");
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -364,8 +375,8 @@ export default function Page() {
               <span className="text-white dark:text-black">export PDF</span>
             </Button>
           </PDFDownloadLink> */}
-          <Button onClick={() => handler()}>
-            <span className="text-yellow-400 dark:text-black">export PDF</span>
+          <Button onClick={handleExportPDF}>
+            <span className="text-yellow-600 dark:text-black">export PDF</span>
           </Button>
 
           <Button

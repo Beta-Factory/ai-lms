@@ -1,13 +1,19 @@
+"use client";
+
 import { MyDocument } from "@/components/pdf/PDFileExtractor";
-import { PDFViewer } from "@react-pdf/renderer";
-import React from "react";
+import { Button } from "@/components/ui/button";
 
 const DocViewer = () => {
+  const handleSaveToPDF = () => {
+    window.print();
+  };
+
   return (
     <div>
-      <PDFViewer>
-        <MyDocument />
-      </PDFViewer>
+      <Button onClick={handleSaveToPDF}>
+        <span className="text-yellow-500 dark:text-black">save as PDF</span>
+      </Button>
+      <MyDocument />
     </div>
   );
 };
