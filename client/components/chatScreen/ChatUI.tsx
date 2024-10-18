@@ -30,7 +30,10 @@ import {
   selectAiChatMessages,
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
+import { useRouter } from "next/router";
 import ChatEditorModal from "../chatEditor/chatEditorModal";
+import { MyDocument } from "../pdf/PDFileExtractor";
+import handler from "../pdf/Handler";
 
 const ChatAiIcons = [
   {
@@ -354,6 +357,15 @@ export default function Page() {
           <Button variant="ghost" size="icon">
             <Mic className="size-4" />
             <span className="sr-only">Use Microphone</span>
+          </Button>
+
+          {/* <PDFDownloadLink document={<MyDocument />} fileName="chat.pdf">
+            <Button>
+              <span className="text-white dark:text-black">export PDF</span>
+            </Button>
+          </PDFDownloadLink> */}
+          <Button onClick={() => handler()}>
+            <span className="text-yellow-400 dark:text-black">export PDF</span>
           </Button>
 
           <Button

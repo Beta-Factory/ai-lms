@@ -75,28 +75,27 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <I18nextProvider i18n={i18next}>
-            <StoreProvider>{children}</StoreProvider>
-          </I18nextProvider>
-
-          {/* {isAuthenticated ? (
-            <I18nextProvider i18n={i18next}>
-              <StoreProvider>{children}</StoreProvider>
-            </I18nextProvider>
-          ) : (
-            <div className="flex items-center justify-center h-screen">
-              <div className="text-red-500 text-4xl text-center">
-                Access Denied
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <I18nextProvider i18n={i18next}>{children}</I18nextProvider>
+            {/* {isAuthenticated ? (
+              <I18nextProvider i18n={i18next}>
+                <StoreProvider>{children}</StoreProvider>
+              </I18nextProvider>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="text-red-500 text-4xl text-center">
+                  Access Denied
+                </div>
               </div>
-            </div>
-          )} */}
-        </ThemeProvider>
+            )} */}
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
