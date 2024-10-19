@@ -7,13 +7,13 @@ import PdfFile from "../ui/PdfFileDesign";
 const AgentCreator = () => {
   return (
     <div>
-      <div className="w-full  ">
+      <div className="w-full  px-3">
         <div className="mt-10 text-[#000000] text-[28px] font-bold text-center">
           エージェントを作成する
         </div>
         <div className="">
-          <form className=" mt-5 lg:w-[1000px] ">
-            <div className="flex  items-center justify-center gap-20">
+          <form className=" mt-5 lg:w-full ">
+            <div className="flex  items-center lg:justify-center sm:justify-around lg:gap-20 xs:gap-5 sm:gap-10">
               <svg
                 width="100"
                 height="146"
@@ -38,29 +38,29 @@ const AgentCreator = () => {
                 </g>
               </svg>
               <div className="flex flex-col gap-2">
-                <div className="">
+                <div className="lg:w-[500px] sm:w-[500px] ">
                   <label className="text-[#808080] text-[15px] font-bold mr-10">
                     名前
                   </label>
                   <input
                     type="text"
-                    className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[500px]"
+                    className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[500px] sm:w-[400px]"
                   />
                 </div>
-                <div className="flex">
+                <div className=" xs:flex sm:w-[500px] lg:w-[500px] ">
                   <label className="text-[#808080] text-[15px] font-bold mr-10">
                     説明
                   </label>
                   <input
                     type="text"
-                    className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[500px] h-[100px]"
+                    className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[500px] h-[100px] sm:w-[400px]"
                   />
                 </div>
               </div>
             </div>
             <div className=" flex items-center justify-center flex-col gap-5">
-              <div className="flex flex-col sm:w-full lg:w-auto">
-                <label className="text-[#808080] text-[15px] font-bold mr-10">
+              <div className="flex flex-col sm:w-full xs:w-full lg:w-auto">
+                <label className="text-[#808080] text-[18px] font-bold mr-10">
                   カスタム指示
                 </label>
                 <input
@@ -70,7 +70,7 @@ const AgentCreator = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[#808080] text-[15px] font-bold mr-10">
+                <label className="text-[#808080] text-[18px] font-bold mr-10 mt-4">
                   ナレッジベース
                 </label>
                 <span className="text-[#808080] lg:text-[14px] sm:text-[12px]">
@@ -78,7 +78,7 @@ const AgentCreator = () => {
                   <br />
                   お客様の要件にさ らに応えるために使用されます。
                 </span>
-                <div className="border border-none rounded-lg px-5 py-3 mt-2 lg:w-[750px] h-[100px] bg-[#F5F5F5]  flex flex-col gap-2">
+                <div className="border border-none rounded-lg px-5 py-3 mt-2 lg:w-[750px]  lg:h-[100px] bg-[#F5F5F5]  flex flex-col gap-2">
                   <span className="text-[#808080] lg:text-[14px] sm:text-[12px]">
                     このスペースをタップしてファイルをアップロードするか、ドラッグアンドドロップしてください
                   </span>

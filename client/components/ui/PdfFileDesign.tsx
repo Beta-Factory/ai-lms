@@ -1,7 +1,7 @@
 const PdfFile = () => {
   return (
     <>
-      <div className="border w-[200px] p-2 rounded-full flex items-center bg-[#103F91] gap-2  justify-between">
+      <div className="border lg:w-[200px] p-2 rounded-full flex items-center bg-[#103F91] gap-2  justify-between">
         <div className="flex gap-2">
           <div className=" rounded-full border w-[30px] h-[30px]  flex justify-center items-center bg-[#ffffff] ">
             <svg
