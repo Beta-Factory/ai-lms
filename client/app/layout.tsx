@@ -1,15 +1,13 @@
 "use client";
 // import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import i18next from "i18next";
 import localFont from "next/font/local";
-import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import global_en from "../components/translations/en/global.json";
 import global_jp from "../components/translations/jp/global.json";
 import "./globals.css";
 import StoreProvider from "./storeProvider";
-import { ThemeProvider } from "@/components/ui/ThemeProvider"
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -45,51 +43,59 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // ? password protection logic-------------------------------------------------------------
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // // ? password protection logic-------------------------------------------------------------
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    const storedPassword = localStorage.getItem("password");
-    const correctPassword = "gta6gamer";
+  // useEffect(() => {
+  //   setIsMounted(true);
+  //   const storedPassword = localStorage.getItem("password");
+  //   const correctPassword = "gta6gamer";
 
-    if (storedPassword === correctPassword) {
-      setIsAuthenticated(true);
-    } else {
-      const password = prompt("Please enter the password:");
-      if (password === correctPassword) {
-        localStorage.setItem("password", password);
-        setIsAuthenticated(true);
-      } else {
-        alert("Incorrect password!");
-      }
-    }
-  }, []);
+  //   if (storedPassword === correctPassword) {
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     const password = prompt("Please enter the password:");
+  //     if (password === correctPassword) {
+  //       localStorage.setItem("password", password);
+  //       setIsAuthenticated(true);
+  //     } else {
+  //       alert("Incorrect password!");
+  //     }
+  //   }
+  // }, []);
+  // if (!isMounted) {
+  //   return null; // Prevents mismatched rendering during hydration
+  // }
 
-  // ? password protection logic end-------------------------------------------------------------
+  // // ? password protection logic end-------------------------------------------------------------
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
+        <StoreProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-        {isAuthenticated ? (
-          <I18nextProvider i18n={i18next}>
-            <StoreProvider>{children}</StoreProvider>
-          </I18nextProvider>
-        ) : (
-          <div className="flex items-center justify-center h-screen">
-            <div className="text-red-500 text-4xl text-center">
-              Access Denied
-            </div>
-          </div>
-        )}
-        </ThemeProvider>
+            <I18nextProvider i18n={i18next}>{children}</I18nextProvider>
+            {/* {isAuthenticated ? (
+              <I18nextProvider i18n={i18next}>
+                <StoreProvider>{children}</StoreProvider>
+              </I18nextProvider>
+            ) : (
+              <div className="flex items-center justify-center h-screen">
+                <div className="text-red-500 text-4xl text-center">
+                  Access Denied
+                </div>
+              </div>
+            )} */}
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );

@@ -14,6 +14,7 @@ import { MenuIcon } from "lucide-react";
 
 import { Menulinks } from "../sideBar/SideBarMain";
 import MenuItemCard from "./MenuItemCard";
+import ModeToggle from "./Toggle";
 
 const Hamburger = () => {
   return (
@@ -24,10 +25,11 @@ const Hamburger = () => {
             <MenuIcon className="text-[#808080]" />
           </span>
         </SheetTrigger>
-        <SheetContent className="bg-[#F5F5F5] text-slate-700">
+        <SheetContent className="bg-[#F5F5F5] text-slate-700 dark:bg-slate-950">
           <SheetHeader>
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription>
+              <ModeToggle />
               <div className="mt-8 flex flex-col gap-2">
                 {Menulinks.map((link, idx) => (
                   <MenuItemCard

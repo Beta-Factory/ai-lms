@@ -37,7 +37,7 @@ const Profile = () => {
           <PencilIcon />
         </button>
       </div>
-      <h2 className="text-black font-bold mt-6">Parwez</h2>
+      <h2 className="text-black font-bold mt-6 dark:text-white">Parwez</h2>
       {/* <h2 className="text-black font-bold mt-6">{name}</h2> */}
       <p className="text-orange-400 text-sm mt-2 font-semibold">prime user</p>
       {/* <p className="text-gray-500 text-xs mt-2">{userType}</p> */}
