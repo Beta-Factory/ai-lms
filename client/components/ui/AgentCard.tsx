@@ -10,7 +10,7 @@ interface AgentCardProps {
 const AgentCard = ({ name, description, imageUrl }: AgentCardProps) => {
   return (
     <>
-      <div className="lg:w-1/2 xs:w-full  flex justify-center items-center gap-3 border rounded-xl px-[32px] py-[24px] bg-[#F5F5F5]">
+      <div className="lg:w-1/2 xs:w-full  flex justify-center items-center gap-3 border rounded-xl px-[32px] py-[24px] bg-[#F5F5F5] max-md:flex-col">
         <Image
           className="h-[124px] w-[124px] border text-[#000000] rounded-full p-1 object-cover"
           src={imageUrl} // Agent Image URL

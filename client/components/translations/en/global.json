@@ -1,0 +1,39 @@
+{
+  "header": {
+    "message": "Welcome to the ai agent application"
+  },
+  "home": {
+    "body": "A managing platform for all your ai agents"
+  },
+  "user": {
+    "heading": "User Settings",
+    "primeType": "prime user",
+    "proType": "pro user",
+    "userType": "user",
+    "saveButton": "Save Name"
+  },
+  "password": {
+    "heading": "change password",
+    "description": "an OTP will be sent to your email",
+    "label": "New Password",
+    "button": "Save"
+  },
+  "deleteAccount": {
+    "heading": "Delete Account",
+    "description": "permanently delete your account",
+    "button": "DELETE"
+  },
+  "chat": {
+    "inputLabel": "Type your message here...",
+    "sendButton": "Send Message"
+  },
+  "sidebar": {
+    "exploreAgents": "Explore Agents",
+    "setting:": "Settings",
+    "logout": "Logout",
+    "userProfile": "User Profile",
+    "lightMode": "Light",
+    "darkMode": "Dark",
+    "systemTheme": "System"
+  }
+}
