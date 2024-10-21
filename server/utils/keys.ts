@@ -46,7 +46,7 @@ const nativeSupabaseClient = new Client({
   connectionString:
     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
 });
-export const llm = new ChatOpenAI({ openAIApiKey });
+export const llm = new ChatOpenAI({ openAIApiKey, modelName: "gpt-4o-mini" });
 export const getAstraConfig = (collectionName: string) => {
   const astraConfig: AstraLibArgs = {
     token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
@@ -90,6 +90,24 @@ export const getSupabaseVectorStore = (tableName: string) => {
 
   return vectorStore;
 };
+export const checkTableExists = async (tableName: string): Promise<boolean> => {
+  const checkTableSQL = `
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = '${tableName}'
+    );
+  `;
+
+  try {
+    const result = await sql.unsafe(checkTableSQL);
+    return result[0].exists;
+  } catch (error) {
+    console.error("Error checking table existence:", error);
+    throw error;
+  }
+};
+
 export const createTable = async (tableName: string) => {
   const createTableSQL = `
     CREATE TABLE IF NOT EXISTS ${tableName} (
