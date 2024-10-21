@@ -42,42 +42,44 @@ export const sbApiKey = process.env.SUPABASE_API_KEY as string;
 export const sbUrl = process.env.SUPABASE_PROJECT_URL as string;
 export const openAIApiKey = process.env.OPENAI_API_KEY as string;
 export const sbClient = createClient(sbUrl, sbApiKey);
-const nativeSupabaseClient = new Client({
-  connectionString:
-    "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
-});
-export const llm = new ChatOpenAI({ openAIApiKey });
-export const getAstraConfig = (collectionName: string) => {
-  const astraConfig: AstraLibArgs = {
-    token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
-    endpoint: process.env.ASTRA_DB_ENDPOINT as string,
-    collection: collectionName,
-    collectionOptions: {
-      vector: {
-        dimension: process.env.MODEL_DIMENSIONS as unknown as number,
-        metric: "cosine",
-      },
-    },
-  };
-  return astraConfig;
-};
-export const astraConfig: AstraLibArgs = {
-  token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
-  endpoint: process.env.ASTRA_DB_ENDPOINT as string,
-  collection: process.env.ASTRA_DB_COLLECTION as string,
-  collectionOptions: {
-    vector: {
-      dimension: process.env.MODEL_DIMENSIONS as unknown as number,
-      metric: "cosine",
-    },
-  },
-};
-export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
 
-export const togetherLlm = new TogetherAI({
-  model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-  maxTokens: 256,
-});
+// const nativeSupabaseClient = new Client({
+//   connectionString:
+//     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
+// });
+export const llm = new ChatOpenAI({ openAIApiKey, modelName: "gpt-4o-mini" });
+
+// export const getAstraConfig = (collectionName: string) => {
+//   const astraConfig: AstraLibArgs = {
+//     token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
+//     endpoint: process.env.ASTRA_DB_ENDPOINT as string,
+//     collection: collectionName,
+//     collectionOptions: {
+//       vector: {
+//         dimension: process.env.MODEL_DIMENSIONS as unknown as number,
+//         metric: "cosine",
+//       },
+//     },
+//   };
+//   return astraConfig;
+// };
+// export const astraConfig: AstraLibArgs = {
+//   token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
+//   endpoint: process.env.ASTRA_DB_ENDPOINT as string,
+//   collection: process.env.ASTRA_DB_COLLECTION as string,
+//   collectionOptions: {
+//     vector: {
+//       dimension: process.env.MODEL_DIMENSIONS as unknown as number,
+//       metric: "cosine",
+//     },
+//   },
+// };
+// export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
+
+// export const togetherLlm = new TogetherAI({
+//   model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+//   maxTokens: 256,
+// });
 export const getSupabaseVectorStore = (tableName: string) => {
   const embeddings = new OpenAIEmbeddings({
     model: "text-embedding-3-small",
