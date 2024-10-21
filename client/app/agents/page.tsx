@@ -1,8 +1,7 @@
 // import { Sidebar } from "lucide-react";
-import SideBarSection from "../../components/SidebarSection";
-import AgentsPage from "../../components/AgentsPage";
-import { Sidebar } from "@/components/ui/AnimatedSideBar";
-import { SideBarMain } from "@/components/SideBar";
+
+import AgentsPage from "@/components/agentsListPage/AgentsPage";
+import { SideBarMain } from "@/components/sideBar/SideBarMain";
 
 const TopPageLayout = () => {
   return (

@@ -1,6 +1,8 @@
-import React from "react";
-import PdfFile from "./ui/PdfFileDesign";
-import AudioFIle from "./ui/AudioFileDesign";
+import { Button } from "@/components/ui/button";
+import AudioFIle from "../ui/AudioFileDesign";
+import PdfFile from "../ui/PdfFileDesign";
+
+
 
 const AgentCreator = () => {
   return (
@@ -16,7 +18,7 @@ const AgentCreator = () => {
                 width="100"
                 height="146"
                 viewBox="0 0 146 146"
-                fill="none"
+                fill="white"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <circle
@@ -88,9 +90,9 @@ const AgentCreator = () => {
               </div>
             </div>
             <div className="flex justify-end mt-5 mr-[120px]">
-              <button className="bg-[#000000] text-[#ffffff] text-[15px] font-bold rounded-full p-2 w-[200px]">
+              <Button className=" text-[15px] font-bold rounded-full p-2 w-[200px]">
                 エージェントを作成
-              </button>
+              </Button>
             </div>
           </form>
         </div>

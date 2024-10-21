@@ -1,21 +1,17 @@
 "use client";
 
-import CreateAgentPage from "@/app/create-agent/page";
-import AgentsList from "@/lib/features/ai-agents/ai-agents";
-import AgentsTopPage from "./ui/AgentsTopPage";
-import AgentCard from "./ui/AgentCard";
+import AgentsTopPage from "../ui/AgentsTopPage";
+import AgentCard from "../ui/AgentCard";
 import { StaticImageData } from "next/image";
 import Imageone from "@/app/assets/nature.jpg";
 
-import { useGetUsersQuery } from "@/lib/features/ai-agents/ai-agents-api";
-
 const AgentsPage = () => {
-  const { data, error, isLoading } = useGetUsersQuery();
-
   return (
     <>
-      <div className="flex w-[75%] flex-col border border-green-500">
+      <div className="flex w-vw flex-col p-10">
+        {/* top page heading, search etc. */}
         <AgentsTopPage />
+
         {/* agent cards  will use map here over list of agents*/}
         <div className="w-full flex justify-center items-center flex-wrap">
           <div className=" flex lg:flex-row xs:flex-col justify-evenly  gap-5 w-full mt-10">

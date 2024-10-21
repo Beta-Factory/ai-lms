@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import { agentReducer } from "../features/ai-agents/ai-agents-Slice";
 import { agentsApi } from "../features/ai-agents/ai-agents-api";
-import { chatReducer } from "../features/ai-agents/ai-chat";
+import { chatReducer } from "../features/ai-chats/ai-chat-Slice";
 
 export const makeStore = () => {
   // store variable is a global variable
