@@ -66,3 +66,7 @@ export interface CustomRequest extends Request {
     | Express.Multer.File[]
     | { [fieldname: string]: Express.Multer.File[] };
 }
+
+export const combineDocs = (docs: any) => {
+  return docs.map((doc: any) => doc.pageContent).join("\n\n");
+};

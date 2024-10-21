@@ -20,7 +20,12 @@ router.post(
   createAgent
 );
 router.get("/get-all-user-agents", authCheckMiddleware, getListOfAllAgents);
-router.post("/chat/:agentId/:chatId?", authCheckMiddleware, chatWIthAIAgent);
+router.post(
+  "/chat/:agentId/:chatId?",
+  authCheckMiddleware,
+  upload.fields([{ name: "chatFiles", maxCount: 5 }]),
+  chatWIthAIAgent
+);
 router.put(
   "/edit-agent/:agentId",
   upload.fields([{ name: "agentPic", maxCount: 1 }]),

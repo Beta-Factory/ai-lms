@@ -7,10 +7,7 @@ import {
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-
-const combineDocs = (docs: any) => {
-  return docs.map((doc: any) => doc.pageContent).join("\n\n");
-};
+import { combineDocs } from "./helpers";
 
 const formatConvoHistory = (chats: any) => {
   return chats
@@ -34,13 +31,14 @@ const compactQuestionTemplate = `Convert the following question into a compact f
 const answerTemplateWithVector = `
   You are a friendly and enthusiastic AI agent who responds politely to both questions and casual conversation.
   If the user doesn't ask a question, provide a friendly, engaging response to keep the conversation going.
-  If the user asks a question, try to find the answer from the provided context or conversation history.
+  If the user asks a question, try to find the answer from the provided context or conversation history or the chat file provided by the user.
   If the information isn’t available, politely say: "I don't have that information right now."
   Always ensure that your responses are helpful, positive, and maintain a warm tone.
   Answer accordingly to the context, user instructions, question and conversation history (if any) and also introduce yourself as the name given to you if you haven't already in the conversation history as mentioned below. 
   your name : {agentName}
   context : {context}
   user instructions : {userInstructions}
+  chat file : {chatFile}
   conversation history : {convo_history}
   question : {transQuestion}
   answer :
@@ -49,12 +47,13 @@ const answerTemplateWithVector = `
 const answerTemplateWithoutVector = `
  You are a friendly and enthusiastic AI agent who responds politely to both questions and casual conversation.
   If the user doesn't ask a question, provide a friendly, engaging response to keep the conversation going.
-  If the user asks a question, try to find the answer from the conversation history.
+  If the user asks a question, try to find the answer from the conversation history or the chat file provided by the user.
   If the information isn’t available, politely say: "I don't have that information right now."
   Always ensure that your responses are helpful, positive, and maintain a warm tone.
   Answer accordingly to the user instructions, question and conversation history (if any) and also introduce yourself as the name given to you if you haven't already in the conversation history as mentioned below. 
   your name : {agentName}
   user instructions : {userInstructions}
+  chat file : {chatFile}
   conversation history : {convo_history}
   question : {transQuestion}
   answer :
@@ -117,7 +116,8 @@ export const chatWithAIWithVectorRetrieval = async (
   prevChats: {
     human?: string;
     ai?: string;
-  }[]
+  }[],
+  chatFileData?: string[]
 ) => {
   const retrieverChain = RunnableSequence.from([
     (prevRes) => prevRes.compactQuestion,
@@ -140,6 +140,7 @@ export const chatWithAIWithVectorRetrieval = async (
       context: retrieverChain,
       userInstructions: ({ compactInput }) =>
         compactInput?.originalQuestionLang?.userInstructions,
+      chatFile: () => chatFileData,
       convo_history: () => {
         return formatConvoHistory(prevChats);
       },
@@ -178,7 +179,8 @@ export const chatWithAiWithOutVectorRetrieval = async (
   prevChats: {
     human?: string;
     ai?: string;
-  }[]
+  }[],
+  chatFileData?: string[]
 ) => {
   const chain = RunnableSequence.from([
     {
@@ -194,6 +196,7 @@ export const chatWithAiWithOutVectorRetrieval = async (
         compactInput?.originalQuestionLang?.agentName,
       userInstructions: ({ compactInput }) =>
         compactInput?.originalQuestionLang?.userInstructions,
+      chatFile: () => chatFileData,
       convo_history: () => {
         return formatConvoHistory(prevChats);
       },

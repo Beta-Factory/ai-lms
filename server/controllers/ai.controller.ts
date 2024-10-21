@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { Request, Response } from "express";
-import { cleanupFiles, CustomRequest } from "../utils/helpers";
+import { cleanupFiles, combineDocs, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
 import {
   chatWithAiWithOutVectorRetrieval,
@@ -230,10 +230,24 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
       body: { userInput },
+      files,
       user,
       params: { agentId, chatId },
     } = req;
     console.log("userInput", userInput);
+
+    let chatFiles, extractedChatData;
+
+    if (files && !(files instanceof Array)) {
+      chatFiles = files["chatFiles"];
+      const filepathsArray = Array.isArray(chatFiles)
+        ? chatFiles.map((file) => `${file.destination}${file.filename}`)
+        : [];
+      const chatOutputData = await extractMultiFileData(filepathsArray);
+      extractedChatData = combineDocs(chatOutputData);
+    } else {
+      extractedChatData = "no data from chat";
+    }
 
     if (!userInput) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -281,13 +295,13 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
     let aiResponse: string = "";
     const collectionName = foundAgent.agentName;
     const tableExists = await checkTableExists(collectionName);
-    console.log("tableExists", tableExists);
     if (!tableExists) {
       aiResponse = await chatWithAiWithOutVectorRetrieval(
         userInput,
         foundAgent.agentName.split("_")[0],
         foundAgent.context,
-        foundChats
+        foundChats,
+        extractedChatData
       );
     } else {
       const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
@@ -296,7 +310,8 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
         foundAgent.agentName.split("_")[0],
         retriever,
         foundAgent.context,
-        foundChats
+        foundChats,
+        extractedChatData
       );
     }
 
