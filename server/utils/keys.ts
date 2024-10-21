@@ -42,39 +42,37 @@ export const sbApiKey = process.env.SUPABASE_API_KEY as string;
 export const sbUrl = process.env.SUPABASE_PROJECT_URL as string;
 export const openAIApiKey = process.env.OPENAI_API_KEY as string;
 export const sbClient = createClient(sbUrl, sbApiKey);
-
-// const nativeSupabaseClient = new Client({
-//   connectionString:
-//     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
-// });
+const nativeSupabaseClient = new Client({
+  connectionString:
+    "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
+});
 export const llm = new ChatOpenAI({ openAIApiKey, modelName: "gpt-4o-mini" });
-
-// export const getAstraConfig = (collectionName: string) => {
-//   const astraConfig: AstraLibArgs = {
-//     token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
-//     endpoint: process.env.ASTRA_DB_ENDPOINT as string,
-//     collection: collectionName,
-//     collectionOptions: {
-//       vector: {
-//         dimension: process.env.MODEL_DIMENSIONS as unknown as number,
-//         metric: "cosine",
-//       },
-//     },
-//   };
-//   return astraConfig;
-// };
-// export const astraConfig: AstraLibArgs = {
-//   token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
-//   endpoint: process.env.ASTRA_DB_ENDPOINT as string,
-//   collection: process.env.ASTRA_DB_COLLECTION as string,
-//   collectionOptions: {
-//     vector: {
-//       dimension: process.env.MODEL_DIMENSIONS as unknown as number,
-//       metric: "cosine",
-//     },
-//   },
-// };
-// export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
+export const getAstraConfig = (collectionName: string) => {
+  const astraConfig: AstraLibArgs = {
+    token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
+    endpoint: process.env.ASTRA_DB_ENDPOINT as string,
+    collection: collectionName,
+    collectionOptions: {
+      vector: {
+        dimension: process.env.MODEL_DIMENSIONS as unknown as number,
+        metric: "cosine",
+      },
+    },
+  };
+  return astraConfig;
+};
+export const astraConfig: AstraLibArgs = {
+  token: process.env.ASTRA_DB_APPLICATION_TOKEN as string,
+  endpoint: process.env.ASTRA_DB_ENDPOINT as string,
+  collection: process.env.ASTRA_DB_COLLECTION as string,
+  collectionOptions: {
+    vector: {
+      dimension: process.env.MODEL_DIMENSIONS as unknown as number,
+      metric: "cosine",
+    },
+  },
+};
+export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
 
 // export const togetherLlm = new TogetherAI({
 //   model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
@@ -92,6 +90,24 @@ export const getSupabaseVectorStore = (tableName: string) => {
 
   return vectorStore;
 };
+export const checkTableExists = async (tableName: string): Promise<boolean> => {
+  const checkTableSQL = `
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = '${tableName}'
+    );
+  `;
+
+  try {
+    const result = await sql.unsafe(checkTableSQL);
+    return result[0].exists;
+  } catch (error) {
+    console.error("Error checking table existence:", error);
+    throw error;
+  }
+};
+
 export const createTable = async (tableName: string) => {
   const createTableSQL = `
     CREATE TABLE IF NOT EXISTS ${tableName} (

@@ -2,7 +2,10 @@ import fs from "fs/promises";
 import { Request, Response } from "express";
 import { cleanupFiles, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
-import { chatWithAI } from "../utils/chatWithAi";
+import {
+  chatWithAiWithOutVectorRetrieval,
+  chatWithAIWithVectorRetrieval,
+} from "../utils/chatWithAi";
 import { obtainRetrieverOfExistingVectorDb } from "../utils/uploadOrGetVectorDb";
 import { extractMultiFileData } from "../utils/multiFileLoader";
 import { Agent } from "../models/agent.model";
@@ -12,10 +15,11 @@ import { Chat } from "../models/chat.model";
 import { generateChatName } from "../utils/generateChatName";
 import { Conversation } from "../models/conversation.model";
 import { mongoIdType } from "../types/mongooseTypes";
+import { checkTableExists } from "../utils/keys";
 
 const bucketName = process.env.AWS_BUCKETNAME || "";
 
-export const creatAgent = async (req: CustomRequest, res: Response) => {
+export const createAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
       body: { context, description, agentName },
@@ -23,7 +27,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
       user,
     } = req;
 
-    let agentPic, trainFiles: any;
+    let agentPic,
+      trainFiles: any = [];
     let agentPicUrl = "";
     let trainingFilesUrls: string[] = [];
 
@@ -86,7 +91,8 @@ export const creatAgent = async (req: CustomRequest, res: Response) => {
 
     await Promise.all(uploadPromises);
 
-    await extractMultiFileData(filepathsArray, uniqueAgentName);
+    if (filepathsArray && filepathsArray.length !== 0)
+      await extractMultiFileData(filepathsArray, uniqueAgentName);
 
     await Agent.create({
       creatorId: user?._id,
@@ -272,15 +278,27 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
           )
         : [{ human: "", ai: "" }];
 
+    let aiResponse: string = "";
     const collectionName = foundAgent.agentName;
-    const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
-    const aiResponse = await chatWithAI(
-      userInput,
-      foundAgent.agentName.split("_")[0],
-      retriever,
-      foundAgent.context,
-      foundChats
-    );
+    const tableExists = await checkTableExists(collectionName);
+    console.log("tableExists", tableExists);
+    if (!tableExists) {
+      aiResponse = await chatWithAiWithOutVectorRetrieval(
+        userInput,
+        foundAgent.agentName.split("_")[0],
+        foundAgent.context,
+        foundChats
+      );
+    } else {
+      const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
+      aiResponse = await chatWithAIWithVectorRetrieval(
+        userInput,
+        foundAgent.agentName.split("_")[0],
+        retriever,
+        foundAgent.context,
+        foundChats
+      );
+    }
 
     if (!chatId) {
       const chatName = await generateChatName(userInput, aiResponse);
