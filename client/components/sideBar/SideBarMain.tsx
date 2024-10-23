@@ -71,7 +71,30 @@ export function SideBarMain() {
               )}
             </div>
             <div className="mt-8 flex flex-col gap-2">
-              {Menulinks.map((link, idx) => (
+              {Menulinks.filter((link) => link.label !== "Logout").map(
+                (link, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setCurrentLink(link.href);
+                      console.log("Current Link:", link.href); // ! Debugging statement
+                    }}
+                  >
+                    <SidebarLink
+                      className={`hover:font-bold ${
+                        currentLink === link.href ? `text-blue-500` : ``
+                      } `}
+                      link={link}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+          <ModeToggle />
+          <div className="mt-auto">
+            {Menulinks.filter((link) => link.label === "Logout").map(
+              (link, idx) => (
                 <div
                   key={idx}
                   onClick={() => {
@@ -86,10 +109,9 @@ export function SideBarMain() {
                     link={link}
                   />
                 </div>
-              ))}
-            </div>
+              )
+            )}
           </div>
-          <ModeToggle />
         </SidebarBody>
       </Sidebar>
     </div>

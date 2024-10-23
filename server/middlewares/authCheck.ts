@@ -8,6 +8,8 @@ export const authCheckMiddleware = async (
 ) => {
   try {
     const { user } = req;
+
+    console.log(JSON.stringify(req.user)); // ! debug
     if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "failed",

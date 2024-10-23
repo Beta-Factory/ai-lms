@@ -1,47 +1,49 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-// import passport from "passport";
+import { PassportRequest } from "../utils/helpers";
 
-export const registerUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const registerUser = async (req: PassportRequest, res: Response) => {
   try {
-    const { user } = req;
+    const { user, passportInternalErr, passportauthErr } = req;
 
-    console.log("Authenticated user", user);
-    return res.status(StatusCodes.CREATED).json({
-      message: "success user created",
+    if (passportauthErr || passportInternalErr) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Registration failed",
+        error: passportauthErr || passportInternalErr,
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      message: "success",
       user,
     });
-  } catch (error) {
-    console.log("error", error);
-
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "failed to register user",
-      error,
+  } catch (error: any | unknown) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Sign Up failed",
+      error: error.message,
     });
   }
 };
 
-export const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const loginUser = async (req: PassportRequest, res: Response) => {
   try {
-    const { user } = req;
-    console.log("Authenticated user", user);
+    const { user, passportInternalErr, passportauthErr } = req;
+
+    if (passportauthErr || passportInternalErr) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Authentication failed",
+        error: passportauthErr || passportInternalErr,
+      });
+    }
+
     return res.status(StatusCodes.OK).json({
       message: "success user logged in",
       user,
     });
-  } catch (error) {
-    console.log("error", error);
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: "failed user not found",
-      error,
+  } catch (error: any | unknown) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Login failed",
+      error: error.message,
     });
   }
 };

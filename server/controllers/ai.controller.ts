@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import { Request, Response } from "express";
-import { cleanupFiles, CustomRequest } from "../utils/helpers";
+import { Response } from "express";
+import { cleanupFiles, combineDocs, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
 import {
   chatWithAiWithOutVectorRetrieval,
@@ -16,6 +16,7 @@ import { generateChatName } from "../utils/generateChatName";
 import { Conversation } from "../models/conversation.model";
 import { mongoIdType } from "../types/mongooseTypes";
 import { checkTableExists } from "../utils/keys";
+import { audioTranscription } from "../utils/audioProcessing";
 
 const bucketName = process.env.AWS_BUCKETNAME || "";
 
@@ -230,12 +231,47 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
   try {
     const {
       body: { userInput },
+      files,
       user,
       params: { agentId, chatId },
     } = req;
-    console.log("userInput", userInput);
 
-    if (!userInput) {
+    let chatFiles, transcribedText, extractedChatData;
+
+    if (files && !(files instanceof Array)) {
+      const fileFields = files as {
+        [fieldname: string]: Express.Multer.File[];
+      };
+
+      if (fileFields["chatFiles"]) {
+        chatFiles = fileFields["chatFiles"];
+        const filepathsArray = Array.isArray(chatFiles)
+          ? chatFiles.map((file) => `${file.destination}${file.filename}`)
+          : [];
+        const chatOutputData = await extractMultiFileData(filepathsArray);
+        extractedChatData = combineDocs(chatOutputData);
+        await cleanupFiles(filepathsArray);
+      } else {
+        extractedChatData = "no data from chat";
+      }
+
+      if (fileFields["voiceMessage"]) {
+        const voiceMessage = fileFields["voiceMessage"][0];
+        const voiceMessagePath = `${voiceMessage.destination}${voiceMessage.filename}`;
+
+        transcribedText = await audioTranscription(voiceMessagePath);
+        await cleanupFiles([voiceMessagePath]);
+      } else {
+        transcribedText = "no voice message provided";
+      }
+    } else {
+      extractedChatData = "no data from chat";
+      transcribedText = "no voice message provided";
+    }
+
+    console.log("transcribed text", transcribedText);
+
+    if (!userInput && transcribedText === "no voice message provided") {
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "failed",
         error: "no input from user",
@@ -281,22 +317,27 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
     let aiResponse: string = "";
     const collectionName = foundAgent.agentName;
     const tableExists = await checkTableExists(collectionName);
-    console.log("tableExists", tableExists);
     if (!tableExists) {
       aiResponse = await chatWithAiWithOutVectorRetrieval(
-        userInput,
+        transcribedText !== "no voice message provided"
+          ? transcribedText
+          : userInput,
         foundAgent.agentName.split("_")[0],
         foundAgent.context,
-        foundChats
+        foundChats,
+        extractedChatData
       );
     } else {
       const retriever = await obtainRetrieverOfExistingVectorDb(collectionName);
       aiResponse = await chatWithAIWithVectorRetrieval(
-        userInput,
+        transcribedText !== "no voice message provided"
+          ? transcribedText
+          : userInput,
         foundAgent.agentName.split("_")[0],
         retriever,
         foundAgent.context,
-        foundChats
+        foundChats,
+        extractedChatData
       );
     }
 
@@ -313,7 +354,10 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
         userId: user?._id,
         agentId: foundAgent._id,
         chatId: chat?._id,
-        user: userInput,
+        user:
+          transcribedText !== "no voice message provided"
+            ? transcribedText
+            : userInput,
         system: aiResponse,
       });
     } else {
@@ -321,7 +365,10 @@ export const chatWIthAIAgent = async (req: CustomRequest, res: Response) => {
         userId: user?._id,
         agentId: foundAgent._id,
         chatId,
-        user: userInput,
+        user:
+          transcribedText !== "no voice message provided"
+            ? transcribedText
+            : userInput,
         system: aiResponse,
       });
     }
