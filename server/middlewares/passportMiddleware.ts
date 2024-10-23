@@ -20,7 +20,14 @@ export const passportLoginMiddleware = async (
       }
 
       req.user = user;
-      return next();
+
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          req.passportInternalErr = loginErr;
+          return next();
+        }
+        return next();
+      });
     }
   )(req, res, next);
 };
@@ -43,7 +50,14 @@ export const passportSignUpMiddleware = async (
       }
 
       req.user = user;
-      return next();
+
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          req.passportInternalErr = loginErr;
+          return next();
+        }
+        return next();
+      });
     }
   )(req, res, next);
 };
