@@ -1,13 +1,10 @@
-import dotenv from "dotenv";
-import { createClient } from "@supabase/supabase-js";
-import { ChatOpenAI } from "@langchain/openai";
 import { AstraLibArgs } from "@langchain/community/vectorstores/astradb";
-import { TogetherAI } from "@langchain/community/llms/togetherai";
-import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { MongoClient } from "mongodb";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { Client } from "pg";
+import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
 import postgres from "postgres";
 
 dotenv.config();
@@ -42,10 +39,10 @@ export const sbApiKey = process.env.SUPABASE_API_KEY as string;
 export const sbUrl = process.env.SUPABASE_PROJECT_URL as string;
 export const openAIApiKey = process.env.OPENAI_API_KEY as string;
 export const sbClient = createClient(sbUrl, sbApiKey);
-const nativeSupabaseClient = new Client({
-  connectionString:
-    "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
-});
+// const nativeSupabaseClient = new Client({
+//   connectionString:
+//     "postgresql://postgres.eojvbyorcbukxnswockh:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres",
+// });
 export const llm = new ChatOpenAI({ openAIApiKey, modelName: "gpt-4o-mini" });
 export const getAstraConfig = (collectionName: string) => {
   const astraConfig: AstraLibArgs = {

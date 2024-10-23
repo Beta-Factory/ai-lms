@@ -1,21 +1,43 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+// import passport from "passport";
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { user } = req;
+
     console.log("Authenticated user", user);
     return res.status(StatusCodes.CREATED).json({
-      message: "success",
+      message: "success user created",
       user,
     });
   } catch (error) {
     console.log("error", error);
-    return res.status(StatusCodes.OK).json({
-      message: "failed",
+
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "failed to register user",
       error,
     });
   }
+
+  // passport.authenticate(
+  //   "local-signup",
+  //   (err: { message: any }, user: any, info: { message: any }) => {
+  //     if (err) {
+  //       return res.status(500).json({ message: err.message });
+  //     }
+  //     if (!user) {
+  //       return res.status(400).json({ message: info.message });
+  //     }
+  //     return res
+  //       .status(200)
+  //       .json({ message: "User registered successfully", user });
+  //   }
+  // )(req, res, next);
 };
 
 export const loginUser = async (req: Request, res: Response) => {
@@ -23,13 +45,13 @@ export const loginUser = async (req: Request, res: Response) => {
     const { user } = req;
     console.log("Authenticated user", user);
     return res.status(StatusCodes.OK).json({
-      message: "success",
+      message: "success user logged in",
       user,
     });
   } catch (error) {
     console.log("error", error);
-    return res.status(StatusCodes.OK).json({
-      message: "failed",
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "failed user not found",
       error,
     });
   }

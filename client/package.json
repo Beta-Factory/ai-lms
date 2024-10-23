@@ -22,6 +22,8 @@
     "@tabler/icons-react": "^3.19.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dom-parser": "^1.1.5",
+    "dotenv": "^16.4.5",
     "framer-motion": "^11.10.0",
     "html2canvas": "^1.4.1",
     "i18next": "^23.16.0",
