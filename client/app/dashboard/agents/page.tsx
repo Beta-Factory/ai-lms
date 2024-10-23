@@ -2,6 +2,7 @@
 "use client";
 
 import AgentsPage from "@/components/agentsListPage/AgentsPage";
+import { SideBarMain } from "@/components/sideBar/SideBarMain";
 
 const TopPageLayout = () => {
   return (

@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
   chatWIthAIAgent,
-  creatAgent,
+  createAgent,
   EditAIAgent,
   getListOfAllAgents,
 } from "../controllers/ai.controller";
-import upload from "../middlewares/multerConfig";
+import { upload } from "../middlewares/multerConfig";
 import { authCheckMiddleware } from "../middlewares/authCheck";
 
 const router = Router();
@@ -17,10 +17,18 @@ router.post(
     { name: "agentPic", maxCount: 1 },
     { name: "trainFiles", maxCount: 10 },
   ]),
-  creatAgent
+  createAgent
 );
 router.get("/get-all-user-agents", authCheckMiddleware, getListOfAllAgents);
-router.post("/chat/:agentId/:chatId", authCheckMiddleware, chatWIthAIAgent);
+router.post(
+  "/chat/:agentId/:chatId?",
+  authCheckMiddleware,
+  upload.fields([
+    { name: "chatFiles", maxCount: 5 }, // Files for chat
+    { name: "voiceMessage", maxCount: 1 }, // Audio file for voice message
+  ]),
+  chatWIthAIAgent
+);
 router.put(
   "/edit-agent/:agentId",
   upload.fields([{ name: "agentPic", maxCount: 1 }]),
