@@ -121,6 +121,7 @@ export const createAgent = async (req: CustomRequest, res: Response) => {
 export const getListOfAllAgents = async (req: CustomRequest, res: Response) => {
   try {
     const { user } = req;
+    console.log("user", user);
     const allUserAgents = await Agent.find({
       creatorId: user?._id,
     });

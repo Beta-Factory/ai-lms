@@ -13,6 +13,8 @@ export const registerUser = async (req: PassportRequest, res: Response) => {
       });
     }
 
+    console.log("session", req.session);
+
     return res.status(StatusCodes.OK).json({
       message: "success",
       user,
@@ -36,6 +38,8 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
       });
     }
 
+    console.log("session", req.session);
+
     return res.status(StatusCodes.OK).json({
       message: "success user logged in",
       user,
@@ -48,7 +52,8 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
   }
 };
 
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = (req: PassportRequest, res: Response) => {
+  console.log("user", req.user);
   if (!req.user) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       err: "No user in session",

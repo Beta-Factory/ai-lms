@@ -1,4 +1,4 @@
-import { AgentType } from "@/types/AI-Agents";
+// import { AgentType } from "@/types/AI-Agents";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import dotenv from "dotenv";
 
@@ -10,10 +10,11 @@ export const agentsApi = createApi({
     baseUrl: "http://localhost:5000/api/v1",
   }), // this is the base backend url
   endpoints: (builder) => ({
-    getAgents: builder.query<AgentType[], void>({
+    getAgents: builder.query({
       // query is a get request
       query: () => ({
         url: `/ai/get-all-user-agents`,
+        credentials: "include",
 
         // responseHandler: (response) => response.json(),
       }),
