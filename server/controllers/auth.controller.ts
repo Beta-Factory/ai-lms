@@ -23,24 +23,13 @@ export const registerUser = async (
       error,
     });
   }
-
-  // passport.authenticate(
-  //   "local-signup",
-  //   (err: { message: any }, user: any, info: { message: any }) => {
-  //     if (err) {
-  //       return res.status(500).json({ message: err.message });
-  //     }
-  //     if (!user) {
-  //       return res.status(400).json({ message: info.message });
-  //     }
-  //     return res
-  //       .status(200)
-  //       .json({ message: "User registered successfully", user });
-  //   }
-  // )(req, res, next);
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { user } = req;
     console.log("Authenticated user", user);

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -6,12 +8,16 @@ import { Label } from "@/components/ui/label";
 import { useGetGoogleAuthQuery } from "@/lib/features/ai-agents/ai-agents-api";
 
 export function LoginScreen() {
-  const { data, error, isLoading } = useGetGoogleAuthQuery({});
+  // const { data, error, isLoading } = useGetGoogleAuthQuery({});
 
   const handleGoogleAuth = () => {
     // window.location.href = data?.authUrl;
-    console.log(data);
+    window.location.href = "http://localhost:5000/api/v1/auth/google";
+    // console.log(data);
   };
+
+  // isLoading && <div>Loading...</div>;
+  // error && <div>Error: {error.toString()}</div>;
 
   return (
     <div className="w-full lg:min-h-60 xl:min-h-60 lg:p-5">
@@ -37,7 +43,7 @@ export function LoginScreen() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  href="/forgot-password"
+                  href="#"
                   className="ml-auto inline-block text-sm underline"
                 >
                   Forgot your password?
