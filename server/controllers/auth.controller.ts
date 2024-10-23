@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { PassportRequest } from "../utils/helpers";
 
@@ -37,7 +37,7 @@ export const loginUser = async (req: PassportRequest, res: Response) => {
     }
 
     return res.status(StatusCodes.OK).json({
-      message: "success",
+      message: "success user logged in",
       user,
     });
   } catch (error: any | unknown) {

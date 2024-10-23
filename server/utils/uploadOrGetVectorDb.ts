@@ -1,17 +1,14 @@
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import {
   createMatchFunction,
   createTable,
   dropMatchFunction,
   dropTable,
-  getAstraConfig,
   getSupabaseVectorStore,
   openAIApiKey,
   sbClient,
 } from "./keys";
-import { AstraDBVectorStore } from "@langchain/community/vectorstores/astradb";
-import { TogetherAIEmbeddings } from "@langchain/community/embeddings/togetherai";
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { OpenAIEmbeddings } from "@langchain/openai";
 
 export const uploadDocsToDatabase = async (
   splittedTextOutput: [],

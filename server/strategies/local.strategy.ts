@@ -47,16 +47,26 @@ passport.use(
       try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+          console.warn("existingUser", existingUser); // ! debug
+
           return done(null, false, { message: "Email already registered" });
         }
+
+        console.warn("email", email); // ! debug
+        console.warn("password", password); // ! debug
+
         const newUser = new User({
           email,
           password: hashPassword(password),
         });
+
+        console.warn("newUser", newUser); // ! debug
+
         await newUser.save();
+
         return done(null, newUser);
-      } catch (err) {
-        return done(err, false);
+      } catch (error) {
+        return done(null, false, { message: (error as Error).message });
       }
     }
   )

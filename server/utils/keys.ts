@@ -1,13 +1,10 @@
-import dotenv from "dotenv";
-import { createClient } from "@supabase/supabase-js";
-import { ChatOpenAI } from "@langchain/openai";
 import { AstraLibArgs } from "@langchain/community/vectorstores/astradb";
-import { TogetherAI } from "@langchain/community/llms/togetherai";
-import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { MongoClient } from "mongodb";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { Client } from "pg";
+import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
 import postgres from "postgres";
 
 dotenv.config();
@@ -74,10 +71,10 @@ export const astraConfig: AstraLibArgs = {
 };
 export const togetherAIModel = process.env.TOGETHER_AI_EMBEDDED_MODEL as string;
 
-export const togetherLlm = new TogetherAI({
-  model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-  maxTokens: 256,
-});
+// export const togetherLlm = new TogetherAI({
+//   model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+//   maxTokens: 256,
+// });
 export const getSupabaseVectorStore = (tableName: string) => {
   const embeddings = new OpenAIEmbeddings({
     model: "text-embedding-3-small",

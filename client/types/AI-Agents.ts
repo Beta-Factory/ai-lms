@@ -5,5 +5,11 @@ export interface AgentType {
   description: string;
   agentName: string;
   agentPic: string;
-  trainingFiles: string[];
+  trainingFiles: File[];
 }
+
+export type ResponseHandler =
+  | "content-type"
+  | "json"
+  | "text"
+  | ((response: Response) => Promise<any>);
