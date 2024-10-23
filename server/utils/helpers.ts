@@ -67,6 +67,12 @@ export interface CustomRequest extends Request {
     | { [fieldname: string]: Express.Multer.File[] };
 }
 
+export interface PassportRequest extends Request {
+  authMethod?: string;
+  passportInternalErr?: Error | null;
+  passportauthErr?: any;
+}
+
 export const combineDocs = (docs: any) => {
   return docs.map((doc: any) => doc.pageContent).join("\n\n");
 };

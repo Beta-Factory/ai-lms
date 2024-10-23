@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { cleanupFiles, combineDocs, CustomRequest } from "../utils/helpers";
 import { StatusCodes } from "http-status-codes";
 import {
