@@ -13,3 +13,10 @@ export type ResponseHandler =
   | "json"
   | "text"
   | ((response: Response) => Promise<any>);
+
+export interface AgentPost {
+  agentName: string;
+  context: string;
+  description: string;
+  trainingFiles: File[];
+}

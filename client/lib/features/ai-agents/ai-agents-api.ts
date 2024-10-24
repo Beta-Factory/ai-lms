@@ -7,7 +7,7 @@ dotenv.config();
 export const agentsApi = createApi({
   reducerPath: "agentsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1",
+    baseUrl: process.env.BACKEND_URL as string,
   }), // this is the base backend url
   endpoints: (builder) => ({
     getAgents: builder.query({
