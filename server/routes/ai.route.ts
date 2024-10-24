@@ -31,6 +31,7 @@ router.post(
 );
 router.put(
   "/edit-agent/:agentId",
+  authCheckMiddleware,
   upload.fields([{ name: "agentPic", maxCount: 1 }]),
   EditAIAgent
 );

@@ -59,6 +59,17 @@ export const cleanupFiles = async (
   }
 };
 
+export const removeSpaces = (entity: string) => {
+  return entity.replace(/\s+/g, "");
+};
+
+export const uniqueAgentName = (agentName: string, email: string) => {
+  const emailUsername = email.split("@")[0];
+  const emailDomain = email.split("@")[1].split(".")[0];
+  const agentNameWithoutSpaces = removeSpaces(agentName);
+  return `${agentNameWithoutSpaces}_${emailUsername}_${emailDomain}`;
+};
+
 export interface CustomRequest extends Request {
   user?: userType;
   file?: Express.Multer.File;
