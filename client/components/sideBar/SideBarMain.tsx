@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../ui/AnimatedSideBar";
-import { IconArrowLeft, IconSettings } from "@tabler/icons-react";
-import Link from "next/link";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "../ui/AnimatedSideBar";
 
 import { cn } from "@/lib/utils";
 import {
@@ -13,9 +13,9 @@ import {
   LucideSidebarOpen,
 } from "lucide-react";
 
-import UserAvatar from "../userAccountSettings/UserAvatar";
+import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "../ui/Toggle";
-import { useRouter, usePathname } from "next/navigation";
+import UserAvatar from "../userAccountSettings/UserAvatar";
 
 export const Menulinks = [
   {
