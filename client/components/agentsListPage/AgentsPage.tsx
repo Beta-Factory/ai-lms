@@ -21,11 +21,6 @@ const AgentsPage = () => {
         <AgentsTopPage />
 
         {isLoading && <div>Loading...</div>}
-        {isError && (
-          <div>
-            Error !! Something went wrong <p>{error.toString()}</p>
-          </div>
-        )}
 
         {/* agent cards  will use map here over list of agents*/}
         <div className="w-full flex justify-center items-center flex-wrap">
@@ -45,6 +40,16 @@ const AgentsPage = () => {
                 </div>
               ))}
           </div>
+          {isError && (
+            <div>
+              Error !! Something went wrong <p>{error.toString()}</p>
+              <AgentCard
+                name="default name"
+                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
+                imageUrl={Imageone as StaticImageData}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
