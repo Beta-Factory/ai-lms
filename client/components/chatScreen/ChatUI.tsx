@@ -90,8 +90,6 @@ export default function Page() {
     setShowModal(true);
   };
 
-
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevents newline in textarea
@@ -151,8 +149,8 @@ export default function Page() {
   };
 
   return (
-    <div className="h-full w-full lg:px-10 md:px-10 pb-[200px]">
-  <SelectedAgent/>
+    <div className="h-full w-full lg:px-10 md:px-10 pb-[200px] lg:ml-10">
+      <SelectedAgent />
       <ChatMessageList ref={messagesContainerRef}>
         {/* Chat messages */}
         <AnimatePresence>
@@ -232,7 +230,7 @@ export default function Page() {
       <form
         ref={formRef}
         onSubmit={handleSendMessage}
-        className="fixed bottom-7 lg:w-[85%] xs:w-[80%] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring pt-2 pb-2 px-4"
+        className="fixed bottom-7 lg:w-[80%] xs:w-[80%] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring pt-2 pb-2 px-4"
         {...getRootProps()}
       >
         <div className="w-full flex">
@@ -366,7 +364,6 @@ export default function Page() {
               <span className="text-white dark:text-black">export PDF</span>
             </Button>
           </PDFDownloadLink> */}
-    
 
           <Button
             // disabled={!input || isLoading}

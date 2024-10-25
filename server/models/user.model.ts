@@ -21,11 +21,11 @@ const UserSchema = new mongoose.Schema(
     },
     firstName: {
       type: mongoString,
-      required: false,
+      required: true,
     },
     lastName: {
       type: mongoString,
-      required: false,
+      required: true,
     },
     password: {
       type: mongoString,
