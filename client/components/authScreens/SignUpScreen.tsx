@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +14,7 @@ export const description =
 
 export function SignUpForm() {
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm mt-10">
       <CardHeader>
         <CardTitle className="text-xl">Sign Up</CardTitle>
         <CardDescription>
@@ -52,14 +50,8 @@ export function SignUpForm() {
             Create an account
           </Button>
           <Button variant="outline" className="w-full">
-            Sign up with GitHub
+            Sign up with Google
           </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
-          <Link href="#" className="underline">
-            Sign in
-          </Link>
         </div>
       </CardContent>
     </Card>

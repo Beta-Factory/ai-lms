@@ -1,11 +1,45 @@
+"use client";
+
+import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import Profile from "../userImageUploader/Profile";
 
 const UserProfileSettings = () => {
-  const handleUsernameChange = () => {}; // handle username change
-  const handleNameChange = () => {}; // handle
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [namealert, setNamealert] = useState("");
+  const [usernamealert, setUserNamealert] = useState("");
+
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const nameInput = e.target.value;
+    setName(nameInput);
+    if (nameInput) {
+      const alphanumericRegex = /^[a-z0-9 ]+$/i;
+      if (!alphanumericRegex.test(nameInput)) {
+        setNamealert("Name can only contain alphanumeric characters.");
+      } else {
+        setNamealert("");
+      }
+    }
+  };
+
+  const handleUserNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const userNameInput = e.target.value;
+    setUsername(userNameInput);
+    if (userNameInput) {
+      const alphanumericRegex = /^[^\s-]+$/;
+      if (!alphanumericRegex.test(userNameInput)) {
+        setUserNamealert("UserName can't contain spaces or hyphen.");
+      } else {
+        setUserNamealert("");
+      }
+    }
+  }; // handle name change
+
+  const handleUsernameSave = () => {}; // handle username save
+  const handleNameSave = () => {}; // handle name save
 
   return (
     <div className="flex justify-center items-center w-full max-md:mt-5">
@@ -24,27 +58,39 @@ const UserProfileSettings = () => {
               <Input
                 type="text"
                 placeholder="Change Name"
+                value={name}
                 className="border-2 flex-grow"
+                onChange={handleNameChange}
               />
               <Button
-                onClick={handleNameChange}
+                onClick={handleNameSave}
                 className="bg-sky-500 text-white lg:hover:bg-green-500"
+                disabled={namealert.length > 0 || !name}
               >
-                Save Name
+                Save
               </Button>
             </div>
             <div className="flex flex-row gap-5 max-md:flex-col">
               <Input
                 type="text"
                 placeholder="Change Username"
+                value={username}
                 className="border-2 flex-grow"
+                onChange={handleUserNameChange}
               />
               <Button
-                onClick={handleUsernameChange}
+                onClick={handleUsernameSave}
                 className="bg-sky-600 text-white lg:hover:bg-green-500"
+                disabled={usernamealert.length > 0 || !username}
               >
-                Save Name
+                Save
               </Button>
+            </div>
+            <div className="text-red-400">
+              {namealert && <p>{namealert}</p>}
+            </div>
+            <div className="text-red-400">
+              {usernamealert && <p>{usernamealert}</p>}
             </div>
           </div>
         </div>

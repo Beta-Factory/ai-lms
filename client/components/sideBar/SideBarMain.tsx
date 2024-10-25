@@ -1,25 +1,29 @@
 "use client";
-import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../ui/AnimatedSideBar";
-import { IconArrowLeft, IconSettings } from "@tabler/icons-react";
-import Link from "next/link";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "../ui/AnimatedSideBar";
 
 import { cn } from "@/lib/utils";
 import {
+  House,
   LayoutGrid,
   LucideSidebarClose,
   LucideSidebarOpen,
 } from "lucide-react";
 
-import UserAvatar from "../userAccountSettings/UserAvatar";
+import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "../ui/Toggle";
+import UserAvatar from "../userAccountSettings/UserAvatar";
 
 export const Menulinks = [
   {
-    label: "User Profile",
-    href: "/dashboard/user-settings",
-    icon: <UserAvatar />,
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: (
+      <House className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
   },
   {
     label: "Explore Agents",
@@ -28,12 +32,11 @@ export const Menulinks = [
       <LayoutGrid className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
+
   {
-    label: "Settings",
-    href: "#",
-    icon: (
-      <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
+    label: "User Profile",
+    href: "/dashboard/user-settings",
+    icon: <UserAvatar />,
   },
   {
     label: "Logout",
@@ -48,6 +51,14 @@ export function SideBarMain() {
   const [open, setOpen] = useState(false);
   const [animate, setAnimate] = useState(true);
   const [currentLink, setCurrentLink] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // useEffect(() => {
+  //   console.log("Current Link:", currentLink);
+  //   console.log("Pathname:", pathname);
+  // }, [currentLink, pathname]);
+
   return (
     <div
       className={cn(
@@ -65,31 +76,58 @@ export function SideBarMain() {
               }}
             >
               {animate ? (
-                <LucideSidebarOpen />
+                <LucideSidebarOpen className="shadow-md" />
               ) : (
-                <LucideSidebarClose className="text-blue-600" />
+                <LucideSidebarClose className="text-blue-600 dark:text-blue-400 dark:shadow-slate-200" />
               )}
             </div>
-            <div className="mt-8 flex flex-col gap-2">
-              {Menulinks.map((link, idx) => (
+            <div className="mt-8 flex flex-col gap-5">
+              {Menulinks.filter((link) => link.label !== "Logout").map(
+                (link, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setCurrentLink(link.href);
+
+                      router.push(link.href);
+                    }}
+                  >
+                    <SidebarLink
+                      className={`hover:font-semibold border-b-2 border-t-2 border-transparent hover:border-slate-500 hover:dark:border-slate-200 hover:rounded-md ${
+                        currentLink === link.href || pathname === link.href
+                          ? `border-r-2 border-r-blue-500 dark:border-r-white`
+                          : ``
+                      } `}
+                      link={link}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+          <ModeToggle />
+          <div className="mt-auto">
+            {Menulinks.filter((link) => link.label === "Logout").map(
+              (link, idx) => (
                 <div
                   key={idx}
                   onClick={() => {
                     setCurrentLink(link.href);
-                    console.log("Current Link:", link.href); // ! Debugging statement
+                    router.push(link.href);
                   }}
                 >
                   <SidebarLink
                     className={`hover:font-bold ${
-                      currentLink === link.href ? `text-blue-500` : ``
+                      currentLink === link.href || pathname === link.href
+                        ? `text-blue-500`
+                        : ``
                     } `}
                     link={link}
                   />
                 </div>
-              ))}
-            </div>
+              )
+            )}
           </div>
-          <ModeToggle />
         </SidebarBody>
       </Sidebar>
     </div>

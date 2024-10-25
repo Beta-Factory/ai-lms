@@ -1,22 +1,40 @@
-import { AgentType } from "@/types/AI-Agents";
+// import { AgentType } from "@/types/AI-Agents";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const agentsApi = createApi({
   reducerPath: "agentsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "api" }), // this is the base backend url
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.BACKEND_URL as string,
+  }), // this is the base backend url
   endpoints: (builder) => ({
-    getAgents: builder.query<AgentType[], void>({
+    getAgents: builder.query({
       // query is a get request
-      query: () => "/get-all-user-agents",
+      query: () => ({
+        url: `/ai/get-all-user-agents`,
+        credentials: "include",
+
+        // responseHandler: (response) => response.json(),
+      }),
+    }),
+    getGoogleAuth: builder.query({
+      query: () => ({
+        url: `/auth/google`,
+      }),
     }),
     getChats: builder.query({
       // query is a get request
-      query: () => "/get-all-chats",
+      query: () => ({
+        url: `/ai/get-all-chats`,
+        responseHandler: (response) => response.text(),
+      }),
     }),
     postAgents: builder.mutation({
       // mutation is one of post,put,del requests
       query: (data) => ({
-        url: "/create-agent",
+        url: "/ai/create-agent",
         method: "POST",
         body: data,
       }),
@@ -24,4 +42,8 @@ export const agentsApi = createApi({
   }),
 });
 
-export const { useGetAgentsQuery, usePostAgentsMutation } = agentsApi;
+export const {
+  useGetGoogleAuthQuery,
+  useGetAgentsQuery,
+  usePostAgentsMutation,
+} = agentsApi;

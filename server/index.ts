@@ -16,7 +16,7 @@ const port = process.env.PORT || 8000;
 
 //MongoDb setup
 mongoose
-  .connect(process.env.MONGO_URI as string)
+  .connect(process.env.MONGODB_ATLAS_URI as string)
   .then(() => console.log("Connected to Database"))
   .catch((err) => console.log(`Error: ${err}`));
 
@@ -37,7 +37,14 @@ app.use(
     }),
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: (process.env.FRONTEND_URL as string) || "http://localhost:3000",
+    credentials: true,
+    methods: ["GET", "POST"],
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
