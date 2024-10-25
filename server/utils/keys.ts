@@ -123,6 +123,24 @@ export const createTable = async (tableName: string) => {
     console.error("Error creating table:", error);
   }
 };
+export const renameTable = async (
+  oldTableName: string,
+  newTableName: string
+) => {
+  const renameTableSQL = `
+    ALTER TABLE ${oldTableName}
+    RENAME TO ${newTableName};
+  `;
+
+  try {
+    await sql.unsafe(renameTableSQL);
+    console.log(
+      `Table "${oldTableName}" renamed to "${newTableName}" successfully.`
+    );
+  } catch (error) {
+    console.error(`Error renaming table "${oldTableName}":`, error);
+  }
+};
 export const dropTable = async (tableName: string) => {
   const dropTableSQL = `
     DROP TABLE IF EXISTS ${tableName};

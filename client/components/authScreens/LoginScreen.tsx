@@ -16,6 +16,8 @@ export function LoginScreen() {
     // console.log(data);
   };
 
+  const handleLogin = () => {};
+
   // isLoading && <div>Loading...</div>;
   // error && <div>Error: {error.toString()}</div>;
 
@@ -51,7 +53,7 @@ export function LoginScreen() {
               </div>
               <Input id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
+            <Button onClick={handleLogin} type="submit" className="w-full">
               Login
             </Button>
             <Button
