@@ -23,44 +23,62 @@ const AgentsTopPage = () => {
     i18n.changeLanguage(lang);
   };
 
+  const creditLimit = 100; // Define the total credit limit
+  const remainingCredits = 70; // Example value of remaining credits
+
+  // Calculate the percentage of remaining credits
+  const remainingPercentage = (remainingCredits / creditLimit) * 100;
+
   return (
     <div className="w-full">
       <div className="w-full flex justify-end mt-5 gap-5">
+        {/* Credit Limit Display with Progress Bar */}
+        <div className="flex flex-col items-start w-[200px]">
+          <span className="text-black font-medium mb-1">
+            {t("credits remaining")}: {remainingCredits}/{creditLimit}
+          </span>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-green-500 h-2 rounded-full"
+              style={{ width: `${remainingPercentage}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Create Button */}
         <Button
           onClick={() => router.push("/dashboard/create-agent")}
-          className="bg-black px-3 rounded-2xl flex items-center gap-1 "
+          className="bg-black px-3 rounded-2xl flex items-center gap-1"
         >
-          <span>+ Create</span>
+          <span>+ {("create")}</span>
         </Button>
 
-        {/* language change buttons */}
-
+        {/* Language change buttons */}
         <Select onValueChange={(value) => handleChangeLanguage(value)}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Change Language" />
+            <SelectValue placeholder={t("language.change")} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Change Language</SelectLabel> */}
               <SelectItem value="en">English</SelectItem>
-              <SelectItem value="jp">japanese / 日本語</SelectItem>
-              <SelectItem value="es">espaniol</SelectItem>
+              <SelectItem value="jp">Japanese / 日本語</SelectItem>
+              <SelectItem value="es">Español</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
 
-      <div className="w-[100%] text-[30px] font-bold text-[#000000]  flex items-center justify-center">
+      <div className="w-[100%] text-[30px] font-bold text-[#000000] flex items-center justify-center mt-5">
         {t("header.message")}
       </div>
-      <div className="w-[100%] sm:h-[200px] border lgtext-[] text-[#000000]  flex justify-center items-center text-center lg:px-[130px] mt-4">
+      <div className="w-[100%] sm:h-[100px] border text-[#000000] flex justify-center items-center text-center lg:px-[130px] mt-4">
         {t("home.body")}
       </div>
+
       {/* search */}
-      <div className="w-[100%]  mt-5 flex justify-center items-center">
-        <div className=" border-none bg-[#F5F5F5] text-[#000000] flex justify-center items-center px-5 rounded-2xl gap-2">
+      <div className="w-[100%] mt-5 flex justify-center items-center">
+        <div className="border-none bg-[#F5F5F5] text-[#000000] flex justify-center items-center px-5 rounded-2xl gap-2">
           <svg
-            className=""
             width="16"
             height="17"
             viewBox="0 0 16 17"
@@ -78,7 +96,7 @@ const AgentsTopPage = () => {
           <input
             type="text"
             placeholder="Search all agents"
-            className=" border-none bg-[#F5F5F5] text-[#000000] outline-none  text-[15px]   py-2 "
+            className="border-none bg-[#F5F5F5] text-[#000000] outline-none text-[15px] py-2"
           />
         </div>
       </div>

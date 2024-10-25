@@ -31,7 +31,8 @@ import {
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
 import ChatEditorModal from "../chatEditor/chatEditorModal";
-import { useRouter } from "next/navigation";
+
+import SelectedAgent from "../ui/chat/selectedAgent";
 
 const ChatAiIcons = [
   {
@@ -89,18 +90,7 @@ export default function Page() {
     setShowModal(true);
   };
 
-  const router = useRouter();
-  const handleExportPDF = async () => {
-    try {
-      // Call your PDF generation function here if needed
-      // MyDocument();
 
-      // Navigate to /docviewer
-      router.push("/dashboard/docviewer");
-    } catch (error) {
-      console.error("Error exporting PDF:", error);
-    }
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -162,6 +152,7 @@ export default function Page() {
 
   return (
     <div className="h-full w-full lg:px-10 md:px-10 pb-[200px]">
+  <SelectedAgent/>
       <ChatMessageList ref={messagesContainerRef}>
         {/* Chat messages */}
         <AnimatePresence>
@@ -375,9 +366,7 @@ export default function Page() {
               <span className="text-white dark:text-black">export PDF</span>
             </Button>
           </PDFDownloadLink> */}
-          <Button onClick={handleExportPDF}>
-            <span className="text-yellow-600 dark:text-black">export PDF</span>
-          </Button>
+    
 
           <Button
             // disabled={!input || isLoading}
