@@ -1,8 +1,8 @@
 "use client";
 
+import { EditMessage } from "@/lib/features/ai-export-chat/ai-export-chat-Slice";
+import { useAppDispatch } from "@/lib/hooks";
 import { MouseEvent, useState } from "react";
-import { useDispatch } from "react-redux";
-import { replaceMessage } from "../../lib/features/ai-chats/ai-chat-Slice";
 
 type ChatEditorModalProps = {
   isOpen: boolean;
@@ -23,7 +23,7 @@ const ChatEditorModal = ({
   } = children;
 
   const [content, setContent] = useState(messageString);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
@@ -43,7 +43,8 @@ const ChatEditorModal = ({
       index,
       message: { ...children.message, message: content },
     };
-    dispatch(replaceMessage(payload));
+    console.log("handleSave from ChatEditorModal", payload); // ! Debugging
+    dispatch(EditMessage(payload));
   };
 
   if (!isOpen) return null;

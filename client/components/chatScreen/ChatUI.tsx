@@ -30,9 +30,9 @@ import {
   selectAiChatMessages,
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
-import ChatEditorModal from "../chatEditor/chatEditorModal";
-
+import { useRouter } from "next/navigation";
 import SelectedAgent from "../ui/chat/selectedAgent";
+import { EditMessage } from "@/lib/features/ai-export-chat/ai-export-chat-Slice";
 
 const ChatAiIcons = [
   {
@@ -53,7 +53,7 @@ const ChatAiIcons = [
   },
 ];
 
-interface SelectedMessage {
+export interface SelectedMessage {
   index: number;
   message: Message;
 }
@@ -63,9 +63,11 @@ export default function Page() {
   const uloadedFiles = useAppSelector(selectAiChatFiles);
   const InitialMessages = useAppSelector(selectAiChatMessages);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedMessage, setSelectedMessage] =
-    useState<SelectedMessage | null>(null);
+  // const [showModal, setShowModal] = useState(false);
+  // const [selectedMessage, setSelectedMessage] = useState<SelectedMessage>({
+  //   index: 0,
+  //   message: { message: "", role: "ai", isLoading: false },
+  // });
   const [input, setInput] = useState("");
   // const [isLoading, setisLoading] = useState(false);
 
@@ -84,10 +86,18 @@ export default function Page() {
     setMessages(InitialMessages);
   }, [messages, InitialMessages]);
 
-  const handleEditClick = (message: Message, index: number) => {
-    const newSelectedMessage = { index, message };
-    setSelectedMessage(newSelectedMessage);
-    setShowModal(true);
+  const router = useRouter();
+
+  const handleExportClick = (message: Message, index: number) => {
+    // const newSelectedMessage: SelectedMessage = { index, message };
+    // setSelectedMessage(newSelectedMessage);
+    // console.log("NEWselectedMessage from chatUI :", newSelectedMessage);
+    // dispatch(EditMessage(newSelectedMessage));
+    dispatch(EditMessage({ index, message }));
+    // localStorage.setItem("selectedMessage", JSON.stringify(newSelectedMessage));
+    router.push("/dashboard/docviewer");
+
+    // setShowModal(true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -203,7 +213,7 @@ export default function Page() {
                                   icon={<Icon className="size-3" />}
                                   onClick={() => {
                                     if (icon.label === "Edit") {
-                                      handleEditClick(message, index);
+                                      handleExportClick(message, index);
                                     }
                                     console.log(
                                       icon.label +
@@ -329,7 +339,7 @@ export default function Page() {
               </div>
             </>
           ))}
-          {showModal && (
+          {/* {showModal && (
             <ChatEditorModal
               isOpen={showModal}
               onClose={() => setShowModal(false)}
@@ -337,7 +347,7 @@ export default function Page() {
             >
               {selectedMessage!}
             </ChatEditorModal>
-          )}
+          )} */}
         </div>
         <ChatInput
           ref={inputRef}

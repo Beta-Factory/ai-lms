@@ -1,28 +1,48 @@
 "use client";
 
-import { selectAiChatMessages } from "@/lib/features/ai-chats/ai-chat-Slice";
-import { useAppSelector } from "@/lib/hooks";
-// import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { ExChatState } from "@/lib/features/ai-export-chat/ai-export-chat-Slice";
+import { useState } from "react";
+import ChatEditorModal from "../chatEditor/chatEditorModal";
+import { Button } from "../ui/button";
 
-// const styles = StyleSheet.create({
-//   page: {
-//     flexDirection: "row",
-//     backgroundColor: "#E4E4E4",
-//   },
-//   section: {
-//     margin: 10,
-//     padding: 10,
-//     flexGrow: 1,
-//   },
-// });
+export const MyDocument = ({ document }: { document: ExChatState | null }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<ExChatState | null>(
+    document
+  );
 
-// Create Document Component
-export const MyDocument = () => {
-  const chatsToRender = useAppSelector(selectAiChatMessages);
-
+  const handleEditbutton = () => {
+    setShowModal(true);
+  };
   return (
     <div>
-      {chatsToRender.map((chat, index) => (
+      {showModal && (
+        <ChatEditorModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="Edit This Message"
+        >
+          {selectedMessage?.EXmessages!}
+        </ChatEditorModal>
+      )}
+
+      <div className="mb-5 mt-5 p-4 border rounded-lg shadow-sm bg-white">
+        <div className="mb-2">
+          <h2 className={`text-2xl font-semibold text-blue-500`}>
+            AI response
+          </h2>
+        </div>
+        <div>
+          <p className="text-lg text-gray-800">
+            {selectedMessage?.EXmessages.message.message}
+          </p>
+        </div>
+        <Button
+          onClick={handleEditbutton}
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+        />
+      </div>
+      {/* {chatsToRender.map((chat, index) => (
         <div
           key={index}
           className="mb-5 mt-5 p-4 border rounded-lg shadow-sm bg-white"
@@ -40,25 +60,7 @@ export const MyDocument = () => {
             <p className="text-lg text-gray-800">{chat.message}</p>
           </div>
         </div>
-      ))}
+      ))} */}
     </div>
-
-    // <Document>
-    //   <Page size="A4" style={styles.page}>
-    //     {chatsToRender.map((chat, index) => {
-    //       return (
-    //         <div className="mb-5 mt-5" key={index}>
-    //           <View style={styles.section}>
-    //             {/* can also display username istead of 'user' */}
-    //             <Text>{chat.role == "ai" ? "AI" : "User"}</Text>
-    //           </View>
-    //           <View style={styles.section}>
-    //             <Text>{chat.message}</Text>
-    //           </View>
-    //         </div>
-    //       );
-    //     })}
-    //   </Page>
-    // </Document>
   );
 };
