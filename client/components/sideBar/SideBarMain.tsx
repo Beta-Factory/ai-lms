@@ -85,6 +85,7 @@ export function SideBarMain() {
               {Menulinks.filter((link) => link.label !== "Logout").map(
                 (link, idx) => (
                   <div
+                    className="hover:font-semibold border-2 border-transparent hover:border-slate-500 hover:dark:border-slate-200 hover:rounded-md"
                     key={idx}
                     onClick={() => {
                       setCurrentLink(link.href);
@@ -93,9 +94,9 @@ export function SideBarMain() {
                     }}
                   >
                     <SidebarLink
-                      className={`hover:font-semibold border-b-2 border-t-2 border-transparent hover:border-slate-500 hover:dark:border-slate-200 hover:rounded-md ${
+                      className={`${
                         currentLink === link.href || pathname === link.href
-                          ? `border-r-2 border-r-blue-500 dark:border-r-white`
+                          ? `text-blue-500`
                           : ``
                       } `}
                       link={link}

@@ -11,6 +11,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Paperclip } from "lucide-react";
+import { AgentProfile } from "../userImageUploader/Profile";
 
 const AgentCreator = () => {
   const dispatch = useAppDispatch();
@@ -43,9 +44,16 @@ const AgentCreator = () => {
           エージェントを作成する
         </div>
         <div className="">
-          <form className=" mt-5 lg:w-full  " {...getRootProps()}>
-            <div className="flex  items-center lg:justify-center sm:justify-around lg:gap-20 xs:gap-5 sm:gap-10">
-              <svg
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className=" mt-5 lg:w-full  "
+            {...getRootProps()}
+          >
+            <div className="flex items-center lg:justify-center sm:justify-around lg:gap-20 xs:gap-5 sm:gap-10 max-md:flex-col">
+              <div className="inline-flex w-auto h-auto flex-shrink-0">
+                <AgentProfile />
+              </div>
+              {/* <svg
                 width="100"
                 height="146"
                 viewBox="0 0 146 146"
@@ -67,7 +75,7 @@ const AgentCreator = () => {
                     fill="black"
                   />
                 </g>
-              </svg>
+              </svg> */}
               <div className="flex flex-col gap-2">
                 <div className="lg:w-[500px] sm:w-[500px] ">
                   <label className="text-[#808080] text-[15px] font-bold mr-10">

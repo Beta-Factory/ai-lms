@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { Share2 } from "lucide-react"; // Importing the Share icon
 import { Facebook, Twitter, Linkedin, Mail } from "lucide-react"; // Importing Social Media Icons
-
+import Link from "next/link";
+import { Url } from "next/dist/shared/lib/router/router";
 interface AgentCardProps {
   name: string;
   description: string;
   imageUrl: StaticImageData;
+  link?: Url;
 }
 
-const AgentCard = ({ name, description, imageUrl }: AgentCardProps) => {
+const AgentCard = ({ name, description, imageUrl, link }: AgentCardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State to control delete modal visibility
   const [isShareModalOpen, setIsShareModalOpen] = useState(false); // State to control share modal visibility
 
@@ -56,7 +58,10 @@ const AgentCard = ({ name, description, imageUrl }: AgentCardProps) => {
 
         {/* Agent Info */}
         <div className="flex flex-col text-lg">
-          <span className="text-[#000000]">{name}</span> {/* Agent Name */}
+          <Link className="text-[#000000]" href={link as Url}>
+            {name}
+          </Link>{" "}
+          {/* Agent Name */}
           <span className="text-[#808080]">
             {description} {/* Agent Description */}
           </span>

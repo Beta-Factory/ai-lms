@@ -50,13 +50,13 @@ const AgentsTopPage = () => {
           onClick={() => router.push("/dashboard/create-agent")}
           className="bg-black px-3 rounded-2xl flex items-center gap-1"
         >
-          <span>+ {("create")}</span>
+          <span>+ {"create"}</span>
         </Button>
 
         {/* Language change buttons */}
         <Select onValueChange={(value) => handleChangeLanguage(value)}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder={t("language.change")} />
+            <SelectValue placeholder={t("change language")} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>

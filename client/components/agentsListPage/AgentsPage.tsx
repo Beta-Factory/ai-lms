@@ -33,6 +33,7 @@ const AgentsPage = () => {
                   key={index}
                 >
                   <AgentCard
+                    link={`/dashboard/agents/${agent.agentName}`}
                     name={agent.agentName}
                     description={agent.description}
                     imageUrl={Imageone as StaticImageData}
@@ -44,6 +45,7 @@ const AgentsPage = () => {
             <div>
               Error !! Something went wrong <p>{error.toString()}</p>
               <AgentCard
+                link={`/dashboard/agents/default`}
                 name="default name"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
                 imageUrl={Imageone as StaticImageData}
