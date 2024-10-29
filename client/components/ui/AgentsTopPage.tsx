@@ -34,7 +34,7 @@ const AgentsTopPage = () => {
       <div className="w-full flex justify-end mt-5 gap-5">
         {/* Credit Limit Display with Progress Bar */}
         <div className="flex flex-col items-start w-[200px]">
-          <span className="text-black font-medium mb-1">
+          <span className="text-black dark:text-white font-medium mb-1">
             {t("credits remaining")}: {remainingCredits}/{creditLimit}
           </span>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -48,7 +48,7 @@ const AgentsTopPage = () => {
         {/* Create Button */}
         <Button
           onClick={() => router.push("/dashboard/create-agent")}
-          className="bg-black px-3 rounded-2xl flex items-center gap-1"
+          className="bg-black dark:bg-white px-3 rounded-2xl flex items-center gap-1"
         >
           <span>+ {"create"}</span>
         </Button>
@@ -68,16 +68,16 @@ const AgentsTopPage = () => {
         </Select>
       </div>
 
-      <div className="w-[100%] text-[30px] font-bold text-[#000000] flex items-center justify-center mt-5">
+      <div className="w-[100%] text-[30px] font-bold text-[#000000] dark:text-white flex items-center justify-center mt-5">
         {t("header.message")}
       </div>
-      <div className="w-[100%] sm:h-[100px] border text-[#000000] flex justify-center items-center text-center lg:px-[130px] mt-4">
+      <div className="w-[100%] sm:h-[100px] rounded border text-[#000000] dark:text-white shadow-lg  flex justify-center items-center text-center lg:px-[130px] mt-4">
         {t("home.body")}
       </div>
 
       {/* search */}
       <div className="w-[100%] mt-5 flex justify-center items-center">
-        <div className="border-none bg-[#F5F5F5] text-[#000000] flex justify-center items-center px-5 rounded-2xl gap-2">
+        <div className="border-none bg-[#F5F5F5] text-[#000000] dark:text-white flex justify-center items-center px-5 rounded-2xl gap-2">
           <svg
             width="16"
             height="17"

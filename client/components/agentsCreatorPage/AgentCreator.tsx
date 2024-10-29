@@ -108,7 +108,7 @@ const AgentCreator = () => {
                   className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[750px] md:w-[400px] h-[70px] lg:text-[14px] sm:text-[12px]"
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col " >
                 <label className="text-[#808080] text-[18px] font-bold mr-10 mt-4">
                   ナレッジベース
                 </label>
@@ -117,19 +117,19 @@ const AgentCreator = () => {
                   <br />
                   お客様の要件にさ らに応えるために使用されます。
                 </span>
-                <div className="border border-none rounded-lg px-5 py-3 mt-2 lg:w-[750px]  lg:h-[100px] bg-[#F5F5F5]  flex flex-col gap-2">
+                <div className="border border-none rounded-lg px-5 py-3 mt-2 lg:w-[750px]  lg:h-[100px] bg-[#F5F5F5] dark:bg-[#808080]  flex flex-col gap-2">
                   {!uloadedFiles.map.length ? (
                     <span className="text-[#808080] lg:text-[14px] sm:text-[12px]">
                       このスペースをタップしてファイルをアップロードするか、ドラッグアンドドロップしてください
                     </span>
                   ) : (
-                    <div className="flex">
-                      <div className="w-full flex">
+                    <div className="flex flex-col ">
+                      <div className="w-full flex gap-4">
                         {uloadedFiles.map((file: File) => (
                           <>
-                            <div className="border w-[180px] p-2 rounded-full flex items-center bg-[#103F91] gap-2  justify-between mb-7">
+                            <div className="border w-[200px] p-2 rounded flex items-center bg-[#103F91] gap-2  justify-between mb-2 relative  ">
                               <div className="flex gap-2 items-center">
-                                <div className=" rounded-full border w-[20px] h-[20px]  flex justify-center items-center bg-[#ffffff] ">
+                                <div className=" rounded border w-[20px] h-[20px]  flex justify-center items-center bg-[#ffffff] ">
                                   <svg
                                     width="12"
                                     height="16"
@@ -157,7 +157,7 @@ const AgentCreator = () => {
                                   </svg>
                                 </div>
                                 <div className="flex flex-col ">
-                                  <span className="text-[#ffffff] text-[10px] font-bold">
+                                  <span className="text-[#ffffff] text-[10px] font-bold breal-all">
                                     {file.name}
                                   </span>
                                   <span className="text-[#ffffff] text-[8px]">
@@ -165,63 +165,35 @@ const AgentCreator = () => {
                                   </span>
                                 </div>
                               </div>
-                              <div>
+                              <div className="absolute top-[-15px] right-[-10px]   cursor-pointer ">
                                 <svg
-                                  width="20"
-                                  height="25"
-                                  viewBox="0 0 24 25"
+                                  width="26"
+                                  height="26"
+                                  viewBox="0 0 26 26"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
-                                  <g filter="url(#filter0_d_124_8)">
-                                    <path
-                                      d="M18.1875 6.375H15.6562V5.53125C15.6562 5.00911 15.4488 4.50835 15.0796 4.13913C14.7104 3.76992 14.2096 3.5625 13.6875 3.5625H10.3125C9.79036 3.5625 9.2896 3.76992 8.92038 4.13913C8.55117 4.50835 8.34375 5.00911 8.34375 5.53125V6.375H5.8125C5.58872 6.375 5.37411 6.46389 5.21588 6.62213C5.05764 6.78036 4.96875 6.99497 4.96875 7.21875C4.96875 7.44253 5.05764 7.65714 5.21588 7.81537C5.37411 7.97361 5.58872 8.0625 5.8125 8.0625H6.09375V17.625C6.09375 17.998 6.24191 18.3556 6.50563 18.6194C6.76935 18.8831 7.12704 19.0312 7.5 19.0312H16.5C16.873 19.0312 17.2306 18.8831 17.4944 18.6194C17.7581 18.3556 17.9062 17.998 17.9062 17.625V8.0625H18.1875C18.4113 8.0625 18.6259 7.97361 18.7841 7.81537C18.9424 7.65714 19.0312 7.44253 19.0312 7.21875C19.0312 6.99497 18.9424 6.78036 18.7841 6.62213C18.6259 6.46389 18.4113 6.375 18.1875 6.375ZM10.0312 5.53125C10.0312 5.45666 10.0609 5.38512 10.1136 5.33238C10.1664 5.27963 10.2379 5.25 10.3125 5.25H13.6875C13.7621 5.25 13.8336 5.27963 13.8864 5.33238C13.9391 5.38512 13.9688 5.45666 13.9688 5.53125V6.375H10.0312V5.53125ZM16.2188 17.3438H7.78125V8.0625H16.2188V17.3438ZM11.1562 10.3125V14.8125C11.1562 15.0363 11.0674 15.2509 10.9091 15.4091C10.7509 15.5674 10.5363 15.6562 10.3125 15.6562C10.0887 15.6562 9.87411 15.5674 9.71588 15.4091C9.55764 15.2509 9.46875 15.0363 9.46875 14.8125V10.3125C9.46875 10.0887 9.55764 9.87411 9.71588 9.71588C9.87411 9.55764 10.0887 9.46875 10.3125 9.46875C10.5363 9.46875 10.7509 9.55764 10.9091 9.71588C11.0674 9.87411 11.1562 10.0887 11.1562 10.3125ZM14.5312 10.3125V14.8125C14.5312 15.0363 14.4424 15.2509 14.2841 15.4091C14.1259 15.5674 13.9113 15.6562 13.6875 15.6562C13.4637 15.6562 13.2491 15.5674 13.0909 15.4091C12.9326 15.2509 12.8438 15.0363 12.8438 14.8125V10.3125C12.8438 10.0887 12.9326 9.87411 13.0909 9.71588C13.2491 9.55764 13.4637 9.46875 13.6875 9.46875C13.9113 9.46875 14.1259 9.55764 14.2841 9.71588C14.4424 9.87411 14.5312 10.0887 14.5312 10.3125Z"
-                                      fill="white"
-                                    />
-                                  </g>
-                                  <defs>
-                                    <filter
-                                      id="filter0_d_124_8"
-                                      x="0.96875"
-                                      y="0.5625"
-                                      width="22.0625"
-                                      height="23.4688"
-                                      filterUnits="userSpaceOnUse"
-                                      color-interpolation-filters="sRGB"
-                                    >
-                                      <feFlood
-                                        flood-opacity="0"
-                                        result="BackgroundImageFix"
-                                      />
-                                      <feColorMatrix
-                                        in="SourceAlpha"
-                                        type="matrix"
-                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                                        result="hardAlpha"
-                                      />
-                                      <feOffset dy="1" />
-                                      <feGaussianBlur stdDeviation="2" />
-                                      <feComposite
-                                        in2="hardAlpha"
-                                        operator="out"
-                                      />
-                                      <feColorMatrix
-                                        type="matrix"
-                                        values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-                                      />
-                                      <feBlend
-                                        mode="normal"
-                                        in2="BackgroundImageFix"
-                                        result="effect1_dropShadow_124_8"
-                                      />
-                                      <feBlend
-                                        mode="normal"
-                                        in="SourceGraphic"
-                                        in2="effect1_dropShadow_124_8"
-                                        result="shape"
-                                      />
-                                    </filter>
-                                  </defs>
+                                  <rect
+                                    x="1"
+                                    y="1"
+                                    width="24"
+                                    height="24"
+                                    rx="12"
+                                    fill="white"
+                                  />
+                                  <rect
+                                    x="0.5"
+                                    y="0.5"
+                                    width="25"
+                                    height="25"
+                                    rx="12.5"
+                                    stroke="black"
+                                    stroke-opacity="0.1"
+                                  />
+                                  <path
+                                    d="M17.9501 8.50001H15.7001V8.05001C15.7001 7.69197 15.5579 7.34859 15.3047 7.09542C15.0515 6.84224 14.7081 6.70001 14.3501 6.70001H11.6501C11.2921 6.70001 10.9487 6.84224 10.6955 7.09542C10.4423 7.34859 10.3001 7.69197 10.3001 8.05001V8.50001H8.0501C7.93075 8.50001 7.81629 8.54742 7.7319 8.63181C7.64751 8.71621 7.6001 8.83066 7.6001 8.95001C7.6001 9.06936 7.64751 9.18382 7.7319 9.26821C7.81629 9.3526 7.93075 9.40001 8.0501 9.40001H8.5001V17.5C8.5001 17.7387 8.59492 17.9676 8.7637 18.1364C8.93248 18.3052 9.1614 18.4 9.4001 18.4H16.6001C16.8388 18.4 17.0677 18.3052 17.2365 18.1364C17.4053 17.9676 17.5001 17.7387 17.5001 17.5V9.40001H17.9501C18.0694 9.40001 18.1839 9.3526 18.2683 9.26821C18.3527 9.18382 18.4001 9.06936 18.4001 8.95001C18.4001 8.83066 18.3527 8.71621 18.2683 8.63181C18.1839 8.54742 18.0694 8.50001 17.9501 8.50001ZM12.1001 15.25C12.1001 15.3694 12.0527 15.4838 11.9683 15.5682C11.8839 15.6526 11.7694 15.7 11.6501 15.7C11.5308 15.7 11.4163 15.6526 11.3319 15.5682C11.2475 15.4838 11.2001 15.3694 11.2001 15.25V11.65C11.2001 11.5307 11.2475 11.4162 11.3319 11.3318C11.4163 11.2474 11.5308 11.2 11.6501 11.2C11.7694 11.2 11.8839 11.2474 11.9683 11.3318C12.0527 11.4162 12.1001 11.5307 12.1001 11.65V15.25ZM14.8001 15.25C14.8001 15.3694 14.7527 15.4838 14.6683 15.5682C14.5839 15.6526 14.4694 15.7 14.3501 15.7C14.2308 15.7 14.1163 15.6526 14.0319 15.5682C13.9475 15.4838 13.9001 15.3694 13.9001 15.25V11.65C13.9001 11.5307 13.9475 11.4162 14.0319 11.3318C14.1163 11.2474 14.2308 11.2 14.3501 11.2C14.4694 11.2 14.5839 11.2474 14.6683 11.3318C14.7527 11.4162 14.8001 11.5307 14.8001 11.65V15.25ZM14.8001 8.50001H11.2001V8.05001C11.2001 7.93066 11.2475 7.81621 11.3319 7.73181C11.4163 7.64742 11.5308 7.60001 11.6501 7.60001H14.3501C14.4694 7.60001 14.5839 7.64742 14.6683 7.73181C14.7527 7.81621 14.8001 7.93066 14.8001 8.05001V8.50001Z"
+                                    fill="#AE2727"
+                                  />
                                 </svg>
                               </div>
                             </div>
@@ -229,12 +201,22 @@ const AgentCreator = () => {
                         ))}
                       </div>
                       <input {...getInputProps()} />
-                      <div className="cursor-pointer border" onClick={open}>
-                        <Paperclip
-                          className="text-gray-500 hover:text-gray-700"
-                          size={24}
-                        />
-                      </div>
+                      <div className={`cursor-pointer w-full dark:text-white ${!uloadedFiles.map.length ? "mt-10" : "mt-0"} flex items-center `}onClick={open}>
+  ファイルをアップロードする
+  <svg
+    className="ml-2"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 2C12.5523 2 13 2.44772 13 3V13H17.5858C18.4767 13 18.9229 14.0771 18.2929 14.7071L12.7071 20.2929C12.3166 20.6834 11.6834 20.6834 11.2929 20.2929L5.70711 14.7071C5.07714 14.0771 5.52331 13 6.41421 13H11V3C11 2.44772 11.4477 2 12 2Z"
+    />
+  </svg>
+</div>
+
                     </div>
                   )}
                 </div>

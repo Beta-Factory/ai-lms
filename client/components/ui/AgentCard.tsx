@@ -38,10 +38,10 @@ const AgentCard = ({ name, description, imageUrl, link }: AgentCardProps) => {
 
   return (
     <>
-      <div className="relative group lg:w-1/2 xs:w-full flex justify-center items-center gap-3 border rounded-xl px-[32px] py-[24px] bg-[#F5F5F5] max-md:flex-col">
+      <div className="relative group lg:w-1/2 xs:w-full flex justify-center items-center gap-3 border rounded-xl px-[32px] py-[24px] bg-[#F5F5F5] dark:text-white dark:bg-[#808080] max-md:flex-col ">
         {/* Cross Button */}
         <button
-          className="lg:hidden lg:group-hover:flex absolute top-1 right-2 text-gray-500 hover:text-gray-700 focus:outline-none text-[30px]"
+          className=" lg:group-hover:flex absolute top-1 right-2  text-gray-500 dark:text-white hover:text-gray-700 dark:hover:text-white focus:outline-none text-[30px]"
           onClick={handleDeleteClick} // Open the delete modal on click
         >
           &times;
@@ -57,28 +57,30 @@ const AgentCard = ({ name, description, imageUrl, link }: AgentCardProps) => {
         />
 
         {/* Agent Info */}
-        <div className="flex flex-col text-lg">
+        <div className="flex flex-col text-lg dark:text-white">
           <Link className="text-[#000000]" href={link as Url}>
             {name}
           </Link>{" "}
           {/* Agent Name */}
-          <span className="text-[#808080]">
+          <span className="text-[#808080] dark:text-white">
             {description} {/* Agent Description */}
           </span>
         </div>
 
         {/* Share Icon */}
         <Share2
-          className="lg:hidden lg:group-hover:flex absolute bottom-4 right-4 text-gray-500 hover:text-gray-700 cursor-pointer"
-          size={24}
-          onClick={handleShareClick} // Open the share modal on click
-        />
+  className="absolute bottom-4 right-4 text-gray-500 dark:text-white hover:text-gray-700 dark:hover:text-white cursor-pointer"
+  size={24}
+  onClick={handleShareClick} // Open the share modal on click
+/>
+
+
       </div>
 
       {/* Delete Modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[400px]">
+          <div className="bg-white dark:text-black rounded-lg p-6 w-[400px]">
             <h2 className="text-lg font-semibold mb-4">
               Do you want to delete this?
             </h2>
@@ -103,7 +105,7 @@ const AgentCard = ({ name, description, imageUrl, link }: AgentCardProps) => {
       {/* Share Modal */}
       {isShareModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[400px]">
+          <div className="bg-white dark:text-black rounded-lg p-6 w-[400px]">
             <h2 className="text-lg font-semibold mb-4">Share this agent</h2>
             <div className="flex justify-around">
               <a
