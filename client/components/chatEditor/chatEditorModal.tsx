@@ -54,7 +54,7 @@ const ChatEditorModal = ({
       <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
 
       {/* Modal */}
-      <div className="relative z-50 w-full max-w-lg bg-white rounded-lg shadow-lg">
+      <div className="relative z-50 w-full max-w-lg bg-white rounded-lg shadow-lg dark:text-white dark:bg-slate-700">
         <div className="p-4 flex flex-col h-auto">
           <h2 className="text-xl font-semibold">{title}</h2>
           {/* <Input
@@ -63,7 +63,7 @@ const ChatEditorModal = ({
             onChange={handleInput}
           /> */}
           <textarea
-            className="mt-4 h-40 w-full overflow-y-auto p-2 border rounded"
+            className="mt-4 h-40 w-full overflow-y-auto p-2 border rounded dark:bg-slate-800"
             value={content}
             onChange={handleInput}
             onKeyDown={handleKeyDown}

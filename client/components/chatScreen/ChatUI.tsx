@@ -228,7 +228,7 @@ export default function Page() {
                               return (
                                 <ChatBubbleAction
                                   variant="outline"
-                                  className="size-6 bg-black"
+                                  className="size-6 bg-black dark:bg-white dark:text-black"
                                   key={idx}
                                   icon={<Icon className="size-3" />}
                                   onClick={() => {
