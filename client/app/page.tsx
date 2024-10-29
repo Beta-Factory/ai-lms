@@ -42,8 +42,8 @@ export default function Home() {
   // password protection logic end-------------------------------------------------------------
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] dark:text-white">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start text-slate-900">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] dark:text-white text-slate-800">
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         Landing Page ..........
         <br />
         <Link href={"/dashboard"}>get started</Link>
