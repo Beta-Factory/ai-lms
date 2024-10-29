@@ -34,9 +34,8 @@ import {
 import ChatEditorModal from "../chatEditor/chatEditorModal";
 
 import SelectedAgent from "../ui/chat/selectedAgent";
-import ChatFilePreviewer from "./chatFilePreviewer";
-import { ChatUtilsInput } from "./newChatUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import ChatFilePreviewer from "./chatFilePreviewer";
 
 const ChatAiIcons = [
   {
@@ -199,6 +198,37 @@ export default function Page() {
                                 <ChatBubbleAction
                                   variant="outline"
                                   className="size-6"
+                                  key={idx}
+                                  icon={<Icon className="size-3" />}
+                                  onClick={() => {
+                                    if (icon.label === "Edit") {
+                                      handleEditClick(message, index);
+                                    }
+                                    console.log(
+                                      icon.label +
+                                        " clicked for message " +
+                                        index,
+                                      message
+                                    );
+                                  }}
+                                />
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
+                    )}
+                    {message.role === "user" && (
+                      <div className="flex items-center mt-1.5 gap-1">
+                        {!message.isLoading && (
+                          <>
+                            {ChatAiIcons.map((icon, idx) => {
+                              const Icon = icon.icon;
+
+                              return (
+                                <ChatBubbleAction
+                                  variant="outline"
+                                  className="size-6 bg-black"
                                   key={idx}
                                   icon={<Icon className="size-3" />}
                                   onClick={() => {

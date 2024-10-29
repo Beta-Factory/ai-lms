@@ -10,7 +10,6 @@ import {
 } from "../../lib/features/ai-chats/ai-chat-Slice";
 
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Paperclip } from "lucide-react";
 import { AgentProfile } from "../userImageUploader/Profile";
 
 const AgentCreator = () => {
@@ -108,7 +107,7 @@ const AgentCreator = () => {
                   className="border border-[#808080] rounded-lg p-2 mt-2 lg:w-[750px] md:w-[400px] h-[70px] lg:text-[14px] sm:text-[12px]"
                 />
               </div>
-              <div className="flex flex-col " >
+              <div className="flex flex-col ">
                 <label className="text-[#808080] text-[18px] font-bold mr-10 mt-4">
                   ナレッジベース
                 </label>
@@ -201,22 +200,24 @@ const AgentCreator = () => {
                         ))}
                       </div>
                       <input {...getInputProps()} />
-                      <div className={`cursor-pointer w-full dark:text-white ${!uloadedFiles.map.length ? "mt-10" : "mt-0"} flex items-center `}onClick={open}>
-  ファイルをアップロードする
-  <svg
-    className="ml-2"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 2C12.5523 2 13 2.44772 13 3V13H17.5858C18.4767 13 18.9229 14.0771 18.2929 14.7071L12.7071 20.2929C12.3166 20.6834 11.6834 20.6834 11.2929 20.2929L5.70711 14.7071C5.07714 14.0771 5.52331 13 6.41421 13H11V3C11 2.44772 11.4477 2 12 2Z"
-    />
-  </svg>
-</div>
-
+                      <div
+                        className={`cursor-pointer w-full dark:text-white ${
+                          !uloadedFiles.map.length ? "mt-10" : "mt-0"
+                        } flex items-center `}
+                        onClick={open}
+                      >
+                        ファイルをアップロードする
+                        <svg
+                          className="ml-2"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M12 2C12.5523 2 13 2.44772 13 3V13H17.5858C18.4767 13 18.9229 14.0771 18.2929 14.7071L12.7071 20.2929C12.3166 20.6834 11.6834 20.6834 11.2929 20.2929L5.70711 14.7071C5.07714 14.0771 5.52331 13 6.41421 13H11V3C11 2.44772 11.4477 2 12 2Z" />
+                        </svg>
+                      </div>
                     </div>
                   )}
                 </div>
