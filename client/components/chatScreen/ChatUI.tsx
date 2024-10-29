@@ -18,6 +18,7 @@ import {
   Edit,
   Mic,
   Paperclip,
+  PlusCircleIcon,
   RefreshCcw,
   Volume2,
 } from "lucide-react";
@@ -35,6 +36,7 @@ import ChatEditorModal from "../chatEditor/chatEditorModal";
 import SelectedAgent from "../ui/chat/selectedAgent";
 import ChatFilePreviewer from "./chatFilePreviewer";
 import { ChatUtilsInput } from "./newChatUtils";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const ChatAiIcons = [
   {
@@ -255,11 +257,28 @@ export default function Page() {
         />
         {/* <ChatUtilsInput value={input} placeholder="Type your message here..." /> */}
         <input {...getInputProps()} />
-        <div className="flex items-center p-3 pt-0">
-          <Button variant="ghost" size="icon" onClick={open}>
+        <div className="flex items-center p-3 gap-5 pt-0">
+          {/* <Button variant="ghost" size="icon" onClick={open}>
             <Paperclip className="size-4" />
             <span className="sr-only">Attach file</span>
-          </Button>
+          </Button> */}
+
+          <Popover>
+            <PopoverTrigger>
+              <PlusCircleIcon />
+            </PopoverTrigger>
+            <PopoverContent>
+              <Button
+                variant="ghost"
+                onClick={open}
+                className="gap-2 w-full rounded-sm"
+              >
+                Upload From Device
+                <Paperclip className="size-4" />
+                <span className="sr-only">Attach file</span>
+              </Button>
+            </PopoverContent>
+          </Popover>
 
           <Button variant="ghost" size="icon">
             <Mic className="size-4" />
