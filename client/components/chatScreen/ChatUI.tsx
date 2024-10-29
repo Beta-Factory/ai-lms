@@ -233,7 +233,7 @@ export default function Page() {
         className="fixed bottom-7 lg:w-[80%] xs:w-[80%] rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring pt-2 pb-2 px-4"
         {...getRootProps()}
       >
-        <div className="w-full flex">
+        <div className="w-full flex gap-3">
           {uloadedFiles.map((file: File) => (
             <ChatFilePreviewer key={file.name} file={file} />
           ))}

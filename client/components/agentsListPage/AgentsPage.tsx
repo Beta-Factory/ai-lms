@@ -6,6 +6,7 @@ import { StaticImageData } from "next/image";
 import Imageone from "@/app/assets/nature.jpg";
 import { useGetAgentsQuery } from "@/lib/features/ai-agents/ai-agents-api";
 import { AgentType } from "@/types/AI-Agents";
+import Loading from "@/app/dashboard/agents/loading";
 
 const AgentsPage = () => {
   const { data: agents, isError, isLoading, error } = useGetAgentsQuery({});
@@ -20,11 +21,11 @@ const AgentsPage = () => {
         {/* top page heading, search etc. */}
         <AgentsTopPage />
 
-        {isLoading && <div>Loading...</div>}
+        {isLoading && <div className="flex justify-center items-center mt-10"> <Loading/> </div>}
 
         {/* agent cards  will use map here over list of agents*/}
-        <div className="w-full flex justify-center items-center flex-wrap">
-          <div className=" flex lg:flex-row xs:flex-col justify-evenly  gap-5 w-full mt-10">
+        <div className="w-full flex justify-center items-center flex-wrap ">
+          <div className=" flex lg:flex-row xs:flex-col justify-evenly  gap-5 w-full mt-10 ">
             {agentsData &&
               agentsData.length > 0 &&
               agentsData.map((agent: AgentType, index: number) => (
@@ -42,7 +43,7 @@ const AgentsPage = () => {
               ))}
           </div>
           {isError && (
-            <div>
+            <div className="dark:text-white">
               Error !! Something went wrong <p>{error.toString()}</p>
               <AgentCard
                 link={`/dashboard/agents/default`}
